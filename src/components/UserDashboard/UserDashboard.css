@@ -1,0 +1,50 @@
+/* src/components/UserDashboard/UserDashboard.css */
+
+.user-dashboard {
+  display: flex;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #1f2937;
+  color: #fff;
+  padding: 20px;
+}
+
+.sidebar h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+.sidebar a {
+  color: #ccc;
+  text-decoration: none;
+  display: block;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.sidebar a:hover {
+  color: #fff;
+}
+
+.sidebar a.active-link {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 30px;
+}

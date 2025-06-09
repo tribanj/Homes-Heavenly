@@ -1,0 +1,18 @@
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    flex-shrink: 0;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background: #f8f9fa;
+  }
+  

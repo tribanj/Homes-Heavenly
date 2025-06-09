@@ -1,0 +1,32 @@
+.search-bar-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
+    background: #f8f8f8;
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search-bar-container input,
+  .search-bar-container select {
+    padding: 8px 12px;
+    min-width: 150px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .search-bar-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .search-bar-container button:hover {
+    background-color: #0056b3;
+  }
+  

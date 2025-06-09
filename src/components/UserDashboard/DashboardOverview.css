@@ -1,0 +1,49 @@
+.dashboard-overview {
+    padding: 20px;
+  }
+  
+  .overview-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  
+  .card {
+    flex: 1 1 200px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .card h4 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .card p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  
+  .quick-links ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .quick-links li {
+    margin: 10px 0;
+  }
+  
+  .quick-links a {
+    text-decoration: none;
+    color: #007bff;
+  }
+  
+  .quick-links a:hover {
+    text-decoration: underline;
+  }
+  

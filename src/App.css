@@ -1,0 +1,184 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===============================
+   NAVBAR DROPDOWNS & SUBMENUS
+================================== */
+
+/* Show top-level dropdown on hover */
+.nav-item.dropdown:hover > .dropdown-menu {
+  display: block;
+}
+
+/* Main dropdown positioning */
+.dropdown-menu {
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: visible;
+  z-index: 1000;
+}
+
+/* Prevent horizontal scroll on entire page */
+body {
+  overflow-x: hidden;
+}
+
+/* SUBMENU STYLES */
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu > .dropdown-toggle::after {
+  display: inline-block;
+  margin-left: 0.3em;
+  vertical-align: 0.1em;
+  content: "▶";
+  font-size: 0.6em;
+  transform: rotate(90deg);
+}
+
+.dropdown-submenu .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+  margin-left: 0;
+  white-space: nowrap;
+  z-index: 1001;
+}
+
+/* Show submenu on hover */
+.dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+
+/* Fix overflow for nested items */
+.dropdown-menu .dropdown-submenu:not(:hover) .dropdown-menu {
+  display: none !important;
+}
+
+/* ===============================
+   PROFILE DROPDOWN (My Account)
+================================== */
+.profile-dropdown .dropdown-menu {
+  display: none;
+  right: 0;
+  left: auto;
+  transform: translateX(10px);
+  transition: transform 0.3s ease;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+  display: block;
+  transform: translateX(0);
+}
+
+/* ===============================
+   SERVICES MENU FIX
+================================== */
+.services-menu {
+  display: block !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  column-count: 1 !important;
+  padding: 0.5rem 0 !important;
+}
+
+.services-menu .dropdown-item {
+  display: block !important;
+  width: 100% !important;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* ===============================
+   LOGIN/SIGNUP MODAL POPUP
+================================== */
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.auth-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+}
+
+.auth-form-popup input,
+.auth-form-popup select,
+.auth-form-popup button {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+h1, h2, h3 {
+  font-weight: normal;
+}
+

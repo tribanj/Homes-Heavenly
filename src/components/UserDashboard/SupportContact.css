@@ -1,0 +1,45 @@
+.support-contact {
+    padding: 20px;
+    max-width: 600px;
+  }
+  
+  .support-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .support-form label {
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .support-form input,
+  .support-form textarea {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .support-form button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .support-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .success-msg {
+    background: #d4edda;
+    padding: 15px;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    color: #155724;
+  }
+  

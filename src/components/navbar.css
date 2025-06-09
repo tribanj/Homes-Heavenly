@@ -1,0 +1,115 @@
+/* Main navbar container */
+.navbar-nav {
+  position: relative;
+}
+
+/* Dropdown for Services */
+.nav-services-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 250px;
+  z-index: 2000;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual service item inside Services dropdown */
+.nav-service-item {
+  position: relative;
+  padding: 8px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Hover effect for main service items */
+.nav-service-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Submenu that appears to the right of a service item */
+.nav-service-submenu {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 5px;
+  min-width: 300px;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 3000;
+}
+
+/* Links inside the submenu */
+.nav-service-submenu .dropdown-item {
+  padding: 5px 15px;
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+}
+
+/* Hover effect for submenu links */
+.nav-service-submenu .dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* My Account dropdown styling */
+.navbar-nav .nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1050;
+  width: 300px;
+  min-width: 250px;
+}
+
+/* Styling for My Account dropdown menu */
+.navbar-nav .nav-item.dropdown .dropdown-menu {
+  z-index: 1050;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  min-width: 300px;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+/* Login/Signup box inside My Account */
+.navbar-nav .nav-item.position-relative .p-3 {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Title text */
+.navbar-nav .nav-item.position-relative .text-center h5 {
+  font-size: 20px;
+}
+
+/* Items inside dropdown menu */
+.navbar-nav .dropdown-menu .dropdown-item {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 500;
+  text-align: left;
+}
+
+/* Hover effect for My Account dropdown items */
+.navbar-nav .dropdown-menu .dropdown-item:hover {
+  background-color: #e9ecef;
+}
+
+/* Border styling for My Account dropdown */
+.navbar-nav .nav-item .dropdown-menu {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
