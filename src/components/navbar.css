@@ -113,3 +113,26 @@
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+
+/* ----------------- NEW: Service Title Font Weight ----------------- */
+
+/* Default font weight for service titles */
+.nav-service-title {
+  font-weight: normal;
+  transition: font-weight 0.2s ease;
+}
+
+/* Bold on hover */
+.nav-service-item:hover .nav-service-title {
+  font-weight: bold;
+}
+
+/* Make nav-link bold on hover (for all navbar items) */
+.navbar-nav .nav-item .nav-link {
+  font-weight: normal;
+  transition: font-weight 0.2s ease;
+}
+
+.navbar-nav .nav-item:hover .nav-link {
+  font-weight: bold;
+}

@@ -15,27 +15,62 @@ import SupportContact from './SupportContact';
 
 const UserDashboard = () => {
   return (
-    <div className="user-dashboard">
+    <div className="user-dashboard d-flex">
       {/* Sidebar Navigation */}
-      <div className="sidebar">
+      <aside className="sidebar">
         <h3>👤 User Panel</h3>
         <ul>
-          <li><NavLink to="/user-dashboard/overview" className={({ isActive }) => isActive ? 'active-link' : ''}>Dashboard Overview</NavLink></li>
-          <li><NavLink to="/user-dashboard/properties" className={({ isActive }) => isActive ? 'active-link' : ''}>My Properties</NavLink></li>
-          <li><NavLink to="/user-dashboard/messages" className={({ isActive }) => isActive ? 'active-link' : ''}>Messages & Inquiries</NavLink></li>
-          <li><NavLink to="/user-dashboard/analytics" className={({ isActive }) => isActive ? 'active-link' : ''}>Property Analytics</NavLink></li>
-          <li><NavLink to="/user-dashboard/settings" className={({ isActive }) => isActive ? 'active-link' : ''}>Settings</NavLink></li>
-          <li><NavLink to="/user-dashboard/packages" className={({ isActive }) => isActive ? 'active-link' : ''}>Listings & Packages</NavLink></li>
-          <li><NavLink to="/user-dashboard/alerts" className={({ isActive }) => isActive ? 'active-link' : ''}>Custom Alerts</NavLink></li>
-          <li><NavLink to="/user-dashboard/bookings" className={({ isActive }) => isActive ? 'active-link' : ''}>Services & Appointments</NavLink></li>
-          <li><NavLink to="/user-dashboard/support" className={({ isActive }) => isActive ? 'active-link' : ''}>Support / Contact Us</NavLink></li>
+          <li>
+            <NavLink to="/user-dashboard/overview" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Dashboard Overview
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/properties" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              My Properties
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/messages" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Messages & Inquiries
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/analytics" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Property Analytics
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/settings" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Settings
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/packages" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Listings & Packages
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/alerts" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Custom Alerts
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/bookings" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Services & Appointments
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/user-dashboard/support" className={({ isActive }) => isActive ? 'active-link' : ''}>
+              Support / Contact Us
+            </NavLink>
+          </li>
         </ul>
-      </div>
+      </aside>
 
-      {/* Main Dashboard Area */}
-      <div className="main-content">
+      {/* Main Dashboard Content */}
+      <main className="main-content flex-grow-1 p-3">
         <Routes>
-          {/* Corrected default index route */}
           <Route index element={<Navigate to="overview" replace />} />
           <Route path="overview" element={<DashboardOverview />} />
           <Route path="properties" element={<MyProperties />} />
@@ -46,8 +81,8 @@ const UserDashboard = () => {
           <Route path="alerts" element={<CustomAlerts />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="support" element={<SupportContact />} />
-          </Routes>
-      </div>
+        </Routes>
+      </main>
     </div>
   );
 };

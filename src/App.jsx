@@ -105,7 +105,7 @@ import LegalComplianceManagement from './components/Admindashboard/LegalComplian
 import UserSearchAnalytics from './components/Admindashboard/UserSearchAnalytics';
 import UserSupport from './components/Admindashboard/UserSupport';
 
-// Main Content
+// Main Landing Section for Home
 const MainContent = () => {
   const location = useLocation();
   return location.pathname === '/' ? (
@@ -145,22 +145,18 @@ const RoleBasedDashboard = () => {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
   switch (user.role) {
-    case 'admin':
-      return <Navigate to="/admin-dashboard" replace />;
-    case 'builder':
-      return <Navigate to="/builder-dashboard" replace />;
-    case 'agent':
-      return <Navigate to="/agent-dashboard" replace />;
+    case 'admin': return <Navigate to="/admin-dashboard" replace />;
+    case 'builder': return <Navigate to="/builder-dashboard" replace />;
+    case 'agent': return <Navigate to="/agent-dashboard" replace />;
     case 'user':
-    case 'normal':
-      return <Navigate to="/user-dashboard" replace />;
-    default:
-      return <Navigate to="/" replace />;
+    case 'normal': return <Navigate to="/user-dashboard" replace />;
+    default: return <Navigate to="/" replace />;
   }
 };
 
 function App() {
   return (
+    
     <AuthProvider>
       <FirebaseAuthProvider>
         <Navbar />
@@ -172,14 +168,13 @@ function App() {
           <Route path="/login" element={<AuthForm mode="login" />} />
           <Route path="/signup" element={<AuthForm mode="signup" />} />
 
-          {/* Firebase Login/Signup as fallback */}
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
+          {/* OR if you want to use Firebase forms instead: */}
+          {/* <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} /> */}
 
-          {/* Role-based route */}
           <Route path="/dashboard" element={<RoleBasedDashboard />} />
 
-          {/* Dashboards */}
+          {/* Protected Dashboards */}
           <Route path="/user-dashboard/*" element={<ProtectedRoute allowedRoles={['user', 'normal', 'builder', 'agent']}><UserDashboard /></ProtectedRoute>} />
           <Route path="/builder-dashboard/*" element={<ProtectedRoute allowedRoles={['builder']}><BuilderDashboard /></ProtectedRoute>} />
           <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
@@ -211,7 +206,7 @@ function App() {
           <Route path="/post-property/auction" element={<AuctionPage />} />
           <Route path="/post-property/other" element={<OtherPage />} />
 
-          {/* Pages */}
+          {/* Page Routes */}
           <Route path="/buy" element={<Buy />} />
           <Route path="/buy-page" element={<Buy />} />
           <Route path="/sale" element={<Sale />} />
@@ -222,7 +217,7 @@ function App() {
           <Route path="/contactus-page" element={<ContactUs />} />
           <Route path="/search-results" element={<SearchResults />} />
 
-          {/* Services */}
+          {/* Services (Buysale, Rentlease, etc.) */}
           <Route path="/services/buysale/BookValuation" element={<BookValuation />} />
           <Route path="/services/buysale/OffPlanDeals" element={<OffPlanDeals />} />
           <Route path="/services/buysale/ForeclosedSales" element={<ForeclosedSales />} />
@@ -265,12 +260,14 @@ function App() {
           <Route path="/services/legalservices/disputeresolution" element={<DisputeResolution />} />
           <Route path="/services/legalservices/stampdutysupport" element={<StampDutySupport />} />
 
-          {/* Catch-All Route */}
+          {/* 404 Fallback */}
           <Route path="*" element={<NotFound />} />
 
         </Routes>
       </FirebaseAuthProvider>
     </AuthProvider>
+
+    
   );
 }
 

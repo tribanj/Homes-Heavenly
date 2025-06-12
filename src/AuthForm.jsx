@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from "react";
 import "./AuthForm.css";
-import { useAuth } from './context/AuthContext';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, db, storage } from "./firebase/firebaseConfig";
+import { useAuth } from "./context/AuthContext";
 
 const AuthForm = ({ isSignUp }) => {
-  const { login } = useAuth();
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordError, setPasswordError] = useState("");
 
   const [formData, setFormData] = useState({
-    Name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: 'Normal User',
+    Name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "Normal User",
   });
 
   const [showLicensePopup, setShowLicensePopup] = useState(false);
   const [licenseInfo, setLicenseInfo] = useState({
-    authority: '',
-    number: '',
-    nameOnLicense: '',
-    address: '',
+    authority: "",
+    number: "",
+    nameOnLicense: "",
+    address: "",
     photo: null,
   });
 
   const [isSignUpMode, setIsSignUpMode] = useState(isSignUp);
+  const { googleSignIn, facebookSignIn } = useAuth();
 
   useEffect(() => {
     setIsSignUpMode(isSignUp);
@@ -35,8 +43,8 @@ const AuthForm = ({ isSignUp }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === 'password' || name === 'confirmPassword') {
-      setPasswordError('');
+    if (name === "password" || name === "confirmPassword") {
+      setPasswordError("");
     }
   };
 
@@ -49,7 +57,7 @@ const AuthForm = ({ isSignUp }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isSignUpMode) {
@@ -58,42 +66,71 @@ const AuthForm = ({ isSignUp }) => {
         return;
       }
 
-      setPasswordError("");
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          formData.email,
+          formData.password
+        );
+        const user = userCredential.user;
 
-      if (formData.role !== "Normal User") {
-        setShowLicensePopup(true);
-      } else {
-        console.log("Normal User Signup:", formData);
+        if (formData.role === "Normal User") {
+          await setDoc(doc(db, "users", user.uid), {
+            name: formData.Name,
+            email: formData.email,
+            role: formData.role,
+            createdAt: new Date(),
+          });
 
-        const result = login(formData.email, formData.password);
-        if (result.success) {
           toast.success(`Welcome ${formData.Name}, your account has been created!`);
         } else {
-          toast.error(result.message);
+          setShowLicensePopup(true); // Open license form
         }
+      } catch (error) {
+        toast.error(error.message);
       }
     } else {
-      const result = login(formData.email, formData.password);
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
+      // Sign In logic
+      try {
+        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        toast.success("Signed in successfully!");
+      } catch (error) {
+        toast.error(error.message);
       }
     }
   };
 
-  const handleLicenseSubmit = (e) => {
+  const handleLicenseSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const user = auth.currentUser;
+      let photoURL = "";
 
-    console.log("Signup Data:", formData);
-    console.log("License Info:", licenseInfo);
-    setShowLicensePopup(false);
+      if (licenseInfo.photo) {
+        const storageRef = ref(storage, `licensePhotos/${user.uid}`);
+        await uploadBytes(storageRef, licenseInfo.photo);
+        photoURL = await getDownloadURL(storageRef);
+      }
 
-    const result = login(formData.email, formData.password);
-    if (result.success) {
-      toast.success(`Account created as ${formData.role}. Verification in process!`);
-    } else {
-      toast.error(result.message);
+      await setDoc(doc(db, "users", user.uid), {
+        name: formData.Name,
+        email: formData.email,
+        role: formData.role,
+        licenseInfo: {
+          authority: licenseInfo.authority,
+          number: licenseInfo.number,
+          nameOnLicense: licenseInfo.nameOnLicense,
+          address: licenseInfo.address,
+          photoURL,
+        },
+        verified: false,
+        createdAt: new Date(),
+      });
+
+      toast.success(`Account created as ${formData.role}. Verification in process.`);
+      setShowLicensePopup(false);
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -135,7 +172,7 @@ const AuthForm = ({ isSignUp }) => {
             required
           />
           {passwordError && (
-            <p style={{ color: 'red', fontSize: '0.85rem', margin: '4px 0 0' }}>
+            <p style={{ color: "red", fontSize: "0.85rem", margin: "4px 0 0" }}>
               {passwordError}
             </p>
           )}
@@ -174,6 +211,11 @@ const AuthForm = ({ isSignUp }) => {
           <button type="submit">Sign In</button>
         </form>
       )}
+
+      <div className="social-login">
+        <button onClick={googleSignIn} className="google-btn">Continue with Google</button>
+        <button onClick={facebookSignIn} className="facebook-btn">Continue with Facebook</button>
+      </div>
 
       {showLicensePopup && (
         <div className="auth-modal-overlay">

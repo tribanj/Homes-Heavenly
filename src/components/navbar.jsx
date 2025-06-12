@@ -124,7 +124,7 @@ function Navbar() {
 
           <div className={`collapse navbar-collapse ${expanded ? "show" : ""}`} id="navbarNav">
             <ul className="navbar-nav d-flex align-items-center">
-            <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
+              <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
               <li className="nav-item"><Link className="nav-link" to="/buy-page">Buy</Link></li>
               <li className="nav-item"><Link className="nav-link" to="/sale-page">Sale</Link></li>
               <li className="nav-item"><Link className="nav-link" to="/rent-page">Rent</Link></li>
@@ -152,7 +152,7 @@ function Navbar() {
                         onMouseEnter={() => setActiveService(index)}
                         style={{ position: "relative" }}
                       >
-                        <strong>{service.title}</strong>
+                        <span className="nav-service-title">{service.title}</span>
                         {activeService === index && (
                           <div className="nav-service-submenu bg-light border rounded mt-2 p-2 position-absolute" style={{ left: '100%', top: 0, whiteSpace: 'nowrap', minWidth: '300px', zIndex: 1000 }}>
                             {service.options.map((option, idx) => (
@@ -176,27 +176,50 @@ function Navbar() {
 
             <ul className="navbar-nav ms-auto d-flex align-items-center">
               {user ? (
-                <li className="nav-item dropdown">
-                  <button
-                    className="nav-link btn btn-link text-white p-0 border-0 dropdown-toggle"
-                    id="profileDropdown"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    {user.name}
-                  </button>
-                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                    <li><Link className="dropdown-item" to={getDashboardPath()} onClick={collapseMenu}>My Dashboard</Link></li>
-                    <li><Link className="dropdown-item" to="/messages" onClick={collapseMenu}>💬 Messages / Inbox</Link></li>
-                    <li><Link className="dropdown-item" to="/profile" onClick={collapseMenu}>Edit Profile</Link></li>
-                    <li><Link className="dropdown-item" to="/myads" onClick={collapseMenu}>💬 My Ads</Link></li>
-                    <li><Link className="dropdown-item" to="/settings" onClick={collapseMenu}>⚙️ Settings</Link></li>
-                    <li><Link className="dropdown-item" to="/support" onClick={collapseMenu}>📞 Support / Contact Us</Link></li>
-                    <li><hr className="dropdown-divider" /></li>
-                    <li>
-                      <button className="dropdown-item text-danger" onClick={() => { logout(); collapseMenu(); }}>Logout</button>
-                    </li>
-                  </ul>
+                <li
+                  className="nav-item position-relative"
+                  onMouseEnter={() => setShowAccount(true)}
+                  onMouseLeave={() => setShowAccount(false)}
+                >
+                <span className="nav-link text-white d-flex align-items-center gap-2" role="button">
+  <img
+    src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff"
+    alt="avatar"
+    className="rounded-circle"
+    style={{ width: "30px", height: "30px" }}
+  />
+  <span>My Profile</span>
+</span>
+
+                  {showAccount && (
+                    <div
+                      className="p-3 shadow bg-white border rounded position-absolute"
+                      style={{
+                        width: "300px",
+                        right: 0,
+                        top: "100%",
+                        zIndex: 1000
+                      }}
+                    >
+                      <div className="text-center mb-3">
+                        <h5>👋 Welcome, {user.name}!</h5>
+                      </div>
+                      <ul className="list-unstyled">
+                        <li><Link className="dropdown-item" to={getDashboardPath()} onClick={collapseMenu}>My Dashboard</Link></li>
+                        <li><Link className="dropdown-item" to="/messages" onClick={collapseMenu}>💬 Messages / Inbox</Link></li>
+                        <li><Link className="dropdown-item" to="/profile" onClick={collapseMenu}>Edit Profile</Link></li>
+                        <li><Link className="dropdown-item" to="/myads" onClick={collapseMenu}>📢 My Ads</Link></li>
+                        <li><Link className="dropdown-item" to="/settings" onClick={collapseMenu}>⚙️ Settings</Link></li>
+                        <li><Link className="dropdown-item" to="/support" onClick={collapseMenu}>📞 Support</Link></li>
+                        <li><hr className="dropdown-divider" /></li>
+                        <li>
+                          <button className="dropdown-item text-danger" onClick={() => { logout(); collapseMenu(); }}>
+                            🚪 Logout
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </li>
               ) : (
                 <li

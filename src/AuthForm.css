@@ -12,6 +12,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 /* Inner box of the popup */
@@ -24,6 +26,8 @@
   position: relative;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   animation: popupFadeIn 0.3s ease-in-out;
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.3s ease;
 }
 
 /* Simple fade-in animation */
@@ -38,7 +42,7 @@
   }
 }
 
-/* Form elements */
+/* Form input & select */
 .auth-form-popup form input,
 .auth-form-popup form select {
   width: 100%;
@@ -47,8 +51,10 @@
   border-radius: 6px;
   border: 1px solid #ccc;
   font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
 }
 
+/* Primary login/signup button */
 .auth-form-popup form button {
   width: 100%;
   padding: 0.75rem;
@@ -59,10 +65,50 @@
   border: none;
   border-radius: 6px;
   transition: background 0.3s ease;
+  font-size: 1rem;
 }
 
 .auth-form-popup form button:hover {
   background-color: #0b5ed7;
+}
+
+/* Social login buttons container */
+.social-login {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Google and Facebook buttons */
+.google-btn,
+.facebook-btn {
+  width: 100%;
+  padding: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+  transition: background 0.3s ease;
+}
+
+.google-btn {
+  background-color: #db4437;
+}
+
+.google-btn:hover {
+  background-color: #c33d2f;
+}
+
+.facebook-btn {
+  background-color: #3b5998;
+}
+
+.facebook-btn:hover {
+  background-color: #324b81;
 }
 
 /* License modal overlay */
@@ -77,6 +123,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 /* License modal content */
@@ -88,6 +136,8 @@
   max-width: 500px;
   position: relative;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.3s ease;
 }
 
 .auth-modal input {
@@ -96,6 +146,7 @@
   padding: 0.6rem;
   border-radius: 5px;
   border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
 /* Close button inside license modal */
@@ -109,4 +160,52 @@
   color: #333;
   cursor: pointer;
   z-index: 10;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .auth-popup-inner,
+  .auth-modal {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  .auth-form-popup form input,
+  .auth-form-popup form select,
+  .auth-modal input {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+
+  .auth-form-popup form button,
+  .google-btn,
+  .facebook-btn {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-popup-inner,
+  .auth-modal {
+    padding: 1rem;
+  }
+
+  .auth-form-popup form input,
+  .auth-form-popup form select,
+  .auth-modal input {
+    font-size: 0.9rem;
+    padding: 0.65rem;
+  }
+
+  .auth-form-popup form button,
+  .google-btn,
+  .facebook-btn {
+    font-size: 0.9rem;
+    padding: 0.65rem;
+  }
+
+  .auth-modal .close-btn {
+    font-size: 1.25rem;
+  }
 }

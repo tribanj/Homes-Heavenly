@@ -1,14 +1,22 @@
-// src/components/PrivateRoute.js
+// src/components/ProtectedRoute.jsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../firebase/firebaseConfig';
+import { useAuth } from '../context/AuthContext';
 
-const PrivateRoute = ({ children }) => {
-  const [user, loading] = useAuthState(auth);
+const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { user, userRole, loading } = useAuth();
 
   if (loading) return <div>Loading...</div>;
-  return user ? children : <Navigate to="/login" />;
+
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+    return <Navigate to="/unauthorized" />;
+  }
+
+  return children;
 };
 
-export default PrivateRoute;
+export default ProtectedRoute;
