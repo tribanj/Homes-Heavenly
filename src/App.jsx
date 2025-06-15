@@ -11,19 +11,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FirebaseAuthProvider } from './context/FirebaseAuthContext';
 
-//test//
-import UserDashboard from './components/UserDashboard/UserDashboard';
-import DashboardOverview from './components/UserDashboard/DashboardOverview';
-import MyProperties from './components/UserDashboard/MyProperties';
-import MessagesInquiries from './components/UserDashboard/MessagesInquiries';
-import PropertyAnalytics from './components/UserDashboard/PropertyAnalytics';
-import Settings from './components/UserDashboard/Settings';
-import ListingsPackages from './components/UserDashboard/ListingsPackages';
-import CustomAlerts from './components/UserDashboard/CustomAlerts';
-import Bookings from './components/UserDashboard/Bookings';
-import SupportContact from './components/UserDashboard/SupportContact';
-import ProtectedRoute from './components/ProtectedRoute';
-
 
 // Dashboards
 import UserDashboard from './components/UserDashboard/UserDashboard';
@@ -187,26 +174,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} /> */}
 
           <Route path="/dashboard" element={<RoleBasedDashboard />} />
-          {/* Test */}
-
-<Route
-  path="/dashboard/user"
-  element={
-    <ProtectedRoute allowedRoles={['Normal User']}>
-      <UserDashboard />
-    </ProtectedRoute>
-  }
->
-  <Route path="overview" element={<DashboardOverview />} />
-  <Route path="properties" element={<MyProperties />} />
-  <Route path="messages" element={<MessagesInquiries />} />
-  <Route path="analytics" element={<PropertyAnalytics />} />
-  <Route path="settings" element={<Settings />} />
-  <Route path="packages" element={<ListingsPackages />} />
-  <Route path="alerts" element={<CustomAlerts />} />
-  <Route path="bookings" element={<Bookings />} />
-  <Route path="support" element={<SupportContact />} />
-</Route>
+         
           {/* Protected Dashboards */}
           <Route path="/user-dashboard/*" element={<ProtectedRoute allowedRoles={['user', 'normal', 'builder', 'agent']}><UserDashboard /></ProtectedRoute>} />
           <Route path="/builder-dashboard/*" element={<ProtectedRoute allowedRoles={['builder']}><BuilderDashboard /></ProtectedRoute>} />
