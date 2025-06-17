@@ -18,6 +18,17 @@ import AdminDashboard from './components/Admindashboard/AdminDashboard';
 import BuilderDashboard from './components/BuilderDashboard/layout/BuilderDashboard';
 import CompanyDashboard from './components/RealEstateDashboard/layout/CompanyDashboard';
 import AgentDashboard from './components/AgentDashboard/AgentDashboardHome';
+// User dashboard
+import DashboardOverview from './components/UserDashboard/DashboardOverview';
+import MyProperties from './components/UserDashboard/MyProperties';
+import MessagesInquiries from './components/UserDashboard/MessagesInquiries';
+import PropertyAnalytics from './components/UserDashboard/PropertyAnalytics';
+import Settings from './components/UserDashboard/Settings';
+import ListingsPackages from './components/UserDashboard/ListingsPackages';
+import CustomAlerts from './components/UserDashboard/CustomAlerts';
+import Bookings from './components/UserDashboard/Bookings';
+import SupportContact from './components/UserDashboard/SupportContact';
+
 
 // Buy Sell Services
 import BookValuation from './components/Services/buysale/BookValuation';
@@ -182,6 +193,19 @@ function App() {
           <Route path="/agent-dashboard/*" element={<ProtectedRoute allowedRoles={['agent']}><AgentDashboard /></ProtectedRoute>} />
           <Route path="/company-dashboard/*" element={<ProtectedRoute allowedRoles={['company']}><CompanyDashboard /></ProtectedRoute>} />
 
+          {/* user Dashboard */}
+          <Route index element={<Navigate to="overview" replace />} />
+          <Route path="overview" element={<DashboardOverview />} />
+          <Route path="properties" element={<MyProperties />} />
+          <Route path="messages" element={<MessagesInquiries />} />
+          <Route path="analytics" element={<PropertyAnalytics />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="packages" element={<ListingsPackages />} />
+          <Route path="alerts" element={<CustomAlerts />} />
+          <Route path="bookings" element={<Bookings />} />
+          <Route path="support" element={<SupportContact />} />
+                 
+          
           {/* Admin Routes */}
           <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><UserManagement /></ProtectedRoute>} />
           <Route path="/admin/properties" element={<ProtectedRoute allowedRoles={['admin']}><PropertiesManagement /></ProtectedRoute>} />
