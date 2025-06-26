@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import AuthForm from "../AuthForm";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import AuthModal from "./modals/AuthModal";
 import "../App.css";
 import "./navbar.css";
 
@@ -14,7 +14,7 @@ const services = [
       { label: "Foreclosed & Distressed Property Sales", path: "/services/buysale/ForeclosedSales" },
       { label: "Auctions & Bidding Support", path: "/services/buysale/AuctionSupport" },
       { label: "Legal & Documentation Assistance for Transactions", path: "/services/buysale/TransactionLegalHelp" },
-    ]
+    ],
   },
   {
     title: "Rent & Lease Services",
@@ -24,7 +24,7 @@ const services = [
       { label: "Co-Living & Shared Housing Solutions", path: "/services/RentLease/CoLivingSolutions" },
       { label: "Short-Term & Vacation Rentals", path: "/services/RentLease/VacationRentals" },
       { label: "Student Housing & PG Listings", path: "/services/RentLease/StudentHousing" },
-    ]
+    ],
   },
   {
     title: "Property Management Services",
@@ -33,7 +33,7 @@ const services = [
       { label: "Maintenance & Repairs Coordination", path: "/services/propertymanagement/MaintenanceRepairs" },
       { label: "Legal Dispute Resolution for Landlords & Tenants", path: "/services/propertymanagement/LegalDisputeResolution" },
       { label: "Home Insurance & Property Protection Plans", path: "/services/propertymanagement/HomeInsurancePlans" },
-    ]
+    ],
   },
   {
     title: "Real Estate Investment & Advisory",
@@ -42,7 +42,7 @@ const services = [
       { label: "Land & Plot Investment Services", path: "/services/investmentadvisory/LandPlotInvestment" },
       { label: "Fractional Ownership & REIT Investment", path: "/services/investmentadvisory/FractionalOwnership" },
       { label: "Market Trends & Price Forecasting", path: "/services/investmentadvisory/MarketTrends" },
-    ]
+    ],
   },
   {
     title: "Home Loans & Financial Services",
@@ -50,8 +50,7 @@ const services = [
       { label: "Home Loan & Mortgage Assistance", path: "/services/financialservices/HomeLoanAssistance" },
       { label: "Loan Refinancing & Balance Transfer", path: "/services/financialservices/LoanRefinancing" },
       { label: "Real Estate Tax & Investment Planning", path: "/services/financialservices/RealEstateTaxPlanning" },
-      // { label: "Loan Finance Services", path: "/services/financialservices/LoansFinanceServices" },
-    ]
+    ],
   },
   {
     title: "Construction & Renovation Services",
@@ -60,7 +59,7 @@ const services = [
       { label: "Interior Designing & Home Furnishing", path: "/services/constructionservices/InteriorDesigning" },
       { label: "Smart Home & Automation Installations", path: "/services/constructionservices/SmartHomeInstallations" },
       { label: "Landscaping & Outdoor Living Solutions", path: "/services/constructionservices/LandscapingSolutions" },
-    ]
+    ],
   },
   {
     title: "Corporate & Commercial Real Estate Services",
@@ -68,7 +67,7 @@ const services = [
       { label: "Office Space Leasing & Business Relocation", path: "/services/corporateservices/OfficeSpaceLeasing" },
       { label: "Industrial, Warehouse & Retail Space Solutions", path: "/services/corporateservices/IndustrialRetailSolutions" },
       { label: "Real Estate Solutions for Corporates & Startups", path: "/services/corporateservices/CorporateRealEstate" },
-    ]
+    ],
   },
   {
     title: "Legal & Compliance Services",
@@ -77,29 +76,43 @@ const services = [
       { label: "RERA Compliance & Registration Assistance", path: "/services/legalservices/RERACompliance" },
       { label: "Landlord & Tenant Dispute Resolution", path: "/services/legalservices/DisputeResolution" },
       { label: "Stamp Duty & Property Registration Support", path: "/services/legalservices/StampDutySupport" },
-    ]
-  }
+    ],
+  },
 ];
 
 function Navbar() {
   const [showAccount, setShowAccount] = useState(false);
-  const [showAuthForm, setShowAuthForm] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState("login");  
   const [showServices, setShowServices] = useState(false);
   const [activeService, setActiveService] = useState(null);
   const [expanded, setExpanded] = useState(false);
 
   const { user, logout, loading } = useAuth();
+  const navigate = useNavigate();
+
   if (loading) return null;
+
+   const handleLogout = async () => {
+    try {
+      await logout();         // logout user using context
+      navigate("/login");     // redirect to login
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const getDashboardPath = () => {
     if (!user) return "/login";
     switch (user.role) {
-      case "admin": return "/admin-dashboard";
+      case "admin":
+        return "/admin-dashboard";
       case "user":
       case "builder":
-      case "agent": return "/company-dashboard";
-      default: return "/dashboard";
+      case "agent":
+        return "/company-dashboard";
+      default:
+        return "/dashboard";
     }
   };
 
@@ -139,7 +152,7 @@ function Navbar() {
                   setActiveService(null);
                 }}
               >
-                <span className="nav-link text-white" style={{ cursor: "pointer" }} role="button">
+                <span className="nav-link text-white" role="button" style={{ cursor: "pointer" }}>
                   Services
                 </span>
 
@@ -156,12 +169,7 @@ function Navbar() {
                         {activeService === index && (
                           <div className="nav-service-submenu bg-light border rounded mt-2 p-2 position-absolute" style={{ left: '100%', top: 0, whiteSpace: 'nowrap', minWidth: '300px', zIndex: 1000 }}>
                             {service.options.map((option, idx) => (
-                              <Link
-                                key={idx}
-                                to={option.path}
-                                className="dropdown-item text-dark py-1 text-center"
-                                onClick={collapseMenu}
-                              >
+                              <Link key={idx} to={option.path} className="dropdown-item text-dark py-1 text-center" onClick={collapseMenu}>
                                 {option.label}
                               </Link>
                             ))}
@@ -176,41 +184,31 @@ function Navbar() {
 
             <ul className="navbar-nav ms-auto d-flex align-items-center">
               {user ? (
-                <li
-                  className="nav-item position-relative"
-                  onMouseEnter={() => setShowAccount(true)}
-                  onMouseLeave={() => setShowAccount(false)}
-                >
-                <span className="nav-link text-white d-flex align-items-center gap-2" role="button">
-  <img
-    src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff"
-    alt="avatar"
-    className="rounded-circle"
-    style={{ width: "30px", height: "30px" }}
-  />
-  <span>My Profile</span>
-</span>
+                <li className="nav-item position-relative"
+                    onMouseEnter={() => setShowAccount(true)}
+                    onMouseLeave={() => setShowAccount(false)}>
+                  <span className="nav-link text-white d-flex align-items-center gap-2" role="button">
+                    <img
+                      src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff"
+                      alt="avatar"
+                      className="rounded-circle"
+                      style={{ width: "30px", height: "30px" }}
+                    />
+                    <span>My Profile</span>
+                  </span>
 
                   {showAccount && (
-                    <div
-                      className="p-3 shadow bg-white border rounded position-absolute"
-                      style={{
-                        width: "300px",
-                        right: 0,
-                        top: "100%",
-                        zIndex: 1000
-                      }}
-                    >
+                    <div className="p-3 shadow bg-white border rounded position-absolute" style={{ width: "300px", right: 0, top: "100%", zIndex: 1000 }}>
                       <div className="text-center mb-3">
                         <h5>👋 Welcome, {user.name}!</h5>
                       </div>
                       <ul className="list-unstyled">
-                        <li><Link className="dropdown-item" to={getDashboardPath()} onClick={collapseMenu}>My Dashboard</Link></li>
-                        <li><Link className="dropdown-item" to="/messages" onClick={collapseMenu}>💬 Messages / Inbox</Link></li>
-                        <li><Link className="dropdown-item" to="/profile" onClick={collapseMenu}>Edit Profile</Link></li>
-                        <li><Link className="dropdown-item" to="/myads" onClick={collapseMenu}>📢 My Ads</Link></li>
-                        <li><Link className="dropdown-item" to="/settings" onClick={collapseMenu}>⚙️ Settings</Link></li>
-                        <li><Link className="dropdown-item" to="/support" onClick={collapseMenu}>📞 Support</Link></li>
+                       <li><Link to="/user-dashboard">My Dashboard</Link></li>
+                        <li><Link to="/messages">Messages / Inbox</Link></li>
+                        <li><Link to="/edit-profile">Edit Profile</Link></li>
+                        <li><Link to="/my-ads">My Ads</Link></li>
+                        <li><Link to="/user-dashboard/settings">Settings</Link></li>
+                        <li><Link to="/support">Support</Link></li>
                         <li><hr className="dropdown-divider" /></li>
                         <li>
                           <button className="dropdown-item text-danger" onClick={() => { logout(); collapseMenu(); }}>
@@ -222,11 +220,9 @@ function Navbar() {
                   )}
                 </li>
               ) : (
-                <li
-                  className="nav-item position-relative"
-                  onMouseEnter={() => setShowAccount(true)}
-                  onMouseLeave={() => setShowAccount(false)}
-                >
+                <li className="nav-item position-relative"
+                    onMouseEnter={() => setShowAccount(true)}
+                    onMouseLeave={() => setShowAccount(false)}>
                   <span className="nav-link text-white" role="button">My Account</span>
                   {showAccount && (
                     <div className="p-3 shadow bg-white border rounded position-absolute" style={{ width: "350px", right: 0, top: "100%", zIndex: 1000 }}>
@@ -236,8 +232,8 @@ function Navbar() {
                         <button
                           className="btn btn-primary w-100"
                           onClick={() => {
-                            setIsSignUp(false);
-                            setShowAuthForm(true);
+                            setAuthMode("login");
+                            setShowAuthModal(true);
                             setShowAccount(false);
                           }}
                         >
@@ -251,8 +247,8 @@ function Navbar() {
                         <button
                           className="btn btn-success w-100"
                           onClick={() => {
-                            setIsSignUp(true);
-                            setShowAuthForm(true);
+                            setAuthMode("signup");
+                            setShowAuthModal(true);
                             setShowAccount(false);
                           }}
                         >
@@ -268,9 +264,11 @@ function Navbar() {
         </div>
       </nav>
 
-      {showAuthForm && (
-        <AuthForm isSignUp={isSignUp} onClose={() => setShowAuthForm(false)} />
-      )}
+      {/* ✅ Auth Modal */}
+      <AuthModal
+  show={showAuthModal}
+  handleClose={() => setShowAuthModal(false)}
+  mode={authMode}/>
     </>
   );
 }

@@ -1,74 +1,42 @@
-// src/components/UserDashboard/UserDashboard.js
+// src/components/UserDashboard/UserDashboard.jsx
 
 import React from 'react';
-import { Routes, Route, NavLink, Navigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import Sidebar from './Sidebar';
+
+import Overview from './Overview';
+import MyAds from './MyAds';
+import SavedListings from './SavedListings';
+import MyServiceRequests from './MyServiceRequests';
+import MyAppointments from './MyAppointments';
+import SubmitInquiryHistory from './SubmitInquiryHistory';
+import RecentActivity from './RecentActivity';
+import Settings from './Settings';
+
 import './UserDashboard.css';
 
 const UserDashboard = () => {
   const location = useLocation();
+  const path = location.pathname;
 
-  // Redirect from /dashboard/user to /dashboard/user/overview
-  if (location.pathname === '/dashboard/user') {
-    return <Navigate to="/dashboard/user/overview" replace />;
-  }
+  // Map current path to component
+  const renderContent = () => {
+    if (path.includes('my-ads')) return <MyAds />;
+    if (path.includes('saved-listings')) return <SavedListings />;
+    if (path.includes('my-service-requests')) return <MyServiceRequests />;
+    if (path.includes('my-appointments')) return <MyAppointments />;
+    if (path.includes('submit-inquiry-history')) return <SubmitInquiryHistory />;
+    if (path.includes('recent-activity')) return <RecentActivity />;
+    if (path.includes('settings')) return <Settings />;
+    return <Overview />; // Default page
+  };
 
   return (
-    <div className="user-dashboard d-flex">
-      <aside className="sidebar">
-        <h3>👤 User Panel</h3>
-        <ul>
-          <li>
-            <NavLink to="/user-dashboard/overview" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Dashboard Overview
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/properties" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              My Properties
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/messages" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Messages & Inquiries
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/analytics" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Property Analytics
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/settings" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Settings
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/packages" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Listings & Packages
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/alerts" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Custom Alerts
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/bookings" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Services & Appointments
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/user-dashboard/support" className={({ isActive }) => isActive ? 'active-link' : ''}>
-              Support / Contact Us
-            </NavLink>
-          </li>
-        </ul>
-      </aside>
-
-      {/* Main Dashboard Content */}
-      <main className="main-content flex-grow-1 p-3">
-        <Outlet />
-      </main>
+    <div className="user-dashboard-container">
+      <Sidebar />
+      <div className="dashboard-content">
+        {renderContent()}
+      </div>
     </div>
   );
 };

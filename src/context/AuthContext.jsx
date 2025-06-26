@@ -13,7 +13,6 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -22,6 +21,8 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [redirectPath, setRedirectPath] = useState(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [pendingUser, setPendingUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,25 +71,7 @@ export const AuthProvider = ({ children }) => {
         navigate(redirectPath);
         setRedirectPath(null);
       } else {
-        switch (role) {
-          case 'Normal User':
-            navigate('/dashboard/user');
-            break;
-          case 'Agent':
-            navigate('/dashboard/agent');
-            break;
-          case 'Builder':
-            navigate('/dashboard/builder');
-            break;
-          case 'Real Estate Company':
-            navigate('/dashboard/company');
-            break;
-          case 'Admin':
-            navigate('/dashboard/admin');
-            break;
-          default:
-            navigate('/');
-        }
+        navigateBasedOnRole(role);
       }
 
       return { success: true, message: 'Logged in successfully' };
@@ -106,16 +89,14 @@ export const AuthProvider = ({ children }) => {
 
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (!userDoc.exists()) {
-        await setDoc(doc(db, 'users', user.uid), {
-          name: user.displayName || '',
-          email: user.email,
-          role: 'Normal User',
-        });
+        setPendingUser(user);
+        setShowRoleModal(true);
+      } else {
+        const role = userDoc.data().role;
+        setUser(user);
+        setUserRole(role);
+        navigateBasedOnRole(role);
       }
-
-      setUser(user);
-      setUserRole('Normal User');
-      navigate('/dashboard/user');
     } catch (error) {
       console.error('❌ Google Sign-In Error:', error.message);
     }
@@ -129,18 +110,58 @@ export const AuthProvider = ({ children }) => {
 
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       if (!userDoc.exists()) {
-        await setDoc(doc(db, 'users', user.uid), {
-          name: user.displayName || '',
-          email: user.email,
-          role: 'Normal User',
-        });
+        setPendingUser(user);
+        setShowRoleModal(true);
+      } else {
+        const role = userDoc.data().role;
+        setUser(user);
+        setUserRole(role);
+        navigateBasedOnRole(role);
       }
-
-      setUser(user);
-      setUserRole('Normal User');
-      navigate('/dashboard/user');
     } catch (error) {
       console.error('❌ Facebook Sign-In Error:', error.message);
+    }
+  };
+
+  const submitRoleAndLicense = async (data) => {
+    try {
+      let {
+        role,
+        licenseAuthority,
+        licenseNumber,
+        licenseName,
+        officeAddress,
+        proofUrl
+      } = data;
+
+      const uid = pendingUser.uid;
+
+      // Normalize 'Normal User' to 'user'
+      if (role === 'Normal User') role = 'user';
+
+      const userData = {
+        name: pendingUser.displayName || '',
+        email: pendingUser.email,
+        role,
+      };
+
+      if (role !== 'user') {
+        userData.licenseAuthority = licenseAuthority;
+        userData.licenseNumber = licenseNumber;
+        userData.licenseName = licenseName;
+        userData.officeAddress = officeAddress;
+        userData.proofUrl = proofUrl;
+      }
+
+      await setDoc(doc(db, 'users', uid), userData);
+
+      setUser(pendingUser);
+      setUserRole(role);
+      setPendingUser(null);
+      setShowRoleModal(false);
+      navigateBasedOnRole(role);
+    } catch (error) {
+      console.error('❌ Error saving role/license:', error.message);
     }
   };
 
@@ -150,6 +171,29 @@ export const AuthProvider = ({ children }) => {
     setUserRole(null);
     console.log('✅ Logged out');
     navigate('/');
+  };
+
+  const navigateBasedOnRole = (role) => {
+    switch (role) {
+      case 'user':
+        navigate('/user-dashboard');
+        break;
+      case 'agent':
+        navigate('/agent-dashboard');
+        break;
+      case 'builder':
+        navigate('/builder-dashboard');
+        break;
+      case 'company':
+      case 'real estate company':
+        navigate('/company-dashboard');
+        break;
+      case 'admin':
+        navigate('/admin-dashboard');
+        break;
+      default:
+        navigate('/');
+    }
   };
 
   return (
@@ -166,6 +210,9 @@ export const AuthProvider = ({ children }) => {
         setShowLoginModal,
         googleSignIn,
         facebookSignIn,
+        showRoleModal,
+        setShowRoleModal,
+        submitRoleAndLicense,
       }}
     >
       {children}

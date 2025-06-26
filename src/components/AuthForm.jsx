@@ -2,19 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./AuthForm.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth, db, storage } from "./firebase/firebaseConfig";
-import { useAuth } from "./context/AuthContext";
+import { doc, setDoc } from "firebase/firestore";  
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";  
+import { auth, db, storage } from "../firebase/firebaseConfig";
+import { useAuth } from "../context/AuthContext";
 
-const AuthForm = ({ isSignUp }) => {
+const AuthForm = ({ isSignUp, onClose }) => {
   const [passwordError, setPasswordError] = useState("");
-
   const [formData, setFormData] = useState({
     Name: "",
     email: "",
@@ -42,7 +40,6 @@ const AuthForm = ({ isSignUp }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
     if (name === "password" || name === "confirmPassword") {
       setPasswordError("");
     }
@@ -81,19 +78,19 @@ const AuthForm = ({ isSignUp }) => {
             role: formData.role,
             createdAt: new Date(),
           });
-
           toast.success(`Welcome ${formData.Name}, your account has been created!`);
+          onClose();
         } else {
-          setShowLicensePopup(true); // Open license form
+          setShowLicensePopup(true);
         }
       } catch (error) {
         toast.error(error.message);
       }
     } else {
-      // Sign In logic
       try {
         await signInWithEmailAndPassword(auth, formData.email, formData.password);
         toast.success("Signed in successfully!");
+        onClose();
       } catch (error) {
         toast.error(error.message);
       }
@@ -129,16 +126,18 @@ const AuthForm = ({ isSignUp }) => {
 
       toast.success(`Account created as ${formData.role}. Verification in process.`);
       setShowLicensePopup(false);
+      onClose();
     } catch (error) {
       toast.error(error.message);
     }
   };
 
   return (
-    <div className="auth-form-popup">
-      {isSignUpMode ? (
-        <form onSubmit={handleSubmit}>
-          <h2>Create Account</h2>
+    <div>
+      <form className="auth-form-box" onSubmit={handleSubmit}>
+        <h2>{isSignUpMode ? "Create Account" : "Sign In"}</h2>
+
+        {isSignUpMode && (
           <input
             type="text"
             name="Name"
@@ -147,75 +146,64 @@ const AuthForm = ({ isSignUp }) => {
             onChange={handleChange}
             required
           />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-          />
-          {passwordError && (
-            <p style={{ color: "red", fontSize: "0.85rem", margin: "4px 0 0" }}>
-              {passwordError}
-            </p>
-          )}
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="Normal User">Normal User</option>
-            <option value="Builder">Builder</option>
-            <option value="Real Estate Company">Real Estate Company</option>
-            <option value="Agent">Agent</option>
-          </select>
-          <button type="submit">Sign Up</button>
-        </form>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <h2>Sign In</h2>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">Sign In</button>
-        </form>
-      )}
+        )}
 
-      <div className="social-login">
-        <button onClick={googleSignIn} className="google-btn">Continue with Google</button>
-        <button onClick={facebookSignIn} className="facebook-btn">Continue with Facebook</button>
-      </div>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+
+        {isSignUpMode && (
+          <>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+            {passwordError && <p className="error-text">{passwordError}</p>}
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            >
+              <option value="Normal User">Normal User</option>
+              <option value="Builder">Builder</option>
+              <option value="Real Estate Company">Real Estate Company</option>
+              <option value="Agent">Agent</option>
+            </select>
+          </>
+        )}
+
+        <button type="submit">
+          {isSignUpMode ? "Sign Up" : "Sign In"}
+        </button>
+
+        <div className="social-login">
+          <button type="button" onClick={googleSignIn} className="google-btn">
+            Continue with Google
+          </button>
+          <button type="button" onClick={facebookSignIn} className="facebook-btn">
+            Continue with Facebook
+          </button>
+        </div>
+      </form>
 
       {showLicensePopup && (
         <div className="auth-modal-overlay">
@@ -224,7 +212,6 @@ const AuthForm = ({ isSignUp }) => {
               className="close-btn"
               onClick={() => setShowLicensePopup(false)}
               type="button"
-              aria-label="Close license form"
             >
               ×
             </button>

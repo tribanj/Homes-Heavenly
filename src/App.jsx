@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/navbar';
-import AuthForm from './AuthForm';
+import AuthForm from './components/AuthForm';
 import Home from './pages/Home';
 import './App.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -10,25 +10,11 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FirebaseAuthProvider } from './context/FirebaseAuthContext';
+import RoleSelectionModal from './components/modals/RoleSelectionModal';
 
 
 // Dashboards
 import UserDashboard from './components/UserDashboard/UserDashboard';
-import AdminDashboard from './components/Admindashboard/AdminDashboard';
-import BuilderDashboard from './components/BuilderDashboard/layout/BuilderDashboard';
-import CompanyDashboard from './components/RealEstateDashboard/layout/CompanyDashboard';
-import AgentDashboard from './components/AgentDashboard/AgentDashboardHome';
-// User dashboard
-import DashboardOverview from './components/UserDashboard/DashboardOverview';
-import MyProperties from './components/UserDashboard/MyProperties';
-import MessagesInquiries from './components/UserDashboard/MessagesInquiries';
-import PropertyAnalytics from './components/UserDashboard/PropertyAnalytics';
-import Settings from './components/UserDashboard/Settings';
-import ListingsPackages from './components/UserDashboard/ListingsPackages';
-import CustomAlerts from './components/UserDashboard/CustomAlerts';
-import Bookings from './components/UserDashboard/Bookings';
-import SupportContact from './components/UserDashboard/SupportContact';
-
 
 // Buy Sell Services
 import BookValuation from './components/Services/buysale/BookValuation';
@@ -103,19 +89,20 @@ import Rent from './pages/Rent';
 import ContactUs from './pages/Contact';
 import SearchBar from './components/Home/SearchBar';
 import SearchResults from './components/Home/SearchResults';
+import Unauthorized from './pages/Unauthorized';
 
-// Admin Subcomponents
-import UserManagement from './components/Admindashboard/UserManagement';
-import PropertiesManagement from './components/Admindashboard/PropertiesManagement';
-import ServiceManagement from './components/Admindashboard/ServiceManagement';
-import PaymentsManagement from './components/Admindashboard/PaymentsManagement';
-import PaymentsOverview from './components/Admindashboard/PaymentsOverview';
-import PendingSubscriptions from './components/Admindashboard/PendingSubscriptions';
-import PaymentHistory from './components/Admindashboard/PaymentHistory';
-import AppointmentsManagement from './components/Admindashboard/AppointmentsManagement';
-import LegalComplianceManagement from './components/Admindashboard/LegalComplianceManagement';
-import UserSearchAnalytics from './components/Admindashboard/UserSearchAnalytics';
-import UserSupport from './components/Admindashboard/UserSupport';
+// // Admin Subcomponents
+// import UserManagement from './components/Admindashboard/UserManagement';
+// import PropertiesManagement from './components/Admindashboard/PropertiesManagement';
+// import ServiceManagement from './components/Admindashboard/ServiceManagement';
+// import PaymentsManagement from './components/Admindashboard/PaymentsManagement';
+// import PaymentsOverview from './components/Admindashboard/PaymentsOverview';
+// import PendingSubscriptions from './components/Admindashboard/PendingSubscriptions';
+// import PaymentHistory from './components/Admindashboard/PaymentHistory';
+// import AppointmentsManagement from './components/Admindashboard/AppointmentsManagement';
+// import LegalComplianceManagement from './components/Admindashboard/LegalComplianceManagement';
+// import UserSearchAnalytics from './components/Admindashboard/UserSearchAnalytics';
+// import UserSupport from './components/Admindashboard/UserSupport';
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -145,69 +132,96 @@ const MainContent = () => {
   ) : null;
 };
 
-// 404 Page
 const NotFound = () => (
   <div className="text-center mt-5">
     <h2>404 - Page Not Found</h2>
   </div>
 );
 
-// Role-based redirect
 const RoleBasedDashboard = () => {
-  const { user } = useAuth();
+  const { user, userRole } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
-  switch (user.role) {
-    case 'admin': return <Navigate to="/admin-dashboard" replace />;
-    case 'builder': return <Navigate to="/builder-dashboard" replace />;
-    case 'agent': return <Navigate to="/agent-dashboard" replace />;
-    case 'user':
-    case 'normal': return <Navigate to="/user-dashboard" replace />;
-    default: return <Navigate to="/" replace />;
+
+  switch (userRole) {
+    case 'Admin':
+      return <Navigate to="/admin-dashboard" replace />;
+    case 'Builder':
+      return <Navigate to="/builder-dashboard" replace />;
+    case 'Agent':
+      return <Navigate to="/agent-dashboard" replace />;
+    case 'Real Estate Company':
+      return <Navigate to="/company-dashboard" replace />;
+    case 'Normal User':
+      return <Navigate to="/user-dashboard" replace />;
+    default:
+      return <Navigate to="/" replace />;
   }
 };
 
-function App() {
+// ✅ This safely accesses useAuth only after context is initialized
+const AppInner = () => {
+  const { showRoleModal } = useAuth();
+
+
   return (
-    
-    <AuthProvider>
-      <FirebaseAuthProvider>
-        <Navbar />
-        <ToastContainer position="top-center" autoClose={3000} />
-        <Routes>
+    <>
+    <Routes>
 
           {/* Public Routes */}
           <Route path="/" element={<><Home /><MainContent /></>} />
-          <Route path="/login" element={<AuthForm mode="login" />} />
-          <Route path="/signup" element={<AuthForm mode="signup" />} />
+          {/* <Route path="/login" element={<AuthForm mode="login" />} />
+          <Route path="/signup" element={<AuthForm mode="signup" />} /> */}
 
           {/* OR if you want to use Firebase forms instead: */}
-          {/* <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} /> */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
 
           <Route path="/dashboard" element={<RoleBasedDashboard />} />
          
-          {/* Protected Dashboards */}
-          <Route path="/user-dashboard/*" element={<ProtectedRoute allowedRoles={['user', 'normal', 'builder', 'agent']}><UserDashboard /></ProtectedRoute>} />
-          <Route path="/builder-dashboard/*" element={<ProtectedRoute allowedRoles={['builder']}><BuilderDashboard /></ProtectedRoute>} />
-          <Route path="/admin-dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/agent-dashboard/*" element={<ProtectedRoute allowedRoles={['agent']}><AgentDashboard /></ProtectedRoute>} />
-          <Route path="/company-dashboard/*" element={<ProtectedRoute allowedRoles={['company']}><CompanyDashboard /></ProtectedRoute>} />
+          {/* Protected Dashboards
+          <Route path="/user-dashboard/*" element={
+  <ProtectedRoute allowedRoles={['Normal User', 'Builder', 'Agent', 'Company']}>
+    <UserDashboard />
+  </ProtectedRoute>
+}>
+  <Route index element={<Navigate to="overview" replace />} />
+  <Route path="overview" element={<Overview />} />
+  <Route path="my-properties" element={<MyProperties />} />
+  <Route path="saved" element={<SavedListings />} />
+  <Route path="service-requests" element={<MyServiceRequests />} />
+  <Route path="appointments" element={<MyAppointments />} />
+  <Route path="inquiry-history" element={<SubmitInquiryHistory />} />
+  <Route path="recent-activity" element={<RecentActivity />} />
+  <Route path="settings" element={<Settings />} />
+</Route> */}
 
-          {/* user Dashboard */}
-          <Route index element={<Navigate to="overview" replace />} />
-          <Route path="overview" element={<DashboardOverview />} />
-          <Route path="properties" element={<MyProperties />} />
-          <Route path="messages" element={<MessagesInquiries />} />
-          <Route path="analytics" element={<PropertyAnalytics />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="packages" element={<ListingsPackages />} />
-          <Route path="alerts" element={<CustomAlerts />} />
-          <Route path="bookings" element={<Bookings />} />
-          <Route path="support" element={<SupportContact />} />
-                 
+
+          {/* <Route path="/builder-dashboard/*" element={
+  <ProtectedRoute allowedRoles={['Builder']}>
+    <BuilderDashboard />
+  </ProtectedRoute>
+} />
+
+<Route path="/admin-dashboard" element={
+  <ProtectedRoute allowedRoles={['Admin']}>
+    <AdminDashboard />
+  </ProtectedRoute>
+} />
+
+<Route path="/agent-dashboard/*" element={
+  <ProtectedRoute allowedRoles={['Agent']}>
+    <AgentDashboard />
+  </ProtectedRoute>
+} />
+
+<Route path="/company-dashboard/*" element={
+  <ProtectedRoute allowedRoles={['Real Estate Company']}>
+    <CompanyDashboard />
+  </ProtectedRoute>
+} />          */}
           
           {/* Admin Routes */}
-          <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><UserManagement /></ProtectedRoute>} />
+          {/* <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><UserManagement /></ProtectedRoute>} />
           <Route path="/admin/properties" element={<ProtectedRoute allowedRoles={['admin']}><PropertiesManagement /></ProtectedRoute>} />
           <Route path="/admin/services" element={<ProtectedRoute allowedRoles={['admin']}><ServiceManagement /></ProtectedRoute>} />
           <Route path="/admin/payments" element={<ProtectedRoute allowedRoles={['admin']}><PaymentsManagement /></ProtectedRoute>} />
@@ -217,8 +231,10 @@ function App() {
           <Route path="/admin/appointments" element={<ProtectedRoute allowedRoles={['admin']}><AppointmentsManagement /></ProtectedRoute>} />
           <Route path="/admin/legal" element={<ProtectedRoute allowedRoles={['admin']}><LegalComplianceManagement /></ProtectedRoute>} />
           <Route path="/admin/analytics/search" element={<ProtectedRoute allowedRoles={['admin']}><UserSearchAnalytics /></ProtectedRoute>} />
-          <Route path="/admin/support" element={<ProtectedRoute allowedRoles={['admin']}><UserSupport /></ProtectedRoute>} />
-
+          <Route path="/admin/support" element={<ProtectedRoute allowedRoles={['admin']}><UserSupport /></ProtectedRoute>} /> */}
+{/* User dashboard */}
+          <Route path="/user-dashboard/*" element={<UserDashboard />} />
+          
           {/* Property Posting */}
           <Route path="/select-purpose" element={<SelectAdPurpose />} />
           <Route path="/post-property/sale" element={<PostPropertyPage />} />
@@ -241,6 +257,7 @@ function App() {
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/contactus-page" element={<ContactUs />} />
           <Route path="/search-results" element={<SearchResults />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* Services (Buysale, Rentlease, etc.) */}
           <Route path="/services/buysale/BookValuation" element={<BookValuation />} />
@@ -248,7 +265,7 @@ function App() {
           <Route path="/services/buysale/ForeclosedSales" element={<ForeclosedSales />} />
           <Route path="/services/buysale/AuctionSupport" element={<AuctionSupport />} />
           <Route path="/services/buysale/TransactionLegalHelp" element={<TransactionLegalHelp />} />
-          <Route path="/submit-inquiry" element={<ProtectedRoute allowedRoles={['user', 'builder', 'agent', 'company', 'admin']}><SubmitInquiry /></ProtectedRoute>} />
+          <Route path="/submit-inquiry" element={<ProtectedRoute allowedRoles={['Normal User', 'Builder', 'Agent', 'Real Estate Company', 'Admin']}><SubmitInquiry /></ProtectedRoute>} />
 
           <Route path="/services/rentlease/tenantscreening" element={<TenantScreening />} />
           <Route path="/services/rentlease/leaseagreement" element={<LeaseAgreement />} />
@@ -289,10 +306,20 @@ function App() {
           <Route path="*" element={<NotFound />} />
 
         </Routes>
+        {showRoleModal && <RoleSelectionModal />}
+    </>
+  );
+};
+
+      function App() {
+  return (
+    <AuthProvider>
+      <FirebaseAuthProvider>
+        <Navbar />
+        <ToastContainer position="top-center" autoClose={3000} />
+        <AppInner />
       </FirebaseAuthProvider>
     </AuthProvider>
-
-    
   );
 }
 

@@ -1,22 +1,22 @@
-// src/components/UserDashboard/Sidebar.js
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import './UserDashboard.css';
+// src/components/UserDashboard/Sidebar.jsx
+
+import React from "react";
+import { NavLink } from "react-router-dom";
+import "./Sidebar.css";
 
 const Sidebar = () => {
   return (
     <div className="sidebar">
-      <h4 className="sidebar-title">User Menu</h4>
-      <ul className="sidebar-list">
-        <li><NavLink to="/user-dashboard/overview">Dashboard Overview</NavLink></li>
-        <li><NavLink to="/user-dashboard/properties">My Properties</NavLink></li>
-        <li><NavLink to="/user-dashboard/messages">Messages & Inquiries</NavLink></li>
-        <li><NavLink to="/user-dashboard/analytics">Property Analytics</NavLink></li>
+      <h4>User Dashboard</h4>
+      <ul>
+        <li><NavLink to="/user-dashboard/overview">Overview</NavLink></li>
+        <li><NavLink to="/user-dashboard/my-ads">My Ads</NavLink></li>
+        <li><NavLink to="/user-dashboard/saved-listings">Saved Listings</NavLink></li>
+        <li><NavLink to="/user-dashboard/my-service-requests">My Service Requests</NavLink></li>
+        <li><NavLink to="/user-dashboard/my-appointments">My Appointments</NavLink></li>
+        <li><NavLink to="/user-dashboard/submit-inquiry-history">Inquiry History</NavLink></li>
+        <li><NavLink to="/user-dashboard/recent-activity">Recent Activity</NavLink></li>
         <li><NavLink to="/user-dashboard/settings">Settings</NavLink></li>
-        <li><NavLink to="/user-dashboard/listings">Listings & Packages</NavLink></li>
-        <li><NavLink to="/user-dashboard/alerts">Custom Alerts</NavLink></li>
-        <li><NavLink to="/user-dashboard/rewards">Rewards & Loyalty</NavLink></li>
-        <li><NavLink to="/user-dashboard/support">Support / Contact Us</NavLink></li>
       </ul>
     </div>
   );

@@ -1,3 +1,19 @@
+/* ===============================
+   GLOBAL STYLES
+================================== */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-weight: normal;
+}
+
 .App {
   text-align: center;
 }
@@ -10,6 +26,15 @@
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -28,25 +53,15 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* ===============================
    NAVBAR DROPDOWNS & SUBMENUS
 ================================== */
 
-/* Show top-level dropdown on hover */
+/* Top-level dropdown on hover */
 .nav-item.dropdown:hover > .dropdown-menu {
   display: block;
 }
 
-/* Main dropdown positioning */
 .dropdown-menu {
   max-height: 90vh;
   overflow-y: auto;
@@ -54,21 +69,16 @@
   z-index: 1000;
 }
 
-/* Prevent horizontal scroll on entire page */
-body {
-  overflow-x: hidden;
-}
-
-/* SUBMENU STYLES */
+/* Submenu positioning and appearance */
 .dropdown-submenu {
   position: relative;
 }
 
 .dropdown-submenu > .dropdown-toggle::after {
+  content: "▶";
   display: inline-block;
   margin-left: 0.3em;
   vertical-align: 0.1em;
-  content: "▶";
   font-size: 0.6em;
   transform: rotate(90deg);
 }
@@ -79,17 +89,15 @@ body {
   top: 0;
   left: 100%;
   margin-top: -1px;
-  margin-left: 0;
   white-space: nowrap;
   z-index: 1001;
 }
 
-/* Show submenu on hover */
 .dropdown-submenu:hover > .dropdown-menu {
   display: block;
 }
 
-/* Fix overflow for nested items */
+/* Prevent submenu flash when not hovered */
 .dropdown-menu .dropdown-submenu:not(:hover) .dropdown-menu {
   display: none !important;
 }
@@ -97,8 +105,10 @@ body {
 /* ===============================
    PROFILE DROPDOWN (My Account)
 ================================== */
+
 .profile-dropdown .dropdown-menu {
   display: none;
+  position: absolute;
   right: 0;
   left: auto;
   transform: translateX(10px);
@@ -113,6 +123,7 @@ body {
 /* ===============================
    SERVICES MENU FIX
 ================================== */
+
 .services-menu {
   display: block !important;
   flex-direction: column !important;
@@ -131,6 +142,7 @@ body {
 /* ===============================
    LOGIN/SIGNUP MODAL POPUP
 ================================== */
+
 .auth-modal-overlay {
   position: fixed;
   top: 0;
@@ -170,15 +182,3 @@ body {
   border: none;
   cursor: pointer;
 }
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f9f9f9;
-}
-
-h1, h2, h3 {
-  font-weight: normal;
-}
-
