@@ -1,17 +1,21 @@
 // src/firebase/firebaseConfig.js
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider} from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage'; // ✅ Add this
+import { initializeApp, getApps, getApp } from "firebase/app";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage"; // ✅ Add this
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA2Y8paq6LtYGmQLQiu572eR6wad97cs4w",
-  authDomain: "home-heavenly.firebaseapp.com",
-  projectId: "home-heavenly",
-  storageBucket: "home-heavenly.appspot.com", // ✅ Corrected from `.app` to `.com`
-  messagingSenderId: "1057281166801",
-  appId: "1:1057281166801:web:5a9d759999f9ee2774e4f0",
-  measurementId: "G-KYEFKDPL4Y"
+export const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
