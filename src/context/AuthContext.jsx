@@ -1,7 +1,13 @@
 // src/context/AuthContext.jsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../firebase/firebaseConfig';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
+import { useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase/firebaseConfig";
 import {
   signInWithEmailAndPassword,
   signOut,
@@ -9,11 +15,18 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   FacebookAuthProvider,
-} from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+} from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
-export const useAuth = () => useContext(AuthContext);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -26,7 +39,10 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (!isMounted) return;
+
       if (currentUser) {
         setUser(currentUser);
         const role = await fetchUserRole(currentUser.uid);
@@ -38,34 +54,32 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const fetchUserRole = async (uid) => {
     try {
-      const docRef = doc(db, 'users', uid);
+      const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        return data.role || null;
-      }
-      return null;
+      return docSnap.exists() ? docSnap.data().role || null : null;
     } catch (error) {
-      console.error('Error fetching role:', error.message);
+      console.error("Error fetching role:", error);
       return null;
     }
   };
 
   const login = async (email, password) => {
+    setLoading(true);
     try {
       const res = await signInWithEmailAndPassword(auth, email, password);
-      const uid = res.user.uid;
-      const role = await fetchUserRole(uid);
+      const role = await fetchUserRole(res.user.uid);
+
       setUser(res.user);
       setUserRole(role);
       setShowLoginModal(false);
-
-      console.log('✅ Logged in:', res.user);
 
       if (redirectPath) {
         navigate(redirectPath);
@@ -74,56 +88,69 @@ export const AuthProvider = ({ children }) => {
         navigateBasedOnRole(role);
       }
 
-      return { success: true, message: 'Logged in successfully' };
+      return { success: true };
     } catch (error) {
-      console.error('❌ Login error:', error.message);
       return { success: false, message: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSocialLogin = async (provider) => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const userRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userRef);
+
+      // अगर यूजर पहले से मौजूद नहीं है तो डेटा सेव करें
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          displayName: user.displayName || "",
+          email: user.email || "",
+          photoURL: user.photoURL || "",
+          createdAt: new Date(),
+          role: "user", // डिफ़ॉल्ट रोल
+        });
+      }
+
+      if (!userDoc.exists() || !userDoc.data().role) {
+        setPendingUser(user);
+        setShowRoleModal(true);
+        setShowLoginModal(false); // Close login modal
+        return { success: false, message: "Please select your role" };
+      } else {
+        setShowLoginModal(false);
+        const role = userDoc.data().role;
+        setUser(user);
+        setUserRole(role);
+        navigateBasedOnRole(role);
+        return { success: true };
+      }
+    } catch (error) {
+      console.error("Social login error:", error);
+      return { success: false, message: error.message };
+    } finally {
+      setLoading(false);
     }
   };
 
   const googleSignIn = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) {
-        setPendingUser(user);
-        setShowRoleModal(true);
-      } else {
-        const role = userDoc.data().role;
-        setUser(user);
-        setUserRole(role);
-        navigateBasedOnRole(role);
-      }
-    } catch (error) {
-      console.error('❌ Google Sign-In Error:', error.message);
-    }
+    const provider = new GoogleAuthProvider();
+    provider.addScope("email");
+    provider.addScope("profile");
+    return handleSocialLogin(provider);
   };
 
   const facebookSignIn = async () => {
-    try {
-      const provider = new FacebookAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (!userDoc.exists()) {
-        setPendingUser(user);
-        setShowRoleModal(true);
-      } else {
-        const role = userDoc.data().role;
-        setUser(user);
-        setUserRole(role);
-        navigateBasedOnRole(role);
-      }
-    } catch (error) {
-      console.error('❌ Facebook Sign-In Error:', error.message);
-    }
+    const provider = new FacebookAuthProvider();
+    return handleSocialLogin(provider);
   };
 
   const submitRoleAndLicense = async (data) => {
+    setLoading(true);
     try {
       let {
         role,
@@ -131,91 +158,103 @@ export const AuthProvider = ({ children }) => {
         licenseNumber,
         licenseName,
         officeAddress,
-        proofUrl
+        proofUrl,
       } = data;
-
-      const uid = pendingUser.uid;
-
-      // Normalize 'Normal User' to 'user'
-      if (role === 'Normal User') role = 'user';
+      if (role === "Normal User") role = "user";
 
       const userData = {
-        name: pendingUser.displayName || '',
+        name: pendingUser.displayName || "",
         email: pendingUser.email,
         role,
+        ...(role !== "user" && {
+          licenseAuthority,
+          licenseNumber,
+          licenseName,
+          officeAddress,
+          proofUrl,
+        }),
       };
 
-      if (role !== 'user') {
-        userData.licenseAuthority = licenseAuthority;
-        userData.licenseNumber = licenseNumber;
-        userData.licenseName = licenseName;
-        userData.officeAddress = officeAddress;
-        userData.proofUrl = proofUrl;
-      }
-
-      await setDoc(doc(db, 'users', uid), userData);
+      await setDoc(doc(db, "users", pendingUser.uid), userData);
 
       setUser(pendingUser);
       setUserRole(role);
       setPendingUser(null);
       setShowRoleModal(false);
       navigateBasedOnRole(role);
+
+      return { success: true };
     } catch (error) {
-      console.error('❌ Error saving role/license:', error.message);
+      console.error("Error saving role:", error);
+      return { success: false, message: error.message };
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = async () => {
-    await signOut(auth);
-    setUser(null);
-    setUserRole(null);
-    console.log('✅ Logged out');
-    navigate('/');
+    setLoading(true);
+    try {
+      await signOut(auth);
+      setUser(null);
+      setUserRole(null);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const navigateBasedOnRole = (role) => {
     switch (role) {
-      case 'user':
-        navigate('/user-dashboard');
+      case "user":
+        navigate("/user-dashboard");
         break;
-      case 'agent':
-        navigate('/agent-dashboard');
+      case "agent":
+        navigate("/agent-dashboard");
         break;
-      case 'builder':
-        navigate('/builder-dashboard');
+      case "builder":
+        navigate("/builder-dashboard");
         break;
-      case 'company':
-      case 'real estate company':
-        navigate('/company-dashboard');
+      case "company":
+      case "real estate company":
+        navigate("/company-dashboard");
         break;
-      case 'admin':
-        navigate('/admin-dashboard');
+      case "admin":
+        navigate("/admin-dashboard");
         break;
       default:
-        navigate('/');
+        navigate(user ? "/profile" : "/");
     }
   };
 
+  const handleRoleModalClose = () => {
+    setPendingUser(null);
+    setShowRoleModal(false);
+  };
+
+  const contextValue = useMemo(
+    () => ({
+      user,
+      userRole,
+      loading,
+      redirectPath,
+      showLoginModal,
+      showRoleModal,
+      login,
+      logout,
+      googleSignIn,
+      facebookSignIn,
+      submitRoleAndLicense,
+      setRedirectPath,
+      setShowLoginModal,
+      handleRoleModalClose,
+    }),
+    [user, userRole, loading, redirectPath, showLoginModal, showRoleModal]
+  );
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        userRole,
-        login,
-        logout,
-        loading,
-        redirectPath,
-        setRedirectPath,
-        showLoginModal,
-        setShowLoginModal,
-        googleSignIn,
-        facebookSignIn,
-        showRoleModal,
-        setShowRoleModal,
-        submitRoleAndLicense,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
