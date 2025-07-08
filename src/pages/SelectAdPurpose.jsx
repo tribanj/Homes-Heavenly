@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import './SelectAdPurpose.css'; // Optional styles
 
 const purposes = [
-  { title: 'Sale Property', icon: '🏠', path: '/post-property/sale' },
-  { title: 'Rent Property', icon: '🏘️', path: '/post-property/rent' },
+  { title: 'Sale or Rnet Property', icon: '🏠', path: '/post-property/sale' },
+  // { title: 'Rent Property', icon: '🏘️', path: '/post-property/rent' },
   { title: 'Pre-Launch Project', icon: '🚧', path: '/post-property/prelaunch' },
   { title: 'Mortgage Listing', icon: '💰', path: '/post-property/mortgage' },
   { title: 'Other', icon: '📝', path: '/post-property/other' },  
