@@ -1,58 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   signInWithEmailAndPassword,
   FacebookAuthProvider,
   GoogleAuthProvider,
-  signInWithPopup
-} from 'firebase/auth';
-import { auth } from '../../firebase/firebaseConfig';
-import { useNavigate } from 'react-router-dom';
+  signInWithPopup,
+} from "firebase/auth";
+import { auth } from "../../firebase/firebaseConfig";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // AuthContext का उपयोग करें
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
 const Login = () => {
-  // State for form inputs
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { googleSignIn, facebookSignIn } = useAuth(); // AuthContext से फंक्शन्स
+
+  // Firestore में यूजर डेटा सेव करने का फंक्शन
+  const saveUserToFirestore = async (user) => {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+
+    if (!docSnap.exists()) {
+      await setDoc(userRef, {
+        uid: user.uid,
+        displayName: user.displayName || "",
+        email: user.email || "",
+        photoURL: user.photoURL || "",
+        createdAt: new Date(),
+        role: "user", // डिफ़ॉल्ट रोल
+      });
+    }
+  };
 
   // Email/Password login handler
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert('Logged in successfully!');
-      navigate('/');
+      navigate("/");
     } catch (error) {
       alert(error.message);
     }
   };
 
-  // Facebook login handler
+  // Facebook login handler (updated)
   const handleFacebookLogin = async () => {
-    const provider = new FacebookAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      alert('Logged in with Facebook!');
-      navigate('/');
+      const result = await facebookSignIn();
+      if (result && !result.success) {
+        alert(result.message);
+      }
     } catch (error) {
-      alert('Facebook login failed: ' + error.message);
+      alert("Facebook login failed: " + error.message);
     }
   };
 
-  // Google login handler
+  // Google login handler (updated)
   const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      alert('Logged in with Google!');
-      navigate('/');
+      const result = await googleSignIn();
+      if (result && !result.success) {
+        alert(result.message);
+      }
     } catch (error) {
-      alert('Google login failed: ' + error.message);
+      alert("Google login failed: " + error.message);
     }
   };
 
   return (
-    <div style={{ padding: '40px', background: '#f8f9fa', minHeight: '100vh' }}>
-      <div className="container" style={{ maxWidth: '500px' }}>
+    <div style={{ padding: "40px", background: "#f8f9fa", minHeight: "100vh" }}>
+      <div className="container" style={{ maxWidth: "500px" }}>
         <h2 className="mb-4 text-center">Login</h2>
         <form onSubmit={handleLogin}>
           {/* Email Field */}

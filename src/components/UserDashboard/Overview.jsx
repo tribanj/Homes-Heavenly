@@ -1,11 +1,12 @@
 // src/components/UserDashboard/Overview.jsx
 import React from "react";
+import Profile from "./Profile";
 
 const Overview = () => {
   return (
     <div>
-      <h3>Welcome to your Dashboard Overview!</h3>
-      <p>This is the starting point of your dashboard.</p>
+      {/* <h3>Welcome to your Dashboard Overview!</h3> */}
+      <Profile />
     </div>
   );
 };

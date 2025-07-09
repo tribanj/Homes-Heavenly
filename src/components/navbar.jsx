@@ -1,274 +1,257 @@
+// ✅ Cleaned-up Navbar with left-aligned navlinks and structured layout
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthModal from "./modals/AuthModal";
-import "../App.css";
-import "./navbar.css";
 
-const services = [
-  {
-    title: "Buy & Sell Properties",
-    options: [
-      { label: "Off-Plan & Pre-Launch Property Deals", path: "/services/buysale/OffPlanDeals" },
-      { label: "Free Property Valuation & Market Appraisal", path: "/services/buysale/BookValuation" },
-      { label: "Foreclosed & Distressed Property Sales", path: "/services/buysale/ForeclosedSales" },
-      { label: "Auctions & Bidding Support", path: "/services/buysale/AuctionSupport" },
-      { label: "Legal & Documentation Assistance for Transactions", path: "/services/buysale/TransactionLegalHelp" },
-    ],
-  },
-  {
-    title: "Rent & Lease Services",
-    options: [
-      { label: "Tenant Screening & Background Checks", path: "/services/RentLease/TenantScreening" },
-      { label: "Lease Agreement Drafting & Renewal", path: "/services/RentLease/LeaseAgreement" },
-      { label: "Co-Living & Shared Housing Solutions", path: "/services/RentLease/CoLivingSolutions" },
-      { label: "Short-Term & Vacation Rentals", path: "/services/RentLease/VacationRentals" },
-      { label: "Student Housing & PG Listings", path: "/services/RentLease/StudentHousing" },
-    ],
-  },
-  {
-    title: "Property Management Services",
-    options: [
-      { label: "Rent Collection & Tenant Management", path: "/services/propertymanagement/RentCollection" },
-      { label: "Maintenance & Repairs Coordination", path: "/services/propertymanagement/MaintenanceRepairs" },
-      { label: "Legal Dispute Resolution for Landlords & Tenants", path: "/services/propertymanagement/LegalDisputeResolution" },
-      { label: "Home Insurance & Property Protection Plans", path: "/services/propertymanagement/HomeInsurancePlans" },
-    ],
-  },
-  {
-    title: "Real Estate Investment & Advisory",
-    options: [
-      { label: "Investment Planning & ROI Analysis", path: "/services/investmentadvisory/InvestmentPlanning" },
-      { label: "Land & Plot Investment Services", path: "/services/investmentadvisory/LandPlotInvestment" },
-      { label: "Fractional Ownership & REIT Investment", path: "/services/investmentadvisory/FractionalOwnership" },
-      { label: "Market Trends & Price Forecasting", path: "/services/investmentadvisory/MarketTrends" },
-    ],
-  },
-  {
-    title: "Home Loans & Financial Services",
-    options: [
-      { label: "Home Loan & Mortgage Assistance", path: "/services/financialservices/HomeLoanAssistance" },
-      { label: "Loan Refinancing & Balance Transfer", path: "/services/financialservices/LoanRefinancing" },
-      { label: "Real Estate Tax & Investment Planning", path: "/services/financialservices/RealEstateTaxPlanning" },
-    ],
-  },
-  {
-    title: "Construction & Renovation Services",
-    options: [
-      { label: "Custom Home Construction & Architectural Design", path: "/services/constructionservices/CustomHomeConstruction" },
-      { label: "Interior Designing & Home Furnishing", path: "/services/constructionservices/InteriorDesigning" },
-      { label: "Smart Home & Automation Installations", path: "/services/constructionservices/SmartHomeInstallations" },
-      { label: "Landscaping & Outdoor Living Solutions", path: "/services/constructionservices/LandscapingSolutions" },
-    ],
-  },
-  {
-    title: "Corporate & Commercial Real Estate Services",
-    options: [
-      { label: "Office Space Leasing & Business Relocation", path: "/services/corporateservices/OfficeSpaceLeasing" },
-      { label: "Industrial, Warehouse & Retail Space Solutions", path: "/services/corporateservices/IndustrialRetailSolutions" },
-      { label: "Real Estate Solutions for Corporates & Startups", path: "/services/corporateservices/CorporateRealEstate" },
-    ],
-  },
-  {
-    title: "Legal & Compliance Services",
-    options: [
-      { label: "Property Title Verification & Due Diligence", path: "/services/legalservices/TitleVerification" },
-      { label: "RERA Compliance & Registration Assistance", path: "/services/legalservices/RERACompliance" },
-      { label: "Landlord & Tenant Dispute Resolution", path: "/services/legalservices/DisputeResolution" },
-      { label: "Stamp Duty & Property Registration Support", path: "/services/legalservices/StampDutySupport" },
-    ],
-  },
-];
+import services from "./constants/Services";
 
 function Navbar() {
   const [showAccount, setShowAccount] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState("login");  
+  const [authMode, setAuthMode] = useState("login");
   const [showServices, setShowServices] = useState(false);
   const [activeService, setActiveService] = useState(null);
-  const [expanded, setExpanded] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
-
   if (loading) return null;
 
-   const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
-      await logout();         // logout user using context
-      navigate("/login");     // redirect to login
+      await logout();
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
-  const getDashboardPath = () => {
-    if (!user) return "/login";
-    switch (user.role) {
-      case "admin":
-        return "/admin-dashboard";
-      case "user":
-      case "builder":
-      case "agent":
-        return "/company-dashboard";
-      default:
-        return "/dashboard";
-    }
+  const getInitials = (name) => {
+    if (!name) return "US";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
-
-  const collapseMenu = () => setExpanded(false);
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark position-relative" style={{ zIndex: 1000 }}>
-        <div className="container-fluid">
-          <Link className="navbar-brand" to="/" onClick={collapseMenu}>Real Estate</Link>
+      <nav className="bg-gray-900 text-white shadow z-50 relative">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between h-16 items-center">
+            {/* Logo + All Links */}
+            <div className="flex items-center space-x-2">
+              <Link to="/" className="text-xl font-bold text-white">
+                Real Estate
+              </Link>
+              <div className="hidden md:flex items-center text-white no-underline">
+                {[
+                  { label: "Home", path: "/" },
+                  { label: "Buy", path: "/buy-page" },
+                  { label: "Sale", path: "/sale-page" },
+                  { label: "Rent", path: "/rent-page" },
+                  { label: "Post Ad", path: "/select-purpose" },
+                  { label: "Contact Us", path: "/contactus-page" },
+                ].map(({ label, path }) => (
+                  <Link
+                    key={label}
+                    to={path}
+                    className="block m-2 p-1 text-sm text-white no-underline hover:bg-blue-800"
+                  >
+                    {label}
+                  </Link>
+                ))}
 
-          <button
-            className="navbar-toggler"
-            type="button"
-            onClick={() => setExpanded(!expanded)}
-            aria-controls="navbarNav"
-            aria-expanded={expanded}
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+                {/* Services Dropdown */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => setShowServices(true)}
+                  onMouseLeave={() => {
+                    setShowServices(false);
+                    setActiveService(null);
+                  }}
+                >
+                  <button className="text-sm hover:bg-gray-700 px-3 py-2 my-25 rounded-md">
+                    Services
+                  </button>
 
-          <div className={`collapse navbar-collapse ${expanded ? "show" : ""}`} id="navbarNav">
-            <ul className="navbar-nav d-flex align-items-center">
-              <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/buy-page">Buy</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/sale-page">Sale</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/rent-page">Rent</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/select-purpose">Post ad</Link></li>
-              <li className="nav-item"><Link className="nav-link" to="/contactus-page">Contact Us</Link></li>
+                  {showServices && (
+                    <div className="absolute top-full mt-2 w-60 bg-white text-black shadow rounded-md">
+                      {services.map((service, index) => (
+                        <div
+                          key={index}
+                          className="group relative px-4 py-2 hover:bg-gray-100"
+                          onMouseEnter={() => setActiveService(index)}
+                        >
+                          {service.title}
+                          {activeService === index && (
+                            <div className="absolute left-full top-0 ml-1 w-64 bg-white border rounded shadow-lg">
+                              {service.options.map((opt, idx) => (
+                                <Link
+                                  key={idx}
+                                  to={opt.path}
+                                  className="block px-4 py-2 text-sm hover:bg-gray-100"
+                                >
+                                  {opt.label}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
-              <li
-                className="nav-item position-relative"
-                onMouseEnter={() => setShowServices(true)}
-                onMouseLeave={() => {
-                  setShowServices(false);
-                  setActiveService(null);
-                }}
-              >
-                <span className="nav-link text-white" role="button" style={{ cursor: "pointer" }}>
-                  Services
-                </span>
-
-                {showServices && (
-                  <div className="nav-services-dropdown shadow bg-white position-absolute p-2 rounded" style={{ top: '100%', left: 0, zIndex: 999 }}>
-                    {services.map((service, index) => (
-                      <div
-                        key={index}
-                        className="nav-service-item px-2 py-1"
-                        onMouseEnter={() => setActiveService(index)}
-                        style={{ position: "relative" }}
-                      >
-                        <span className="nav-service-title">{service.title}</span>
-                        {activeService === index && (
-                          <div className="nav-service-submenu bg-light border rounded mt-2 p-2 position-absolute" style={{ left: '100%', top: 0, whiteSpace: 'nowrap', minWidth: '300px', zIndex: 1000 }}>
-                            {service.options.map((option, idx) => (
-                              <Link key={idx} to={option.path} className="dropdown-item text-dark py-1 text-center" onClick={collapseMenu}>
-                                {option.label}
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+            {/* Right side: Account/Login */}
+            <div
+              className="relative hidden md:flex items-center"
+              onMouseEnter={() => setShowAccount(true)}
+              onMouseLeave={() => setShowAccount(false)}
+            >
+              <button className="flex items-center space-x-2 my-25">
+                {user ? (
+                  <>
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                      {getInitials(user.displayName)}
+                    </div>
+                    <span className="text-sm">My Profile</span>
+                  </>
+                ) : (
+                  <span className="text-sm">My Account</span>
                 )}
-              </li>
-            </ul>
+              </button>
 
-            <ul className="navbar-nav ms-auto d-flex align-items-center">
-              {user ? (
-                <li className="nav-item position-relative"
-                    onMouseEnter={() => setShowAccount(true)}
-                    onMouseLeave={() => setShowAccount(false)}>
-                  <span className="nav-link text-white d-flex align-items-center gap-2" role="button">
-                    <img
-                      src="https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff"
-                      alt="avatar"
-                      className="rounded-circle"
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                    <span>My Profile</span>
-                  </span>
-
-                  {showAccount && (
-                    <div className="p-3 shadow bg-white border rounded position-absolute" style={{ width: "300px", right: 0, top: "100%", zIndex: 1000 }}>
-                      <div className="text-center mb-3">
-                        <h5>👋 Welcome, {user.name}!</h5>
+              {showAccount && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-white text-black shadow rounded-md z-50">
+                  {user ? (
+                    <>
+                      <div className="px-4 py-3 border-b">
+                        <p className="font-semibold">{user.displayName}</p>
+                        <p className="text-sm text-gray-600">{user.email}</p>
                       </div>
-                      <ul className="list-unstyled">
-                       <li><Link to="/user-dashboard">My Dashboard</Link></li>
-                        <li><Link to="/messages">Messages / Inbox</Link></li>
-                        <li><Link to="/edit-profile">Edit Profile</Link></li>
-                        <li><Link to="/my-ads">My Ads</Link></li>
-                        <li><Link to="/user-dashboard/settings">Settings</Link></li>
-                        <li><Link to="/support">Support</Link></li>
-                        <li><hr className="dropdown-divider" /></li>
-                        <li>
-                          <button className="dropdown-item text-danger" onClick={() => { logout(); collapseMenu(); }}>
-                            🚪 Logout
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
+                      <Link
+                        to="/user-dashboard"
+                        className="block px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        to="/user-dashboard/settings"
+                        className="block px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        Settings
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          setAuthMode("login");
+                          setShowAuthModal(true);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        Login
+                      </button>
+                      <button
+                        onClick={() => {
+                          setAuthMode("signup");
+                          setShowAuthModal(true);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                      >
+                        Sign Up
+                      </button>
+                    </>
                   )}
-                </li>
-              ) : (
-                <li className="nav-item position-relative"
-                    onMouseEnter={() => setShowAccount(true)}
-                    onMouseLeave={() => setShowAccount(false)}>
-                  <span className="nav-link text-white" role="button">My Account</span>
-                  {showAccount && (
-                    <div className="p-3 shadow bg-white border rounded position-absolute" style={{ width: "350px", right: 0, top: "100%", zIndex: 1000 }}>
-                      <div className="text-center mb-3">
-                        <h5>Welcome Back!</h5>
-                        <p>To keep connected with us please login with your personal info</p>
-                        <button
-                          className="btn btn-primary w-100"
-                          onClick={() => {
-                            setAuthMode("login");
-                            setShowAuthModal(true);
-                            setShowAccount(false);
-                          }}
-                        >
-                          Login
-                        </button>
-                      </div>
-                      <hr />
-                      <div className="text-center mt-3">
-                        <h5>Hello, Friend!</h5>
-                        <p>Enter your details and start your journey with us</p>
-                        <button
-                          className="btn btn-success w-100"
-                          onClick={() => {
-                            setAuthMode("signup");
-                            setShowAuthModal(true);
-                            setShowAccount(false);
-                          }}
-                        >
-                          Sign Up
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </li>
+                </div>
               )}
-            </ul>
+            </div>
+
+            {/* Mobile menu toggle */}
+            <div className="md:hidden">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d={
+                      mobileMenuOpen
+                        ? "M6 18L18 6M6 6l12 12"
+                        : "M4 6h16M4 12h16M4 18h16"
+                    }
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden px-4 pt-4 pb-6 space-y-2 bg-gray-800 text-white">
+            {["Home", "Buy", "Sale", "Rent", "Post Ad", "Contact Us"].map(
+              (label, idx) => (
+                <Link
+                  key={idx}
+                  to={`/${label.toLowerCase().replace(" ", "-")}`}
+                  className="block px-3 py-2 text-sm rounded hover:bg-gray-700"
+                >
+                  {label}
+                </Link>
+              )
+            )}
+            <button
+              onClick={() => setShowServices(!showServices)}
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700"
+            >
+              Services
+            </button>
+            {showServices && (
+              <div className="pl-3">
+                {services.map((s, i) => (
+                  <div key={i} className="mt-1">
+                    <p className="text-sm font-semibold">{s.title}</p>
+                    {s.options.map((o, j) => (
+                      <Link
+                        key={j}
+                        to={o.path}
+                        className="block text-sm px-2 py-1 hover:bg-gray-700"
+                      >
+                        {o.label}
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </nav>
 
-      {/* ✅ Auth Modal */}
       <AuthModal
-  show={showAuthModal}
-  handleClose={() => setShowAuthModal(false)}
-  mode={authMode}/>
+        show={showAuthModal}
+        handleClose={() => setShowAuthModal(false)}
+        mode={authMode}
+      />
     </>
   );
 }
