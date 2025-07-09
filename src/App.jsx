@@ -102,6 +102,7 @@ import AppointmentsManagement from './components/Admindashboard/AppointmentsMana
 import LegalComplianceManagement from './components/Admindashboard/LegalComplianceManagement';
 import UserSearchAnalytics from './components/Admindashboard/UserSearchAnalytics';
 import UserSupport from './components/Admindashboard/UserSupport';
+import MyAds from "./components/UserDashboard/MyAds";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -224,18 +225,20 @@ const AppInner = () => {
   </ProtectedRoute>
 } />          */}
 
+        <Route path="my-ads" element={<MyAds />} />
+
         {/* Admin Routes */}
         <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><UserManagement /></ProtectedRoute>} />
-          <Route path="/admin/properties" element={<ProtectedRoute allowedRoles={['admin']}><PropertiesManagement /></ProtectedRoute>} />
-          <Route path="/admin/services" element={<ProtectedRoute allowedRoles={['admin']}><ServiceManagement /></ProtectedRoute>} />
-          <Route path="/admin/payments" element={<ProtectedRoute allowedRoles={['admin']}><PaymentsManagement /></ProtectedRoute>} />
-          <Route path="/admin/payments/overview" element={<ProtectedRoute allowedRoles={['admin']}><PaymentsOverview /></ProtectedRoute>} />
-          <Route path="/admin/payments/pending" element={<ProtectedRoute allowedRoles={['admin']}><PendingSubscriptions /></ProtectedRoute>} />
-          <Route path="/admin/payments/history" element={<ProtectedRoute allowedRoles={['admin']}><PaymentHistory /></ProtectedRoute>} />
-          <Route path="/admin/appointments" element={<ProtectedRoute allowedRoles={['admin']}><AppointmentsManagement /></ProtectedRoute>} />
-          <Route path="/admin/legal" element={<ProtectedRoute allowedRoles={['admin']}><LegalComplianceManagement /></ProtectedRoute>} />
-          <Route path="/admin/analytics/search" element={<ProtectedRoute allowedRoles={['admin']}><UserSearchAnalytics /></ProtectedRoute>} />
-          <Route path="/admin/support" element={<ProtectedRoute allowedRoles={['admin']}><UserSupport /></ProtectedRoute>} />
+        <Route path="/admin/properties" element={<ProtectedRoute allowedRoles={['admin']}><PropertiesManagement /></ProtectedRoute>} />
+        <Route path="/admin/services" element={<ProtectedRoute allowedRoles={['admin']}><ServiceManagement /></ProtectedRoute>} />
+        <Route path="/admin/payments" element={<ProtectedRoute allowedRoles={['admin']}><PaymentsManagement /></ProtectedRoute>} />
+        <Route path="/admin/payments/overview" element={<ProtectedRoute allowedRoles={['admin']}><PaymentsOverview /></ProtectedRoute>} />
+        <Route path="/admin/payments/pending" element={<ProtectedRoute allowedRoles={['admin']}><PendingSubscriptions /></ProtectedRoute>} />
+        <Route path="/admin/payments/history" element={<ProtectedRoute allowedRoles={['admin']}><PaymentHistory /></ProtectedRoute>} />
+        <Route path="/admin/appointments" element={<ProtectedRoute allowedRoles={['admin']}><AppointmentsManagement /></ProtectedRoute>} />
+        <Route path="/admin/legal" element={<ProtectedRoute allowedRoles={['admin']}><LegalComplianceManagement /></ProtectedRoute>} />
+        <Route path="/admin/analytics/search" element={<ProtectedRoute allowedRoles={['admin']}><UserSearchAnalytics /></ProtectedRoute>} />
+        <Route path="/admin/support" element={<ProtectedRoute allowedRoles={['admin']}><UserSupport /></ProtectedRoute>} />
         {/* User dashboard */}
         <Route path="/user-dashboard/*" element={<UserDashboard />} />
         <Route

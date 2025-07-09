@@ -8,8 +8,6 @@ import SidebarMenu from './SidebarMenu';  // Correct import if it's in the same 
 function PaymentsManagement() {
   return (
     <div className="admin-dashboard-container">
-      {/* Left Sidebar for Admin Navigation */}
-      <SidebarMenu />  {/* Sidebar for navigation */}
 
       {/* Main Content Section */}
       <div className="container mt-5">

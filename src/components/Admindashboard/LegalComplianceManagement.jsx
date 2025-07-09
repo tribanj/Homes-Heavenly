@@ -1,7 +1,4 @@
-// 📁 src/components/Admindashboard/legal/LegalComplianceManagement.js
-
 import React from 'react';
-import SidebarMenu from './SidebarMenu';
 
 // Sample document data
 const legalDocuments = [
@@ -13,7 +10,6 @@ const legalDocuments = [
 function LegalComplianceManagement() {
   return (
     <div className="admin-dashboard-container">
-      <SidebarMenu />
 
       <div className="container mt-5 admin-dashboard-content">
         <h2>📜 Legal & Compliance Management</h2>
