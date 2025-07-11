@@ -30,7 +30,7 @@ function ServiceManagement() {
 
   return (
     <div className="admin-dashboard-container">
-      <SidebarMenu />
+      {/* <SidebarMenu /> */}
       <div className="container mt-5 admin-dashboard-content">
         <h2>🛠️ Manage Service Requests</h2>
         <p>Approve, reject, or delete user service requests.</p>

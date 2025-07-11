@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../../firebase/firebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
+// import { doc, setDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { ToastContainer, toast } from "react-toastify"; // ✅ Toast
+
 import { useAuth } from "../../../context/AuthContext";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -39,8 +42,10 @@ const initialFormData = {
 };
 
 const PostPropertyPage = () => {
-  const { currentUser } = useAuth();
+  const { user } = useAuth();
   const [formData, setFormData] = useState(initialFormData);
+  const [uploading, setUploading] = useState(false); // ✅ For loading state
+
 
   useEffect(() => {
     const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -55,6 +60,7 @@ const PostPropertyPage = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
+
     if (type === "checkbox" && name === "termsAccepted") {
       setFormData({ ...formData, [name]: checked });
     } else if (type === "checkbox") {
@@ -63,7 +69,7 @@ const PostPropertyPage = () => {
         : formData.amenities.filter((item) => item !== value);
       setFormData({ ...formData, amenities: updatedAmenities });
     } else if (type === "file") {
-      setFormData({ ...formData, [name]: files });
+      setFormData({ ...formData, [name]: Array.from(files) }); // ✅ FIX HERE
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -71,32 +77,69 @@ const PostPropertyPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.termsAccepted) {
-      alert("Please accept Terms & Conditions");
+      toast.error("Please accept Terms & Conditions");
       return;
     }
 
-    const uploadedImages = [];
-    for (const file of formData.photos) {
-      const data = new FormData();
-      data.append("file", file);
-      data.append("upload_preset", "your_upload_preset");
-      const res = await axios.post(
-        `https://api.cloudinary.com/v1_1/your_cloud_name/image/upload`,
-        data
-      );
-      uploadedImages.push(res.data.secure_url);
+    try {
+      setUploading(true);
+
+      const uploadedImages = [];
+
+      // ✅ Upload each image to Cloudinary
+      for (const file of formData.photos) {
+        const data = new FormData();
+        data.append("file", file);
+        data.append("upload_preset", "homeHeavenlyImage"); // ✅ your preset name
+        data.append("folder", "ImageForRentOrSale"); // ✅ your folder
+
+        const res = await axios.post(
+          "https://api.cloudinary.com/v1_1/de56w4x21/image/upload",
+          data
+        );
+
+        uploadedImages.push(res.data.secure_url);
+      }
+      const uploadedVideos = [];
+
+      // upload video to the cloudinary 
+      for (const file of formData.videos) {
+        const data = new FormData();
+        data.append("file", file);
+        data.append("upload_preset", "homeHeavenlyImage");
+        data.append("folder", "VideoForRentOrSale");
+
+        const res = await axios.post(
+          "https://api.cloudinary.com/v1_1/de56w4x21/video/upload",
+          data
+        );
+
+        uploadedVideos.push(res.data.secure_url);
+      }
+
+      // ✅ Save to Firestore
+      const listingData = {
+        ...formData,
+        photos: uploadedImages,
+        videos: uploadedVideos, // if you're uploading videos too
+        userId: user.uid,
+        status: "pending", // new field to track review/moderation status
+        timestamp: serverTimestamp(), // better than new Date()
+      };
+
+      await addDoc(collection(db, "property_for_rent_or_sale"), listingData);
+
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      setFormData(initialFormData);
+      toast.success("✅ Property submitted successfully!");
+    } catch (error) {
+      console.error("Submission Error:", error);
+      toast.error("❌ Failed to submit property. Try again.");
+    } finally {
+      setUploading(false);
     }
-
-    await addDoc(collection(db, `property_for_sale/${user.uid}/listings`), {
-      ...formData,
-      photos: uploadedImages,
-      timestamp: new Date(),
-    });
-
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    alert("Property submitted successfully");
-    setFormData(initialFormData);
   };
 
   const inputClass =
@@ -251,7 +294,7 @@ const PostPropertyPage = () => {
             onChange={handleChange}
             className={inputClass}
           >
-            {["Furnished","Semi Furnished", "Not furnished"].map((opt) => (
+            {["Furnished", "Semi Furnished", "Not furnished"].map((opt) => (
               <option key={opt}>{opt}</option>
             ))}
           </select>
@@ -430,6 +473,7 @@ const PostPropertyPage = () => {
           <input
             type="file"
             name="videos"
+            accept="video/*"
             multiple
             onChange={handleChange}
             className={inputClass}

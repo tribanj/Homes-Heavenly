@@ -27,7 +27,7 @@ function AppointmentsManagement() {
 
   return (
     <div className="admin-dashboard-container">
-      <SidebarMenu />
+      {/* <SidebarMenu /> */}
 
       <div className="container mt-5 admin-dashboard-content">
         <h2>🗓️ Manage Appointments</h2>

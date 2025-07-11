@@ -14,7 +14,7 @@ const searchAnalyticsData = [
 function UserSearchAnalytics() {
   return (
     <div className="admin-dashboard-container">
-      <SidebarMenu />
+      {/* <SidebarMenu /> */}
 
       <div className="container mt-5 admin-dashboard-content">
         <h2>📊 User Search Analytics</h2>
