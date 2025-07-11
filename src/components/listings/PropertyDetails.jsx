@@ -86,7 +86,7 @@ const PropertyDetails = () => {
                 <div>
                     <div className="mb-4 rounded-lg overflow-hidden">
                         <img
-                            src={property.photos?.[0] || '/images/placeholder.jpg'}
+                            src={property.photos?.[1] || '/images/placeholder.jpg'}
                             alt={property.title}
                             className="w-full h-96 object-cover"
                         />

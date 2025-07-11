@@ -42,7 +42,7 @@ const Buy = () => {
       {loading ? (
         <p>Loading listings...</p>
       ) : properties.length > 0 ? (
-        <PropertyList properties={properties} />
+        <PropertyList />
       ) : (
         <p>No properties available for sale yet.</p>
       )}

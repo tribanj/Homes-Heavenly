@@ -160,7 +160,7 @@ const AppInner = () => {
           element={
             <>
               <Home />
-              <MainContent />
+              {/* <MainContent /> */}
             </>
           }
         />
