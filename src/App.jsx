@@ -10,7 +10,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FirebaseAuthProvider } from "./context/FirebaseAuthContext";
-import RoleSelectionModal from "./components/modals/RoleSelectionModal";
+// import RoleSelectionModal from "./components/modals/RoleSelectionModal";
 
 // Dashboards
 import UserDashboard from "./components/UserDashboard/UserDashboard";
@@ -90,6 +90,7 @@ import SearchBar from "./components/Home/SearchBar";
 import SearchResults from "./components/Home/SearchResults";
 import Unauthorized from "./pages/Unauthorized";
 import AdminDashboard from "./components/Admindashboard/AdminDashboard";
+import PropertyDetails from "./components/listings/PropertyDetails";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -249,16 +250,21 @@ const AppInner = () => {
         <Route path="/post-property/other" element={<OtherPage />} />
 
         {/* Page Routes */}
-        <Route path="/buy" element={<Buy />} />
-        <Route path="/buy-page" element={<Buy />} />
-        <Route path="/sale" element={<Sale />} />
-        <Route path="/sale-page" element={<Sale />} />
+        <Route path="/buy&sale" element={<Buy />} />
+        <Route path="/property/:id" element={<PropertyDetails />} />
+
+
+        {/* <Route path="/sale" element={<Sale />} />
+        <Route path="/sale-page" element={<Sale />} /> */}
         <Route path="/rent" element={<RentPropertyPage />} />
         <Route path="/rent-page" element={<Rent />} />
         <Route path="/contactus" element={<ContactUs />} />
         <Route path="/contactus-page" element={<ContactUs />} />
         <Route path="/search-results" element={<SearchResults />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+
+
+
 
         {/* Services (Buysale, Rentlease, etc.) */}
         <Route

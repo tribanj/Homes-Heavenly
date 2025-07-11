@@ -58,8 +58,7 @@ function Navbar() {
               <div className="hidden md:flex items-center text-white no-underline">
                 {[
                   { label: "Home", path: "/" },
-                  { label: "Buy", path: "/buy-page" },
-                  { label: "Sale", path: "/sale-page" },
+                  { label: "Buy&Sale", path: "/buy&sale" },
                   { label: "Rent", path: "/rent-page" },
                   { label: "Post Ad", path: "/select-purpose" },
                   { label: "Contact Us", path: "/contactus-page" },
@@ -163,7 +162,7 @@ function Navbar() {
 
         {mobileMenuOpen && (
           <div className="md:hidden px-4 pt-4 pb-6 space-y-2 bg-gray-800 text-white">
-            {["Home", "Buy", "Sale", "Rent", "Post Ad", "Contact Us"].map(
+            {["Home", "Buy/Sale", "Rent", "Post Ad", "Contact Us"].map(
               (label, idx) => (
                 <Link
                   key={idx}
