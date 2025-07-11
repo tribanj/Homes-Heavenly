@@ -91,6 +91,7 @@ import SearchResults from "./components/Home/SearchResults";
 import Unauthorized from "./pages/Unauthorized";
 import AdminDashboard from "./components/Admindashboard/AdminDashboard";
 import PropertyDetails from "./components/listings/PropertyDetails";
+import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -201,11 +202,11 @@ const AppInner = () => {
           </ProtectedRoute>
         } />
 
-        {/* <Route path="/agent-dashboard/*" element={
+        <Route path="/agent-dashboard/*" element={
           <ProtectedRoute allowedRoles={['Agent']}>
             <AgentDashboard />
           </ProtectedRoute>
-        } /> */}
+        } />
 
         {/* <Route path="/company-dashboard/*" element={
           <ProtectedRoute allowedRoles={['Real Estate Company']}>
