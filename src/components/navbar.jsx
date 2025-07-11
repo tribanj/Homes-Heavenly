@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthModal from "./modals/AuthModal";
-
+import logoHome from '../assets/logo 2.jpg'
 import services from "./constants/Services";
 
 function Navbar() {
@@ -44,9 +44,10 @@ function Navbar() {
           <div className="flex justify-between h-16 items-center">
             {/* Logo + All Links */}
             <div className="flex items-center space-x-2">
-              <Link to="/" className="text-xl font-bold text-white">
-                Real Estate
+              <Link to="/" className="flex items-center space-x-2">
+                <img src={logoHome} alt="Home Logo" className="h-15 w-auto object-contain" />
               </Link>
+
               <div className="hidden md:flex items-center text-white no-underline">
                 {[
                   { label: "Home", path: "/" },

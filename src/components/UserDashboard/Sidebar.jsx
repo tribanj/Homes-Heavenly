@@ -11,7 +11,7 @@ const Sidebar = () => {
 
   return (
     <div>
-      <h4 className="text-xl font-bold mb-4">User Dashboard</h4>
+      <h4 className="text-xxl font-bold mb-4">User Dashboard</h4>
       <ul className="space-y-2">
         <li><NavLink to="/user-dashboard/overview" className={linkStyle}>Overview</NavLink></li>
         <li><NavLink to="/user-dashboard/my-ads" className={linkStyle}>My Ads</NavLink></li>

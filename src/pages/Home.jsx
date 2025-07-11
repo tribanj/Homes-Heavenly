@@ -44,7 +44,7 @@ const Home = () => {
   return (
     <div className="home-container bg-black text-white">
       {/* HERO SECTION */}
-      <section className="relative h-[80vh] flex flex-col justify-center items-center text-center px-6 md:px-12">
+      <section className="relative h-[45vh] flex flex-col justify-center items-center text-center px-6 md:px-12">
         <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-10 rounded-xl" />
         <motion.div
           className="relative z-20 max-w-3xl"
