@@ -2,12 +2,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import AuthModal from "./modals/AuthModal";
+// import AuthModal from "./modals/AuthModal";
 import logoHome from '../assets/logo 2.jpg'
 import services from "./constants/Services";
 
 function Navbar() {
-  const [showAccount, setShowAccount] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const [showServices, setShowServices] = useState(false);
@@ -35,6 +34,14 @@ function Navbar() {
       .join("")
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const handleProfileClick = () => {
+    if (user) {
+      navigate("/user-dashboard");
+    } else {
+      navigate("/login");
+    }
   };
 
   return (
@@ -109,13 +116,12 @@ function Navbar() {
               </div>
             </div>
 
-            {/* Right side: Account/Login */}
-            <div
-              className="relative hidden md:flex items-center"
-              onMouseEnter={() => setShowAccount(true)}
-              onMouseLeave={() => setShowAccount(false)}
-            >
-              <button className="flex items-center space-x-2 my-25">
+            {/* Right side: Account/Login - Now clickable */}
+            <div className="hidden md:flex items-center">
+              <button
+                onClick={handleProfileClick}
+                className="flex items-center space-x-2 my-25 hover:bg-gray-700 px-3 py-2 rounded"
+              >
                 {user ? (
                   <>
                     <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
@@ -124,61 +130,9 @@ function Navbar() {
                     <span className="text-sm">My Profile</span>
                   </>
                 ) : (
-                  <span className="text-sm">My Account</span>
+                  <span className="text-sm">Login / Signup</span>
                 )}
               </button>
-
-              {showAccount && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white text-black shadow rounded-md z-50">
-                  {user ? (
-                    <>
-                      <div className="px-4 py-3 border-b">
-                        <p className="font-semibold">{user.displayName}</p>
-                        <p className="text-sm text-gray-600">{user.email}</p>
-                      </div>
-                      <Link
-                        to="/user-dashboard"
-                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        to="/user-dashboard/settings"
-                        className="block px-4 py-2 text-sm hover:bg-gray-100"
-                      >
-                        Settings
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                      >
-                        Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => {
-                          setAuthMode("login");
-                          setShowAuthModal(true);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                      >
-                        Login
-                      </button>
-                      <button
-                        onClick={() => {
-                          setAuthMode("signup");
-                          setShowAuthModal(true);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                      >
-                        Sign Up
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
             </div>
 
             {/* Mobile menu toggle */}
@@ -244,15 +198,15 @@ function Navbar() {
                 ))}
               </div>
             )}
+            <button
+              onClick={handleProfileClick}
+              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700"
+            >
+              {user ? "My Profile" : "Login / Signup"}
+            </button>
           </div>
         )}
       </nav>
-
-      <AuthModal
-        show={showAuthModal}
-        handleClose={() => setShowAuthModal(false)}
-        mode={authMode}
-      />
     </>
   );
 }

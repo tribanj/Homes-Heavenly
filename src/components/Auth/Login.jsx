@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // AuthContext का उपयोग करें
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -97,11 +98,19 @@ const Login = () => {
               required
             />
           </div>
-
           {/* Email/Password Login Button */}
           <button type="submit" className="btn btn-success w-100 mb-3">
             Login
           </button>
+          <div className="m-3 text-sm text-center">
+            Don't have an account?{' '}
+            <Link
+              to="/signup"
+              className="text-blue-400 hover:text-blue-300 underline cursor-pointer"
+            >
+              Signup here
+            </Link>
+          </div>
 
           {/* Facebook Login Button */}
           <button

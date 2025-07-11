@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./components/navbar";
-import AuthForm from "./components/AuthForm";
+// import AuthForm from "./components/AuthForm";
 import Home from "./pages/Home";
 import "./App.css";
 import { AuthProvider, useAuth } from "./context/AuthContext";
