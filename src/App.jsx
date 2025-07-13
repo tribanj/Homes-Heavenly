@@ -90,6 +90,7 @@ import Unauthorized from "./pages/Unauthorized";
 import AdminDashboard from "./components/Admindashboard/AdminDashboard";
 import PropertyDetails from "./components/listings/PropertyDetails";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
+import Footer from "./components/Footer";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -429,6 +430,7 @@ function App() {
         <Navbar />
         <ToastContainer position="top-center" autoClose={3000} />
         <AppInner />
+        <Footer />
       </FirebaseAuthProvider>
     </AuthProvider>
   );
