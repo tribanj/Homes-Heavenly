@@ -98,7 +98,7 @@ const Home = () => {
               <input
                 type="text"
                 placeholder="Search by location, property, or type..."
-                className="flex-1 px-6 py-4 focus:outline-none text-gray-800"
+                className="flex-1 px-6 py-4 focus:outline-none text-white border-[2px] rounded-bl-lg rounded-tl-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -228,7 +228,7 @@ const Home = () => {
             )}
 
             {/* Stats Section */}
-            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex items-center border border-gray-700 hover:border-amber-500 transition">
                 <div className="bg-amber-500/20 p-4 rounded-xl mr-4">
                   <FiHome className="text-amber-500 text-2xl" />
@@ -256,7 +256,7 @@ const Home = () => {
                   <p className="text-2xl font-bold text-white">{saleProperties.length}</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Featured Cities */}
             <div className="mt-16">
