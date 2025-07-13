@@ -74,7 +74,7 @@ function Navbar() {
 
                 {/* Services Dropdown */}
                 <div
-                  className="relative"
+                  className=""
                   onMouseEnter={() => setShowServices(true)}
                   onMouseLeave={() => {
                     setShowServices(false);
