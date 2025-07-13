@@ -86,8 +86,6 @@ import Buy from "./pages/Buy";
 import Sale from "./pages/Sale";
 import Rent from "./pages/Rent";
 import ContactUs from "./pages/Contact";
-import SearchBar from "./components/Home/SearchBar";
-import SearchResults from "./components/Home/SearchResults";
 import Unauthorized from "./pages/Unauthorized";
 import AdminDashboard from "./components/Admindashboard/AdminDashboard";
 import PropertyDetails from "./components/listings/PropertyDetails";
@@ -259,13 +257,8 @@ const AppInner = () => {
         <Route path="/sale-page" element={<Sale />} /> */}
         <Route path="/rent" element={<RentPropertyPage />} />
         <Route path="/rent-page" element={<Rent />} />
-        <Route path="/contactus" element={<ContactUs />} />
         <Route path="/contactus-page" element={<ContactUs />} />
-        <Route path="/search-results" element={<SearchResults />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-
-
-
 
         {/* Services (Buysale, Rentlease, etc.) */}
         <Route

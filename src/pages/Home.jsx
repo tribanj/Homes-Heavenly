@@ -98,7 +98,7 @@ const Home = () => {
               <input
                 type="text"
                 placeholder="Search by location, property, or type..."
-                className="flex-1 px-6 py-4 focus:outline-none text-white border-[2px] rounded-bl-lg rounded-tl-lg"
+                className="flex-1 px-6 py-4 focus:outline-none text-white border-[2px] rounded-bl-lg rounded-"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
