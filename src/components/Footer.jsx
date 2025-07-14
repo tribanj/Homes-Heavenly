@@ -14,7 +14,7 @@ const Footer = () => {
                         <div className="flex items-center">
                             <RiHome3Line className="text-3xl text-orange-500 mr-3" />
                             <span className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-                                LuxeProperties
+                                Homes Heavenly
                             </span>
                         </div>
                         <p className="text-gray-400 leading-relaxed">
@@ -123,7 +123,7 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-gray-500 text-sm mb-4 md:mb-0">
-                        © {new Date().getFullYear()} LuxeProperties. All rights reserved.
+                        © {new Date().getFullYear()} HomesHeavenly. All rights reserved.
                     </p>
                     <div className="flex space-x-6">
                         <a href="#" className="text-gray-500 hover:text-orange-500 text-sm transition">Privacy Policy</a>

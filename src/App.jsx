@@ -91,6 +91,7 @@ import AdminDashboard from "./components/Admindashboard/AdminDashboard";
 import PropertyDetails from "./components/listings/PropertyDetails";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
 import Footer from "./components/Footer";
+import PrelaunchPropertyDetails from "./components/PostProperty/PreLaunch/PrelaunchPropertyDetails";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -234,6 +235,11 @@ const AppInner = () => {
           element={<PreLaunchProjectPage />}
         />
         <Route
+          path="/services/buysale/OffPlanDeals"
+          element={<OffPlanDeals />}
+        />
+        <Route path="/services/buysale/OffPlanDeals/:projectId" element={<PrelaunchPropertyDetails />} />
+        <Route
           path="/post-property/mortgage"
           element={<MortgagePropertyPage />}
         />
@@ -266,10 +272,7 @@ const AppInner = () => {
           path="/services/buysale/BookValuation"
           element={<BookValuation />}
         />
-        <Route
-          path="/services/buysale/OffPlanDeals"
-          element={<OffPlanDeals />}
-        />
+
         <Route
           path="/services/buysale/ForeclosedSales"
           element={<ForeclosedSales />}

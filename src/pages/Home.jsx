@@ -133,6 +133,18 @@ const Home = () => {
             >
               For Sale
             </button>
+            <button
+              onClick={() => setActiveTab("auction")}
+              className={`px-8 py-3 rounded-lg transition font-medium ${activeTab === "auction" ? "bg-amber-600 text-white" : "text-gray-300 hover:bg-gray-700"}`}
+            >
+              Auction
+            </button>
+            <button
+              onClick={() => setActiveTab("services")}
+              className={`px-8 py-3 rounded-lg transition font-medium ${activeTab === "services" ? "bg-amber-600 text-white" : "text-gray-300 hover:bg-gray-700"}`}
+            >
+              Services
+            </button>
           </div>
         </div>
 
@@ -226,37 +238,6 @@ const Home = () => {
                 </p>
               </div>
             )}
-
-            {/* Stats Section */}
-            {/* <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex items-center border border-gray-700 hover:border-amber-500 transition">
-                <div className="bg-amber-500/20 p-4 rounded-xl mr-4">
-                  <FiHome className="text-amber-500 text-2xl" />
-                </div>
-                <div>
-                  <p className="text-gray-400">Total Properties</p>
-                  <p className="text-2xl font-bold text-white">{properties.length}</p>
-                </div>
-              </div>
-              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex items-center border border-gray-700 hover:border-amber-500 transition">
-                <div className="bg-amber-500/20 p-4 rounded-xl mr-4">
-                  <FiDollarSign className="text-amber-500 text-2xl" />
-                </div>
-                <div>
-                  <p className="text-gray-400">For Rent</p>
-                  <p className="text-2xl font-bold text-white">{rentProperties.length}</p>
-                </div>
-              </div>
-              <div className="bg-gray-800 p-6 rounded-xl shadow-lg flex items-center border border-gray-700 hover:border-amber-500 transition">
-                <div className="bg-amber-500/20 p-4 rounded-xl mr-4">
-                  <FiCheckCircle className="text-amber-500 text-2xl" />
-                </div>
-                <div>
-                  <p className="text-gray-400">For Sale</p>
-                  <p className="text-2xl font-bold text-white">{saleProperties.length}</p>
-                </div>
-              </div>
-            </div> */}
 
             {/* Featured Cities */}
             <div className="mt-16">

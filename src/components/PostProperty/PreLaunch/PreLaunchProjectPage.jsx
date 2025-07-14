@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
 import { db } from "../../../firebase/firebaseConfig";
-import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
+import { collection, serverTimestamp, doc, setDoc } from 'firebase/firestore';
 import axios from 'axios';
 import { useAuth } from "../../../context/AuthContext";
 import { FaUpload, FaPlus, FaTrash } from 'react-icons/fa';
 
+// Constants
+const amenityOptions = ['Clubhouse', 'Gym', 'Swimming Pool', 'Power Backup', 'Security', 'Park', 'Kids Play Area', 'Lift', 'Parking', 'Garden'];
+const configOptions = ['1 BHK', '2 BHK', '3 BHK', '4+ BHK', 'Studio'];
+const planTypes = ['CLP', 'Flexi', 'Down Payment', 'Subvention'];
+const possessionTypes = ['Stilt + 3', 'High Rise', 'Villa', 'Plotted', 'Other'];
+const statusOptions = ['Pre-Launch', 'Launching Soon', 'Registration Open'];
+const projectTypes = ['Residential', 'Commercial', 'Mixed-Use'];
+
+// Initial form state
 const initialForm = {
   title: '',
   type: '',
@@ -37,13 +46,6 @@ const initialForm = {
   description: '',
   termsAccepted: false,
 };
-
-const amenityOptions = ['Clubhouse', 'Gym', 'Swimming Pool', 'Power Backup', 'Security', 'Park', 'Kids Play Area', 'Lift', 'Parking', 'Garden'];
-const configOptions = ['1 BHK', '2 BHK', '3 BHK', '4+ BHK', 'Studio'];
-const planTypes = ['CLP', 'Flexi', 'Down Payment', 'Subvention'];
-const possessionTypes = ['Stilt + 3', 'High Rise', 'Villa', 'Plotted', 'Other'];
-const statusOptions = ['Pre-Launch', 'Launching Soon', 'Registration Open'];
-const projectTypes = ['Residential', 'Commercial', 'Mixed-Use'];
 
 const PrelaunchProjectForm = () => {
   const { user } = useAuth();
@@ -108,7 +110,17 @@ const PrelaunchProjectForm = () => {
     data.append('file', file);
     data.append('upload_preset', 'homeHeavenlyImage');
     data.append('folder', `prelaunchProject/${folder}`);
-    const res = await axios.post('https://api.cloudinary.com/v1_1/de56w4x21/upload', data);
+
+    const resourceType = file.type.includes('video')
+      ? 'video'
+      : file.type.includes('pdf')
+        ? 'raw'
+        : 'image';
+
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/de56w4x21/${resourceType}/upload`,
+      data
+    );
     return res.data.secure_url;
   };
 
@@ -130,55 +142,63 @@ const PrelaunchProjectForm = () => {
         walkthroughUrls: []
       };
 
+      // Upload brochure (PDF)
       if (fileUploads.brochure) {
         uploadPromises.push(
-          uploadFile(fileUploads.brochure, 'brochure')
-            .then(url => { uploadedFiles.brochureUrl = url; })
+          uploadFile(fileUploads.brochure, 'brochure').then(url => {
+            uploadedFiles.brochureUrl = url;
+          })
         );
       }
 
+      // Upload multiple floor plan PDFs
       if (fileUploads.floorPlans.length > 0) {
         uploadPromises.push(
-          Promise.all(fileUploads.floorPlans.map(file => uploadFile(file, 'floorPlans')))
-            .then(urls => { uploadedFiles.floorPlanUrls = urls; })
+          Promise.all(
+            fileUploads.floorPlans.map(file => uploadFile(file, 'floorPlans'))
+          ).then(urls => {
+            uploadedFiles.floorPlanUrls = urls;
+          })
         );
       }
 
+      // Upload multiple image files
       if (fileUploads.images.length > 0) {
         uploadPromises.push(
-          Promise.all(fileUploads.images.map(file => uploadFile(file, 'images')))
-            .then(urls => { uploadedFiles.imageUrls = urls; })
+          Promise.all(
+            fileUploads.images.map(file => uploadFile(file, 'images'))
+          ).then(urls => {
+            uploadedFiles.imageUrls = urls;
+          })
         );
       }
 
+      // Upload multiple walkthrough video files (MP4)
       if (fileUploads.walkthroughs.length > 0) {
         uploadPromises.push(
-          Promise.all(fileUploads.walkthroughs.map(file => uploadFile(file, 'walkthroughs')))
-            .then(urls => { uploadedFiles.walkthroughUrls = urls; })
+          Promise.all(
+            fileUploads.walkthroughs.map(file => uploadFile(file, 'walkthroughs'))
+          ).then(urls => {
+            uploadedFiles.walkthroughUrls = urls;
+          })
         );
       }
 
       await Promise.all(uploadPromises);
 
-      // Create project document
+      // Final project object to store
       const projectData = {
         ...form,
         ...uploadedFiles,
         userId: user.uid,
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
+        type: 'prelaunch' // For filtering
       };
 
-      // Create a new listing document
-      const listingRef = doc(collection(db, 'listings'));
-      await setDoc(listingRef, {
-        type: 'prelaunch',
-        createdAt: serverTimestamp(),
-        userId: user.uid
-      });
-
-      // Add the prelaunch project data as a subcollection
-      await setDoc(doc(db, 'listings', listingRef.id, 'prelaunchDetails', 'data'), projectData);
+      // Save to Firestore
+      const prelaunchRef = doc(collection(db, 'prelaunchProjects'));
+      await setDoc(prelaunchRef, projectData);
 
       alert('Project submitted successfully!');
       setForm(initialForm);
@@ -195,6 +215,7 @@ const PrelaunchProjectForm = () => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-gray-50 rounded-lg shadow-sm">
