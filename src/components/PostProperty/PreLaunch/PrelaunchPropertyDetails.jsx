@@ -102,26 +102,50 @@ const PrelaunchPropertyDetails = () => {
                 </motion.div>
 
                 {/* Image Gallery */}
-                {property.imageUrls?.length > 0 && (
+                {(property.imageUrls?.length > 0 || property.walkthroughUrls?.length > 0) && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
                         className="mb-12"
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {property.imageUrls.map((image, index) => (
-                                <div key={index} className="h-64 bg-gray-800 rounded-xl overflow-hidden">
+                        <h2 className="text-xl font-semibold mb-4">Media Gallery</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                            {/* Images */}
+                            {property.imageUrls?.map((image, index) => (
+                                <div
+                                    key={`img-${index}`}
+                                    className="aspect-video bg-gray-800 rounded-xl overflow-hidden"
+                                >
                                     <img
                                         src={image}
-                                        alt={`${property.title} - ${index + 1}`}
+                                        alt={`Image ${index + 1}`}
                                         className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            ))}
+
+                            {/* Videos */}
+                            {property.walkthroughUrls?.map((video, index) => (
+                                <div
+                                    key={`video-${index}`}
+                                    className="aspect-video bg-black rounded-xl overflow-hidden"
+                                >
+                                    <video
+                                        src={video}
+                                        controls
+                                        className="w-full h-full object-cover"
+                                        preload="metadata"
                                     />
                                 </div>
                             ))}
                         </div>
                     </motion.div>
                 )}
+
+
+
+
 
                 {/* Property Details */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

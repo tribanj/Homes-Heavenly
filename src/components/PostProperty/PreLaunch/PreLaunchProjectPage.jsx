@@ -1,3 +1,5 @@
+// This is form for Uploading prelaunch data 
+
 import React, { useState } from 'react';
 import { db } from "../../../firebase/firebaseConfig";
 import { collection, serverTimestamp, doc, setDoc } from 'firebase/firestore';
@@ -111,18 +113,26 @@ const PrelaunchProjectForm = () => {
     data.append('upload_preset', 'homeHeavenlyImage');
     data.append('folder', `prelaunchProject/${folder}`);
 
-    const resourceType = file.type.includes('video')
-      ? 'video'
-      : file.type.includes('pdf')
-        ? 'raw'
-        : 'image';
+    // ✅ Detect correct resource type
+    let resourceType = 'image'; // default
+    if (file.type === 'application/pdf') {
+      resourceType = 'raw'; // For PDFs
+    } else if (file.type.includes('video')) {
+      resourceType = 'video';
+    }
 
-    const res = await axios.post(
-      `https://api.cloudinary.com/v1_1/de56w4x21/${resourceType}/upload`,
-      data
-    );
-    return res.data.secure_url;
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/de56w4x21/${resourceType}/upload`,
+        data
+      );
+      return res.data.secure_url; // or return res.data for more info (like public_id)
+    } catch (error) {
+      console.error('Upload failed:', error.response?.data || error.message);
+      throw error;
+    }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
