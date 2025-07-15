@@ -278,10 +278,7 @@ const AppInner = () => {
           path="/services/buysale/ForeclosedSales"
           element={<ForeclosedSales />}
         />
-        <Route
-          path="/services/buysale/AuctionSupport"
-          element={<AuctionSupport />}
-        />
+        <Route path="/services/buysale/AuctionSupport" element={<AuctionSupport />} />
         <Route
           path="/services/buysale/AuctionSupport/:id"
           element={<AuctionPropertyDetails />}

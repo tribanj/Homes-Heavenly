@@ -48,7 +48,7 @@ const AuctionPropertyForm = () => {
             encumbranceCertificate: ''
         },
         additionalNotes: '',
-        status:pending
+        status: "pending",
     });
 
     const [declaration, setDeclaration] = useState(false);
