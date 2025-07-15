@@ -92,6 +92,7 @@ import PropertyDetails from "./components/listings/PropertyDetails";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
 import Footer from "./components/Footer";
 import PrelaunchPropertyDetails from "./components/PostProperty/PreLaunch/PrelaunchPropertyDetails";
+import AuctionPropertyDetails from "./components/PostProperty/Auction/AuctionPropertyDetails";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -280,6 +281,10 @@ const AppInner = () => {
         <Route
           path="/services/buysale/AuctionSupport"
           element={<AuctionSupport />}
+        />
+        <Route
+          path="/services/buysale/AuctionSupport/:id"
+          element={<AuctionPropertyDetails />}
         />
         <Route
           path="/services/buysale/TransactionLegalHelp"

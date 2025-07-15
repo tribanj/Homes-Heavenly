@@ -10,6 +10,7 @@ import { FaBed, FaBath, FaRulerCombined, FaHeart, FaRegHeart, FaShareAlt } from 
 const Home = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
+  const [auctionProperties, setAuctionProperties] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
@@ -19,22 +20,53 @@ const Home = () => {
       try {
         setLoading(true);
 
-        // Base query for approved properties
-        let q = query(
+        // Fetch properties for rent or sale
+        let rentSaleQuery = query(
           collection(db, "property_for_rent_or_sale"),
           where("status", "==", "approved"),
           orderBy("timestamp", "desc"),
           limit(12)
         );
 
-        const snapshot = await getDocs(q);
-        const propertiesData = snapshot.docs.map(doc => ({
+        const rentSaleSnapshot = await getDocs(rentSaleQuery);
+        const rentSalePropertiesData = rentSaleSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
           listingType: doc.data().listingType?.toLowerCase() || 'rent'
         }));
 
-        setProperties(propertiesData);
+        // Fetch auction properties
+        const auctionQuery = query(
+          collection(db, "property_for_auction"),
+          where("status", "==", "approved"),
+          orderBy("updatedAt", "desc")
+        );
+
+        const auctionSnapshot = await getDocs(auctionQuery);
+
+        const auctionPropertiesData = auctionSnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            title: data.basicDetails?.listingTitle || 'Auction Property',
+            price: data.auctionDetails?.reservePrice || 0,
+            locality: data.locationDetails?.locality || '',
+            city: data.locationDetails?.city || '',
+            bedrooms: data.propertyDetails?.bedrooms || '',
+            bathrooms: data.propertyDetails?.bathrooms || '',
+            builtupArea: data.propertyDetails?.builtUpArea || '',
+            photos: data.mediaUploads?.propertyImages || [],
+            listingType: 'auction',
+            auctionDetails: data.auctionDetails || {}
+          };
+        });
+
+        setProperties(rentSalePropertiesData);
+        setAuctionProperties(auctionPropertiesData);
+
+
+        // console.log("rent&sell Properties:", rentSalePropertiesData);
+
       } catch (error) {
         console.error("Error fetching properties:", error);
       } finally {
@@ -44,6 +76,7 @@ const Home = () => {
 
     fetchProperties();
   }, []);
+  console.log("Auction Properties (fetched):", auctionProperties); // ✅ accurate
 
   // Filter properties
   const filteredProperties = properties.filter(property => {
@@ -59,6 +92,15 @@ const Home = () => {
 
     return matchesSearch && matchesTab;
   });
+
+  const filteredAuctionProperties = auctionProperties.filter(property => {
+    return (
+      property.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      property.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      property.locality?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
 
   const rentProperties = filteredProperties.filter(p => p.listingType === "rent");
   const saleProperties = filteredProperties.filter(p => p.listingType === "sale");
@@ -98,7 +140,7 @@ const Home = () => {
               <input
                 type="text"
                 placeholder="Search by location, property, or type..."
-                className="flex-1 px-6 py-4 focus:outline-none text-white border-[2px] rounded-bl-lg rounded-"
+                className="flex-1 px-6 py-4 focus:outline-none text-white border-[2px] rounded-bl-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -155,88 +197,173 @@ const Home = () => {
         ) : (
           <>
             {/* Property Grid */}
-            {filteredProperties.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredProperties.map((property) => (
-                  <motion.div
-                    key={property.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    whileHover={{ y: -5 }}
-                    className="bg-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all cursor-pointer"
-                    onClick={() => navigate(`/property/${property.id}`)}
-                  >
-                    {/* Property Image */}
-                    <div className="relative h-56 w-full">
-                      <img
-                        src={property.photos?.[0] || '/images/placeholder.jpg'}
-                        alt={property.title}
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute top-0 left-0 bg-amber-600 text-white px-3 py-1 text-sm font-medium rounded-br-lg">
-                        {property.listingType === 'rent' ? 'FOR RENT' : 'FOR SALE'}
+            {activeTab === "auction" ? (
+              filteredAuctionProperties.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {filteredAuctionProperties.map((property) => (
+                    <motion.div
+                      key={property.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      whileHover={{ y: -5 }}
+                      className="bg-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all cursor-pointer"
+                      onClick={() => navigate(`/services/buysale/AuctionSupport`)}
+                    >
+                      {/* Property Image */}
+                      <div className="relative h-56 w-full">
+                        <img
+                          src={property.photos?.[0] || '/images/placeholder.jpg'}
+                          alt={property.title}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute top-0 left-0 bg-amber-600 text-white px-3 py-1 text-sm font-medium rounded-br-lg">
+                          AUCTION
+                        </div>
+                        <div className="absolute top-0 right-0 flex space-x-2 p-3">
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-2 bg-gray-900/80 rounded-full backdrop-blur hover:bg-amber-600 transition"
+                          >
+                            <FaRegHeart className="text-white" />
+                          </button>
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-2 bg-gray-900/80 rounded-full backdrop-blur hover:bg-amber-600 transition"
+                          >
+                            <FaShareAlt className="text-white" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="absolute top-0 right-0 flex space-x-2 p-3">
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="p-2 bg-gray-900/80 rounded-full backdrop-blur hover:bg-amber-600 transition"
-                        >
-                          <FaRegHeart className="text-white" />
-                        </button>
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="p-2 bg-gray-900/80 rounded-full backdrop-blur hover:bg-amber-600 transition"
-                        >
-                          <FaShareAlt className="text-white" />
-                        </button>
-                      </div>
-                    </div>
 
-                    {/* Property Details */}
-                    <div className="p-5">
-                      <div className="flex justify-between items-start mb-3">
-                        <h3 className="text-xl font-bold truncate">{property.title}</h3>
-                        <p className="text-amber-500 font-bold text-lg whitespace-nowrap">
-                          ₹{property.price?.toLocaleString('en-IN')}
-                          {property.listingType === 'rent' && '/mo'}
+                      {/* Property Details */}
+                      <div className="p-5">
+                        <div className="flex justify-between items-start mb-3">
+                          <h3 className="text-xl font-bold truncate">{property.title}</h3>
+                          <p className="text-amber-500 font-bold text-lg whitespace-nowrap">
+                            ₹{property.price?.toLocaleString('en-IN')}
+                          </p>
+                        </div>
+
+                        <p className="text-gray-400 mb-4 flex items-center">
+                          <FiMapPin className="mr-2 text-amber-500" />
+                          {[property.locality, property.city].filter(Boolean).join(', ')}
                         </p>
-                      </div>
 
-                      <p className="text-gray-400 mb-4 flex items-center">
-                        <FiMapPin className="mr-2 text-amber-500" />
-                        {[property.locality, property.city].filter(Boolean).join(', ')}
-                      </p>
-
-                      {/* Property Features */}
-                      <div className="flex justify-between border-t border-gray-700 pt-4 text-gray-400">
-                        <div className="flex items-center">
-                          <FaBed className="mr-2 text-amber-500" />
-                          <span>{property.bedrooms || 'N/A'} Beds</span>
-                        </div>
-                        <div className="flex items-center">
-                          <FaBath className="mr-2 text-amber-500" />
-                          <span>{property.bathrooms || 'N/A'} Baths</span>
-                        </div>
-                        <div className="flex items-center">
-                          <FaRulerCombined className="mr-2 text-amber-500" />
-                          <span>{property.builtupArea || 'N/A'} sqft</span>
+                        {/* Property Features */}
+                        <div className="flex justify-between border-t border-gray-700 pt-4 text-gray-400">
+                          <div className="flex items-center">
+                            <FaBed className="mr-2 text-amber-500" />
+                            <span>{property.bedrooms || 'N/A'} Beds</span>
+                          </div>
+                          <div className="flex items-center">
+                            <FaBath className="mr-2 text-amber-500" />
+                            <span>{property.bathrooms || 'N/A'} Baths</span>
+                          </div>
+                          <div className="flex items-center">
+                            <FaRulerCombined className="mr-2 text-amber-500" />
+                            <span>{property.builtupArea || 'N/A'} sqft</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16 bg-gray-800 rounded-xl">
+                  <FiHome className="mx-auto text-5xl text-amber-500 mb-4" />
+                  <h3 className="text-2xl font-medium text-white mb-2">
+                    No auction properties found
+                  </h3>
+                  <p className="text-gray-400">
+                    {searchQuery ? "Try a different search term" : "Check back later for new auction listings"}
+                  </p>
+                </div>
+              )
             ) : (
-              <div className="text-center py-16 bg-gray-800 rounded-xl">
-                <FiHome className="mx-auto text-5xl text-amber-500 mb-4" />
-                <h3 className="text-2xl font-medium text-white mb-2">
-                  No properties found
-                </h3>
-                <p className="text-gray-400">
-                  {searchQuery ? "Try a different search term" : "Check back later for new listings"}
-                </p>
-              </div>
+              filteredProperties.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {filteredProperties.map((property) => (
+                    <motion.div
+                      key={property.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      whileHover={{ y: -5 }}
+                      className="bg-gray-800 rounded-xl overflow-hidden shadow-xl hover:shadow-2xl transition-all cursor-pointer"
+                      onClick={() => navigate(`/property/${property.id}`)}
+                    >
+                      {/* Property Image */}
+                      <div className="relative h-56 w-full">
+                        <img
+                          src={property.photos?.[0] || '/images/placeholder.jpg'}
+                          alt={property.title}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute top-0 left-0 bg-amber-600 text-white px-3 py-1 text-sm font-medium rounded-br-lg">
+                          {property.listingType === 'rent' ? 'FOR RENT' : 'FOR SALE'}
+                        </div>
+                        <div className="absolute top-0 right-0 flex space-x-2 p-3">
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-2 bg-gray-900/80 rounded-full backdrop-blur hover:bg-amber-600 transition"
+                          >
+                            <FaRegHeart className="text-white" />
+                          </button>
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-2 bg-gray-900/80 rounded-full backdrop-blur hover:bg-amber-600 transition"
+                          >
+                            <FaShareAlt className="text-white" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Property Details */}
+                      <div className="p-5">
+                        <div className="flex justify-between items-start mb-3">
+                          <h3 className="text-xl font-bold truncate">{property.title}</h3>
+                          <p className="text-amber-500 font-bold text-lg whitespace-nowrap">
+                            ₹{property.price?.toLocaleString('en-IN')}
+                            {property.listingType === 'rent' && '/mo'}
+                          </p>
+                        </div>
+
+                        <p className="text-gray-400 mb-4 flex items-center">
+                          <FiMapPin className="mr-2 text-amber-500" />
+                          {[property.locality, property.city].filter(Boolean).join(', ')}
+                        </p>
+
+                        {/* Property Features */}
+                        <div className="flex justify-between border-t border-gray-700 pt-4 text-gray-400">
+                          <div className="flex items-center">
+                            <FaBed className="mr-2 text-amber-500" />
+                            <span>{property.bedrooms || 'N/A'} Beds</span>
+                          </div>
+                          <div className="flex items-center">
+                            <FaBath className="mr-2 text-amber-500" />
+                            <span>{property.bathrooms || 'N/A'} Baths</span>
+                          </div>
+                          <div className="flex items-center">
+                            <FaRulerCombined className="mr-2 text-amber-500" />
+                            <span>{property.builtupArea || 'N/A'} sqft</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16 bg-gray-800 rounded-xl">
+                  <FiHome className="mx-auto text-5xl text-amber-500 mb-4" />
+                  <h3 className="text-2xl font-medium text-white mb-2">
+                    No properties found
+                  </h3>
+                  <p className="text-gray-400">
+                    {searchQuery ? "Try a different search term" : "Check back later for new listings"}
+                  </p>
+                </div>
+              )
             )}
 
             {/* Featured Cities */}
