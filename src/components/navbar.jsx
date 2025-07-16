@@ -89,6 +89,7 @@ function Navbar() {
                 ))}
 
                 {/* Services Dropdown */}
+                {/* Services Dropdown */}
                 <div
                   className="relative"
                   onMouseEnter={() => setShowServices(true)}
@@ -98,35 +99,42 @@ function Navbar() {
                   }}
                 >
                   <button
-                    className={`text-sm px-3 py-2 rounded ${activeTab.startsWith('/services') ? 'bg-blue-800 text-white' : 'hover:bg-gray-700'}`}
+                    className={`text-sm px-3 py-2 rounded ${activeTab.startsWith('/services') ? 'bg-blue-800 text-white' : 'hover:bg-gray-700'
+                      }`}
                   >
                     Services
                   </button>
 
                   {showServices && (
                     <div className="absolute top-full left-0 mt-0 w-60 bg-white text-black shadow-lg rounded-md z-50">
-                      {services.map((service, index) => (
+                      {services.map((service, svcIndex) => (
                         <div
-                          key={index}
+                          key={svcIndex}
                           className="group relative px-4 py-2 hover:bg-gray-100"
-                          onMouseEnter={() => setActiveService(index)}
-                          onClick={() => {
-                            navigate(service.options[0].path);
-                            setShowServices(false);
-                          }}
+                          onMouseEnter={() => setActiveService(svcIndex)}
                         >
-                          <div className="flex justify-between items-center">
+                          <div className="flex justify-between items-center cursor-default">
                             {service.title}
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 5l7 7-7 7"
+                              />
                             </svg>
                           </div>
 
-                          {activeService === index && (
+                          {activeService === svcIndex && (
                             <div className="absolute left-full top-0 ml-1 w-64 bg-white border border-gray-200 rounded shadow-lg z-50">
-                              {service.options.map((opt, idx) => (
+                              {service.options.map((opt, optIndex) => (
                                 <Link
-                                  key={idx}
+                                  key={optIndex}
                                   to={opt.path}
                                   className="block px-4 py-2 text-sm hover:bg-gray-100"
                                   onClick={() => setShowServices(false)}
@@ -141,6 +149,8 @@ function Navbar() {
                     </div>
                   )}
                 </div>
+
+
               </div>
             </div>
 
