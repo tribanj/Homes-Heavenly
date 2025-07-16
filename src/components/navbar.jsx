@@ -1,9 +1,7 @@
-// ✅ Cleaned-up Navbar with left-aligned navlinks and structured layout
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-// import AuthModal from "./modals/AuthModal";
-import logoHome from '../assets/logo 2.jpg'
+import logoHome from '../assets/logo 2.jpg';
 import services from "./constants/Services";
 
 function Navbar() {
@@ -12,9 +10,21 @@ function Navbar() {
   const [showServices, setShowServices] = useState(false);
   const [activeService, setActiveService] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("");
+  const location = useLocation();
 
   const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Set active tab based on current route
+    const path = location.pathname;
+    setActiveTab(path);
+
+    // Close mobile menu when route changes
+    setMobileMenuOpen(false);
+  }, [location]);
+
   if (loading) return null;
 
   const handleLogout = async () => {
@@ -44,6 +54,18 @@ function Navbar() {
     }
   };
 
+  const navLinks = [
+    { label: "Home", path: "/" },
+    { label: "Buy&Sale", path: "/buy&sale" },
+    { label: "Rent", path: "/rent-page" },
+    { label: "Post Ad", path: "/select-purpose" },
+    { label: "Contact Us", path: "/contactus-page" },
+  ];
+
+  const isActive = (path) => {
+    return activeTab === path ? "bg-blue-800 text-white" : "hover:bg-blue-800";
+  };
+
   return (
     <>
       <nav className="bg-gray-900 text-white shadow z-50 relative">
@@ -56,17 +78,11 @@ function Navbar() {
               </Link>
 
               <div className="hidden md:flex items-center text-white no-underline">
-                {[
-                  { label: "Home", path: "/" },
-                  { label: "Buy&Sale", path: "/buy&sale" },
-                  { label: "Rent", path: "/rent-page" },
-                  { label: "Post Ad", path: "/select-purpose" },
-                  { label: "Contact Us", path: "/contactus-page" },
-                ].map(({ label, path }) => (
+                {navLinks.map(({ label, path }) => (
                   <Link
                     key={label}
                     to={path}
-                    className="block m-2 p-1 text-sm text-white no-underline hover:bg-blue-800"
+                    className={`block m-2 p-1 text-sm no-underline rounded text-white ${isActive(path)}`}
                   >
                     {label}
                   </Link>
@@ -74,33 +90,46 @@ function Navbar() {
 
                 {/* Services Dropdown */}
                 <div
-                  className=""
+                  className="relative"
                   onMouseEnter={() => setShowServices(true)}
                   onMouseLeave={() => {
                     setShowServices(false);
                     setActiveService(null);
                   }}
                 >
-                  <button className="text-sm hover:bg-gray-700 px-3 py-2 my-25 rounded-md">
+                  <button
+                    className={`text-sm px-3 py-2 rounded ${activeTab.startsWith('/services') ? 'bg-blue-800 text-white' : 'hover:bg-gray-700'}`}
+                  >
                     Services
                   </button>
 
                   {showServices && (
-                    <div className="absolute top-full mt-2 w-60 bg-white text-black shadow rounded-md">
+                    <div className="absolute top-full left-0 mt-0 w-60 bg-white text-black shadow-lg rounded-md z-50">
                       {services.map((service, index) => (
                         <div
                           key={index}
                           className="group relative px-4 py-2 hover:bg-gray-100"
                           onMouseEnter={() => setActiveService(index)}
+                          onClick={() => {
+                            navigate(service.options[0].path);
+                            setShowServices(false);
+                          }}
                         >
-                          {service.title}
+                          <div className="flex justify-between items-center">
+                            {service.title}
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
+
                           {activeService === index && (
-                            <div className="absolute left-full top-0 ml-1 w-64 bg-white border rounded shadow-lg">
+                            <div className="absolute left-full top-0 ml-1 w-64 bg-white border border-gray-200 rounded shadow-lg z-50">
                               {service.options.map((opt, idx) => (
                                 <Link
                                   key={idx}
                                   to={opt.path}
                                   className="block px-4 py-2 text-sm hover:bg-gray-100"
+                                  onClick={() => setShowServices(false)}
                                 >
                                   {opt.label}
                                 </Link>
@@ -115,7 +144,7 @@ function Navbar() {
               </div>
             </div>
 
-            {/* Right side: Account/Login - Now clickable */}
+            {/* Right side: Account/Login */}
             <div className="hidden md:flex items-center">
               <button
                 onClick={handleProfileClick}
@@ -136,7 +165,10 @@ function Navbar() {
 
             {/* Mobile menu toggle */}
             <div className="md:hidden">
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-md hover:bg-gray-700 focus:outline-none"
+              >
                 <svg
                   className="h-6 w-6"
                   fill="none"
@@ -160,49 +192,86 @@ function Navbar() {
           </div>
         </div>
 
+        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden px-4 pt-4 pb-6 space-y-2 bg-gray-800 text-white">
-            {["Home", "Buy/Sale", "Rent", "Post Ad", "Contact Us"].map(
-              (label, idx) => (
-                <Link
-                  key={idx}
-                  to={`/${label.toLowerCase().replace(" ", "-")}`}
-                  className="block px-3 py-2 text-sm rounded hover:bg-gray-700"
+          <div className="md:hidden px-4 pt-2 pb-4 space-y-1 bg-gray-800 text-white">
+            {navLinks.map(({ label, path }) => (
+              <Link
+                key={label}
+                to={path}
+                className={`block px-3 py-2 rounded text-sm ${isActive(path)}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {label}
+              </Link>
+            ))}
+
+            <div className="border-t border-gray-700 pt-2">
+              <button
+                onClick={() => setShowServices(!showServices)}
+                className={`w-full text-left px-3 py-2 rounded text-sm flex justify-between items-center ${activeTab.startsWith('/services') ? 'bg-blue-800 text-white' : 'hover:bg-gray-700'}`}
+              >
+                Services
+                <svg
+                  className={`w-4 h-4 transform transition-transform ${showServices ? 'rotate-90' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {label}
-                </Link>
-              )
-            )}
-            <button
-              onClick={() => setShowServices(!showServices)}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700"
-            >
-              Services
-            </button>
-            {showServices && (
-              <div className="pl-3">
-                {services.map((s, i) => (
-                  <div key={i} className="mt-1">
-                    <p className="text-sm font-semibold">{s.title}</p>
-                    {s.options.map((o, j) => (
-                      <Link
-                        key={j}
-                        to={o.path}
-                        className="block text-sm px-2 py-1 hover:bg-gray-700"
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              {showServices && (
+                <div className="pl-4 mt-1 space-y-1">
+                  {services.map((service, index) => (
+                    <div key={index}>
+                      <button
+                        onClick={() => setActiveService(activeService === index ? null : index)}
+                        className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 flex justify-between items-center"
                       >
-                        {o.label}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
-            <button
-              onClick={handleProfileClick}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700"
-            >
-              {user ? "My Profile" : "Login / Signup"}
-            </button>
+                        {service.title}
+                        <svg
+                          className={`w-4 h-4 transform transition-transform ${activeService === index ? 'rotate-90' : ''}`}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+
+                      {activeService === index && (
+                        <div className="pl-4 space-y-1">
+                          {service.options.map((opt, idx) => (
+                            <Link
+                              key={idx}
+                              to={opt.path}
+                              className="block px-3 py-2 text-sm hover:bg-gray-700 rounded"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {opt.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-gray-700 pt-2">
+              <button
+                onClick={() => {
+                  handleProfileClick();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full text-left px-3 py-2 rounded text-sm hover:bg-gray-700"
+              >
+                {user ? "My Profile" : "Login / Signup"}
+              </button>
+            </div>
           </div>
         )}
       </nav>
