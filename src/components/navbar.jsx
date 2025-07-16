@@ -63,7 +63,7 @@ function Navbar() {
   ];
 
   const isActive = (path) => {
-    return activeTab === path ? "bg-blue-800 text-white" : "hover:bg-blue-800";
+    return activeTab === path ? "bg-orange-500 text-white" : "hover:bg-blue-800";
   };
 
   return (
