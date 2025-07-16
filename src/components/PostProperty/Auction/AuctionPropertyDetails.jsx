@@ -111,6 +111,16 @@ const AuctionPropertyDetails = () => {
         );
     }
 
+    // virtual tour video  
+    const handleVirtualtourLink = () => {
+        if (property?.videoTourLink) {
+            window.open(property.videoTourLink, '_blank');
+        } else {
+            alert("No virtual tour link found");
+        }
+    };
+
+
     return (
         <div className="min-h-screen bg-gray-900 text-gray-100">
             {/* Property Header */}
@@ -314,14 +324,21 @@ const AuctionPropertyDetails = () => {
                             <div className="bg-gray-800 p-6 rounded-xl">
                                 <h2 className="text-2xl font-bold text-orange-400 mb-4 border-b border-orange-500 pb-2">Virtual Tour</h2>
                                 <div className="aspect-w-16 aspect-h-9">
-                                    <iframe
+                                    {/* <iframe
                                         src={property.videoTourLink.replace('watch?v=', 'embed/')}
                                         className="w-full h-96 rounded-lg"
                                         frameBorder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowFullScreen
                                         title="Property video tour"
-                                    ></iframe>
+                                    ></iframe> */}
+                                    <button
+                                        onClick={handleVirtualtourLink}
+                                        className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition-colors mt-4"
+                                    >
+                                        See The virtual Video of this property
+                                    </button>
+
                                 </div>
                             </div>
                         )}
@@ -334,6 +351,7 @@ const AuctionPropertyDetails = () => {
                             <h2 className="text-2xl font-bold text-orange-400 mb-4 border-b border-orange-500 pb-2">Contact Owner</h2>
 
                             <div className="space-y-4">
+                                {/*
                                 <div>
                                     <p className="text-gray-400">Name</p>
                                     <p className="text-white font-medium flex items-center">
@@ -356,7 +374,7 @@ const AuctionPropertyDetails = () => {
                                         <FaEnvelope className="mr-2 text-orange-400" />
                                         {property.email || 'N/A'}
                                     </p>
-                                </div>
+                                </div> */}
 
                                 <button className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition-colors mt-4">
                                     Request More Information
