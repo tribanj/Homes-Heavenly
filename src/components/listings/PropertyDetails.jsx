@@ -47,7 +47,6 @@ const PropertyDetails = () => {
         }
     }, [user, id]);
 
-    // Toggle save property
     const toggleSave = async () => {
         if (!user) {
             navigate('/login');
@@ -56,20 +55,42 @@ const PropertyDetails = () => {
 
         try {
             const userRef = doc(db, 'users', user.uid);
-            if (saved) {
-                await updateDoc(userRef, {
-                    savedProperties: arrayRemove(id)
-                });
+            const userSnap = await getDoc(userRef);
+
+            if (!userSnap.exists()) return;
+
+            const userData = userSnap.data();
+            const savedProperties = userData.savedProperties || [];
+
+            const listingRef = {
+                id, // the listing ID passed as a prop
+                collection: 'property_for_rent_or_sale' // or dynamically pass it as a prop
+            };
+
+            const alreadySaved = savedProperties.some(
+                (item) => item.id === listingRef.id
+            );
+
+            let updatedSavedProps;
+
+            if (alreadySaved) {
+                updatedSavedProps = savedProperties.filter(
+                    (item) => item.id !== listingRef.id
+                );
             } else {
-                await updateDoc(userRef, {
-                    savedProperties: arrayUnion(id)
-                });
+                updatedSavedProps = [...savedProperties, listingRef];
             }
+
+            await updateDoc(userRef, {
+                savedProperties: updatedSavedProps
+            });
+
             setSaved(!saved);
         } catch (error) {
             console.error('Error updating saved properties:', error);
         }
     };
+
 
     if (loading) {
         return <div className="text-center py-10 text-orange-400">Loading property details...</div>;
