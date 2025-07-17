@@ -441,6 +441,12 @@ const Home = () => {
             >
               Auction
             </button>
+            <button
+              onClick={() => setActiveTab("services")}
+              className={`px-5 py-3 rounded-lg transition font-medium ${activeTab === "services" ? "bg-amber-600 text-white" : "text-gray-300 hover:bg-gray-700"}`}
+            >
+              Services
+            </button>
           </div>
 
           <div className="text-gray-400">
