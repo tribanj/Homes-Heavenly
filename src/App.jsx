@@ -93,6 +93,8 @@ import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
 import Footer from "./components/Footer";
 import PrelaunchPropertyDetails from "./components/PostProperty/PreLaunch/PrelaunchPropertyDetails";
 import AuctionPropertyDetails from "./components/PostProperty/Auction/AuctionPropertyDetails";
+import TwoDDesign from "./pages/portfolio/2DDesign";
+import ThreeDVisualization from "./pages/portfolio/ThreeDDesign";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -231,194 +233,56 @@ const AppInner = () => {
         {/* Property Posting */}
         <Route path="/select-purpose" element={<SelectAdPurpose />} />
         <Route path="/post-property/sale" element={<PostPropertyPage />} />
-        <Route
-          path="/post-property/prelaunch"
-          element={<PreLaunchProjectPage />}
-        />
-        <Route
-          path="/services/buysale/OffPlanDeals"
-          element={<OffPlanDeals />}
-        />
+        <Route path="/post-property/prelaunch" element={<PreLaunchProjectPage />} />
+        <Route path="/services/buysale/OffPlanDeals" element={<OffPlanDeals />} />
         <Route path="/services/buysale/OffPlanDeals/:projectId" element={<PrelaunchPropertyDetails />} />
-        <Route
-          path="/post-property/mortgage"
-          element={<MortgagePropertyPage />}
-        />
-        <Route
-          path="/post-property/commercial-lease"
-          element={<CommercialLeasePage />}
-        />
+        <Route path="/post-property/mortgage" element={<MortgagePropertyPage />} />
+        <Route path="/post-property/commercial-lease" element={<CommercialLeasePage />} />
         <Route path="/post-property/pg-hostel" element={<PGHostelPage />} />
-        <Route
-          path="/post-property/builder-project"
-          element={<BuilderProjectPage />}
-        />
+        <Route path="/post-property/builder-project" element={<BuilderProjectPage />} />
         <Route path="/post-property/auction" element={<AuctionPage />} />
         <Route path="/post-property/other" element={<OtherPage />} />
-
-        {/* Page Routes */}
         <Route path="/buy&sale" element={<Buy />} />
         <Route path="/property/:id" element={<PropertyDetails />} />
-
-
-        {/* <Route path="/sale" element={<Sale />} />
-        <Route path="/sale-page" element={<Sale />} /> */}
         <Route path="/rent" element={<RentPropertyPage />} />
         <Route path="/rent-page" element={<Rent />} />
         <Route path="/contactus-page" element={<ContactUs />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-
-        {/* Services (Buysale, Rentlease, etc.) */}
-        <Route
-          path="/services/buysale/BookValuation"
-          element={<BookValuation />}
-        />
-
-        <Route
-          path="/services/buysale/ForeclosedSales"
-          element={<ForeclosedSales />}
-        />
+        <Route path="/services/buysale/BookValuation" element={<BookValuation />} />
+        <Route path="/services/buysale/ForeclosedSales" element={<ForeclosedSales />} />
         <Route path="/services/buysale/AuctionSupport" element={<AuctionSupport />} />
-        <Route
-          path="/services/buysale/AuctionSupport/:id"
-          element={<AuctionPropertyDetails />}
-        />
-        <Route
-          path="/services/buysale/TransactionLegalHelp"
-          element={<TransactionLegalHelp />}
-        />
-        <Route
-          path="/submit-inquiry"
-          element={
-            <ProtectedRoute
-              allowedRoles={[
-                "Normal User",
-                "Builder",
-                "Agent",
-                "Real Estate Company",
-                "Admin",
-              ]}
-            >
-              <SubmitInquiry />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/services/rentlease/tenantscreening"
-          element={<TenantScreening />}
-        />
-        <Route
-          path="/services/rentlease/leaseagreement"
-          element={<LeaseAgreement />}
-        />
-        <Route
-          path="/services/rentlease/colivingsolutions"
-          element={<CoLivingSolutions />}
-        />
-        <Route
-          path="/services/rentlease/shorttermrentals"
-          element={<ShortTermRentals />}
-        />
-        <Route
-          path="/services/rentlease/studenthousing"
-          element={<StudentHousing />}
-        />
-
-        <Route
-          path="/services/propertymanagement/RentCollection"
-          element={<RentCollection />}
-        />
-        <Route
-          path="/services/propertymanagement/MaintenanceRepairs"
-          element={<MaintenanceRepairs />}
-        />
-        <Route
-          path="/services/propertymanagement/LegalDisputeResolution"
-          element={<LegalDisputeResolution />}
-        />
-        <Route
-          path="/services/propertymanagement/HomeInsurancePlans"
-          element={<HomeInsurancePlans />}
-        />
-
-        <Route
-          path="/services/investmentadvisory/investmentplanning"
-          element={<InvestmentPlanning />}
-        />
-        <Route
-          path="/services/investmentadvisory/landplotinvestment"
-          element={<LandPlotInvestment />}
-        />
-        <Route
-          path="/services/investmentadvisory/fractionalownership"
-          element={<FractionalOwnership />}
-        />
-        <Route
-          path="/services/investmentadvisory/markettrends"
-          element={<MarketTrends />}
-        />
-
-        <Route
-          path="/services/financialservices/homeloanassistance"
-          element={<HomeLoanAssistance />}
-        />
-        <Route
-          path="/services/financialservices/loanrefinancing"
-          element={<LoanRefinancing />}
-        />
-        {/* <Route path="/services/financialservices/loansfinanceservices" element={<LoansFinanceServices />} /> */}
-        <Route
-          path="/services/financialservices/realestatetaxplanning"
-          element={<RealEstateTaxPlanning />}
-        />
-
-        <Route
-          path="/services/constructionservices/customhomeconstruction"
-          element={<CustomHomeConstruction />}
-        />
-        <Route
-          path="/services/constructionservices/interiordesigning"
-          element={<InteriorDesigning />}
-        />
-        <Route
-          path="/services/constructionservices/smarthomeinstallations"
-          element={<SmartHomeInstallations />}
-        />
-        <Route
-          path="/services/constructionservices/landscapingsolutions"
-          element={<LandscapingSolutions />}
-        />
-
-        <Route
-          path="/services/corporateservices/officespaceleasing"
-          element={<OfficeSpaceLeasing />}
-        />
-        <Route
-          path="/services/corporateservices/industrialretailsolutions"
-          element={<IndustrialRetailSolutions />}
-        />
-        <Route
-          path="/services/corporateservices/realestatesolutions"
-          element={<CorporateRealEstate />}
-        />
-
-        <Route
-          path="/services/legalservices/titleverification"
-          element={<TitleVerification />}
-        />
-        <Route
-          path="/services/legalservices/reracompliance"
-          element={<RERACompliance />}
-        />
-        <Route
-          path="/services/legalservices/disputeresolution"
-          element={<DisputeResolution />}
-        />
-        <Route
-          path="/services/legalservices/stampdutysupport"
-          element={<StampDutySupport />}
-        />
+        <Route path="/services/buysale/AuctionSupport/:id" element={<AuctionPropertyDetails />} />
+        <Route path="/services/buysale/TransactionLegalHelp" element={<TransactionLegalHelp />} />
+        <Route path="/submit-inquiry" element={<ProtectedRoute allowedRoles={["Normal User", "Builder", "Agent", "Real Estate Company", "Admin"]}><SubmitInquiry /></ProtectedRoute>} />
+        <Route path="/services/rentlease/tenantscreening" element={<TenantScreening />} />
+        <Route path="/services/rentlease/leaseagreement" element={<LeaseAgreement />} />
+        <Route path="/services/rentlease/colivingsolutions" element={<CoLivingSolutions />} />
+        <Route path="/services/rentlease/shorttermrentals" element={<ShortTermRentals />} />
+        <Route path="/services/rentlease/studenthousing" element={<StudentHousing />} />
+        <Route path="/services/propertymanagement/RentCollection" element={<RentCollection />} />
+        <Route path="/services/propertymanagement/MaintenanceRepairs" element={<MaintenanceRepairs />} />
+        <Route path="/services/propertymanagement/LegalDisputeResolution" element={<LegalDisputeResolution />} />
+        <Route path="/services/propertymanagement/HomeInsurancePlans" element={<HomeInsurancePlans />} />
+        <Route path="/services/investmentadvisory/investmentplanning" element={<InvestmentPlanning />} />
+        <Route path="/services/investmentadvisory/landplotinvestment" element={<LandPlotInvestment />} />
+        <Route path="/services/investmentadvisory/fractionalownership" element={<FractionalOwnership />} />
+        <Route path="/services/investmentadvisory/markettrends" element={<MarketTrends />} />
+        <Route path="/services/financialservices/homeloanassistance" element={<HomeLoanAssistance />} />
+        <Route path="/services/financialservices/loanrefinancing" element={<LoanRefinancing />} />
+        <Route path="/services/financialservices/realestatetaxplanning" element={<RealEstateTaxPlanning />} />
+        <Route path="/services/constructionservices/customhomeconstruction" element={<CustomHomeConstruction />} />
+        <Route path="/services/constructionservices/interiordesigning" element={<InteriorDesigning />} />
+        <Route path="/services/constructionservices/smarthomeinstallations" element={<SmartHomeInstallations />} />
+        <Route path="/services/constructionservices/landscapingsolutions" element={<LandscapingSolutions />} />
+        <Route path="/services/corporateservices/officespaceleasing" element={<OfficeSpaceLeasing />} />
+        <Route path="/services/corporateservices/industrialretailsolutions" element={<IndustrialRetailSolutions />} />
+        <Route path="/services/corporateservices/realestatesolutions" element={<CorporateRealEstate />} />
+        <Route path="/services/legalservices/titleverification" element={<TitleVerification />} />
+        <Route path="/services/legalservices/reracompliance" element={<RERACompliance />} />
+        <Route path="/services/legalservices/disputeresolution" element={<DisputeResolution />} />
+        <Route path="/services/legalservices/stampdutysupport" element={<StampDutySupport />} />
+        <Route path="/portfolio/2d-designs" element={<TwoDDesign />} />
+        <Route path="/portfolio/3d-visualization" element={<ThreeDVisualization />} />
 
         {/* 404 Fallback */}
         <Route path="*" element={<NotFound />} />

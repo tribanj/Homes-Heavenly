@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { FiUser, FiMail, FiPhone, FiMapPin, FiFileText, FiCheckCircle, FiChevronDown, FiArrowRight } from 'react-icons/fi';
 
 const LegalAssistance = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +11,7 @@ const LegalAssistance = () => {
     serviceRequired: '',
     propertyLocation: '',
   });
+  const [activeAccordion, setActiveAccordion] = useState('collapse1');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,7 +20,15 @@ const LegalAssistance = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("📝 Legal Assistance Request:", formData);
-    toast.success("Your request has been submitted. Our legal team will contact you shortly.");
+    toast.success("Your request has been submitted. Our legal team will contact you shortly.", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "dark",
+    });
     setFormData({
       name: '',
       email: '',
@@ -27,108 +38,230 @@ const LegalAssistance = () => {
     });
   };
 
+  const toggleAccordion = (id) => {
+    setActiveAccordion(activeAccordion === id ? null : id);
+  };
+
   return (
-    <div className="container mt-5 mb-5">
-      <h1>📄 Legal & Documentation Assistance</h1>
-      <p className="lead">
-        From agreements to ownership transfers, our legal experts help you navigate the paperwork safely and efficiently.
-      </p>
-
-      <section className="mt-4">
-        <h4>📌 What We Help With</h4>
-        <ul>
-          <li>✅ Drafting & verifying Sale Agreements</li>
-          <li>✅ Title Due Diligence & Encumbrance checks</li>
-          <li>✅ Registration, Mutation & Stamp Duty handling</li>
-          <li>✅ Government approvals & NOC clearances</li>
-          <li>✅ POA (Power of Attorney) and Affidavit assistance</li>
-          <li>✅ Legal representation during disputes or litigation</li>
-        </ul>
-      </section>
-
-      <section className="mt-4">
-        <h4>🔍 Why Legal Assistance Is Critical</h4>
-        <ul>
-          <li>✔ Avoid frauds, forgery, or hidden liabilities</li>
-          <li>✔ Ensure ownership & documentation are 100% valid</li>
-          <li>✔ Prevent legal delays in property resale or rentals</li>
-        </ul>
-      </section>
-
-      <section className="mt-5">
-        <h4>👩‍⚖️ Talk to Our Legal Experts</h4>
-        <form className="row g-3 mt-3" onSubmit={handleSubmit}>
-          <div className="col-md-6">
-            <label className="form-label">Full Name</label>
-            <input type="text" name="name" className="form-control" value={formData.name} onChange={handleChange} required />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Email</label>
-            <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} required />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Phone Number</label>
-            <input type="tel" name="phone" className="form-control" value={formData.phone} onChange={handleChange} required />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Location of Property</label>
-            <input type="text" name="propertyLocation" className="form-control" value={formData.propertyLocation} onChange={handleChange} required />
-          </div>
-          <div className="col-12">
-            <label className="form-label">What Help Do You Need?</label>
-            <select name="serviceRequired" className="form-select" value={formData.serviceRequired} onChange={handleChange} required>
-              <option value="">-- Select --</option>
-              <option value="Sale Agreement">Sale Agreement Draft/Review</option>
-              <option value="Title Check">Title Verification</option>
-              <option value="Registration">Registration & Stamp Duty</option>
-              <option value="NOCs">NOC or Govt Approvals</option>
-              <option value="Representation">Legal Dispute Representation</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div className="col-12 mt-3">
-            <button type="submit" className="btn btn-primary">📨 Speak to Our Legal Team</button>
-          </div>
-        </form>
-      </section>
-
-      <section className="mt-5">
-        <h4>❓ Frequently Asked Questions</h4>
-        <div className="accordion" id="legalFaq">
-          <div className="accordion-item">
-            <h2 className="accordion-header" id="faq1">
-              <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
-                Is title verification mandatory before purchase?
-              </button>
-            </h2>
-            <div id="collapse1" className="accordion-collapse collapse show">
-              <div className="accordion-body">Absolutely. It ensures the seller has legal ownership and the property is free of any disputes or liabilities.</div>
-            </div>
-          </div>
-
-          <div className="accordion-item">
-            <h2 className="accordion-header" id="faq2">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
-                Can I do registration without a lawyer?
-              </button>
-            </h2>
-            <div id="collapse2" className="accordion-collapse collapse">
-              <div className="accordion-body">Technically yes, but a legal review ensures all clauses are correct and no rights are being waived inadvertently.</div>
-            </div>
-          </div>
-
-          <div className="accordion-item">
-            <h2 className="accordion-header" id="faq3">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
-                Do you provide services PAN India?
-              </button>
-            </h2>
-            <div id="collapse3" className="accordion-collapse collapse">
-              <div className="accordion-body">Yes, we have legal partners and associates across major metros and Tier 2 cities in India.</div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-orange-500 flex items-center justify-center">
+            <FiFileText className="mr-2" /> Legal & Documentation Assistance
+          </h1>
+          <p className="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
+            Navigate property paperwork with confidence. Our expert legal team ensures seamless agreements, title checks, and compliance for worry-free transactions.
+          </p>
         </div>
-      </section>
+
+        {/* What We Help With Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
+            <FiCheckCircle className="mr-2" /> What We Help With
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">Sale Agreements</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Drafting and verifying robust sale agreements to protect your interests.
+              </p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">Title Due Diligence</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Thorough checks to ensure clear ownership and no encumbrances.
+              </p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">Registration & NOCs</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Handling registration, stamp duty, and government approvals seamlessly.
+              </p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">POA & Affidavits</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Assistance with Power of Attorney and affidavit documentation.
+              </p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">Dispute Representation</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Expert legal support for property disputes or litigation.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Legal Assistance Is Critical Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
+            <FiFileText className="mr-2" /> Why Legal Assistance Is Critical
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">Prevent Fraud</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Avoid frauds, forgeries, or hidden liabilities with thorough checks.
+              </p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">Ensure Validity</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Confirm 100% valid ownership and documentation for peace of mind.
+              </p>
+            </div>
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
+              <h3 className="text-lg font-medium text-orange-300">Avoid Delays</h3>
+              <p className="text-gray-300 text-sm mt-2">
+                Prevent legal hurdles that could delay property resale or rentals.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Legal Assistance Form Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
+            <FiArrowRight className="mr-2" /> Talk to Our Legal Experts
+          </h2>
+          <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl p-8 shadow-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
+                <div className="relative">
+                  <FiUser className="absolute top-3 left-3 text-orange-500" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Email *</label>
+                <div className="relative">
+                  <FiMail className="absolute top-3 left-3 text-orange-500" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                    placeholder="Enter your email"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
+                <div className="relative">
+                  <FiPhone className="absolute top-3 left-3 text-orange-500" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Location of Property *</label>
+                <div className="relative">
+                  <FiMapPin className="absolute top-3 left-3 text-orange-500" />
+                  <input
+                    type="text"
+                    name="propertyLocation"
+                    value={formData.propertyLocation}
+                    onChange={handleChange}
+                    required
+                    className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                    placeholder="Enter property location"
+                  />
+                </div>
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">What Help Do You Need? *</label>
+                <select
+                  name="serviceRequired"
+                  value={formData.serviceRequired}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                >
+                  <option value="">-- Select --</option>
+                  <option value="Sale Agreement">Sale Agreement Draft/Review</option>
+                  <option value="Title Check">Title Verification</option>
+                  <option value="Registration">Registration & Stamp Duty</option>
+                  <option value="NOCs">NOC or Govt Approvals</option>
+                  <option value="Representation">Legal Dispute Representation</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div className="mt-6 text-right">
+              <button
+                type="submit"
+                className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center"
+              >
+                <FiArrowRight className="mr-2" /> Speak to Our Legal Team
+              </button>
+            </div>
+          </form>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
+            <FiCheckCircle className="mr-2" /> Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            {[
+              {
+                id: 'collapse1',
+                question: 'Is title verification mandatory before purchase?',
+                answer: 'Absolutely. It ensures the seller has legal ownership and the property is free of any disputes or liabilities.',
+              },
+              {
+                id: 'collapse2',
+                question: 'Can I do registration without a lawyer?',
+                answer: 'Technically yes, but a legal review ensures all clauses are correct and no rights are waived inadvertently.',
+              },
+              {
+                id: 'collapse3',
+                question: 'Do you provide services PAN India?',
+                answer: 'Yes, we have legal partners and associates across major metros and Tier 2 cities in India.',
+              },
+            ].map((faq) => (
+              <div key={faq.id} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                <button
+                  className="w-full px-6 py-4 text-left flex justify-between items-center bg-gray-700 hover:bg-gray-600 transition-colors"
+                  onClick={() => toggleAccordion(faq.id)}
+                >
+                  <span className="text-orange-300 font-medium">{faq.question}</span>
+                  <FiChevronDown
+                    className={`text-orange-500 transform transition-transform ${activeAccordion === faq.id ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                <div
+                  className={`px-6 py-4 text-gray-300 text-sm transition-all duration-300 ${activeAccordion === faq.id ? 'block' : 'hidden'
+                    }`}
+                >
+                  {faq.answer}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

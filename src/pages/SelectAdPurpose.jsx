@@ -7,7 +7,7 @@ const purposes = [
   { title: 'Pre-Launch Project', icon: '🚧', path: '/post-property/prelaunch' },
   { title: 'Mortgage Listing', icon: '💰', path: '/post-property/mortgage' },
   { title: 'Other', icon: '📝', path: '/post-property/other' },
-  { title: 'Commercial Space', icon: '🏢', path: '/post-property/commercial-lease' },
+  { title: 'Commercial and Co-working', icon: '🏢', path: '/post-property/commercial-lease' },
   { title: 'PG/Hostel', icon: '🛏️', path: '/post-property/pg-hostel' },
   { title: 'Auction Property', icon: '🔨', path: '/post-property/auction' },
   { title: 'Builder Project', icon: '🏗️', path: '/post-property/builder-project' },

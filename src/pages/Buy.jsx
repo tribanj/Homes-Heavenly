@@ -5,6 +5,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { FiFilter, FiHome, FiMapPin, FiDollarSign, FiSearch } from "react-icons/fi";
 import { FaBed, FaBath, FaRulerCombined, FaHeart, FaRegHeart } from "react-icons/fa";
 import { motion } from "framer-motion";
+import MortgagePropertyDetails from "../components/PostProperty/Mortgage/MortgagePropertyDetails";
 
 const Buy = () => {
   const navigate = useNavigate();
@@ -419,6 +420,7 @@ const Buy = () => {
             </motion.button>
           </div>
         )}
+        <MortgagePropertyDetails />
       </div>
     </div>
   );

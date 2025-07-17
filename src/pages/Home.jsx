@@ -652,6 +652,7 @@ const Home = () => {
           </>
         )}
       </div>
+      {/* <MortgagePropertyDetails /> */}
     </div>
   );
 };
