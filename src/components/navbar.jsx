@@ -131,7 +131,7 @@ function Navbar() {
                           </div>
 
                           {activeService === svcIndex && (
-                            <div className="absolute left-full top-0 ml-1 w-64 bg-white border border-gray-200 rounded shadow-lg z-50">
+                            <div className="absolute left-full top-0 w-64 bg-white border border-gray-200 rounded shadow-lg z-50">
                               {service.options.map((opt, optIndex) => (
                                 <Link
                                   key={optIndex}
