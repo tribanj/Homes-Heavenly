@@ -268,7 +268,13 @@ const AppInner = () => {
         />
 
         {/* Property Posting */}
-        <Route path="/select-purpose" element={<SelectAdPurpose />} />
+        <Route path="/select-purpose" element={
+          <ProtectedRoute allowedRoles={["user", "agent", "builder", "realestate"]}>
+            <SelectAdPurpose />
+          </ProtectedRoute>
+
+        } />
+
         <Route path="/post-property/sale" element={<PostPropertyPage />} />
         <Route path="/post-property/prelaunch" element={<PreLaunchProjectPage />} />
         <Route path="/services/buysale/OffPlanDeals" element={<OffPlanDeals />} />
