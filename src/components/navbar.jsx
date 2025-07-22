@@ -58,6 +58,7 @@ function Navbar() {
     { label: "Home", path: "/" },
     { label: "Buy&Sale", path: "/buy&sale" },
     { label: "Rent", path: "/rent-page" },
+    { label: "PG/Hostels", path: "/pgHostel" },
     { label: "Post Ad", path: "/select-purpose" },
     { label: "Contact Us", path: "/contactus-page" },
   ];

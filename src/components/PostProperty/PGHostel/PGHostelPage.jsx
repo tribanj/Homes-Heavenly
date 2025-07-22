@@ -3,6 +3,7 @@ import axios from 'axios';
 import { db } from '../../../firebase/firebaseConfig';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '../../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const initialForm = {
   propertyType: '',
@@ -52,6 +53,7 @@ const PGHostelForm = () => {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -180,6 +182,7 @@ const PGHostelForm = () => {
       };
       await addDoc(collection(db, 'PGAndHostels'), payload);
       alert('Listing submitted successfully!');
+      navigate('/success');
       setForm(initialForm);
       document.getElementById('images').value = '';
       document.getElementById('video').value = '';

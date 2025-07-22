@@ -97,6 +97,8 @@ import PrelaunchPropertyDetails from "./components/PostProperty/PreLaunch/Prelau
 import AuctionPropertyDetails from "./components/PostProperty/Auction/AuctionPropertyDetails";
 import TwoDDesign from "./pages/portfolio/2DDesign";
 import ThreeDVisualization from "./pages/portfolio/ThreeDDesign";
+import PgHostel from "./pages/PgHostel";
+import PgHostelDetails from "./pages/PgHostelDetails";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -296,6 +298,8 @@ const AppInner = () => {
         <Route path="/post-property/other" element={<OtherPage />} />
         <Route path="/buy&sale" element={<Buy />} />
         <Route path="/property/:id" element={<PropertyDetails />} />
+        <Route path="/pgHostel" element={<PgHostel />} />
+        <Route path="/pg-hostel-details/:id" element={<PgHostelDetails />} />
         <Route path="/rent" element={<RentPropertyPage />} />
         <Route path="/rent-page" element={<Rent />} />
         <Route path="/contactus-page" element={<ContactUs />} />
