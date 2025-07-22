@@ -14,6 +14,7 @@ import { FirebaseAuthProvider } from "./context/FirebaseAuthContext";
 
 // Dashboards
 import UserDashboard from "./components/UserDashboard/UserDashboard";
+import CompanyDashboard from './components/RealEstateDashboard/layout/CompanyDashboard'
 
 // Buy Sell Services
 import BookValuation from "./components/Services/buysale/BookValuation";
@@ -80,9 +81,10 @@ import OtherPage from "./components/PostProperty/Other/OtherPage";
 // Firebase Auth Forms
 import SignUp from "./components/Auth/SignUp";
 import Login from "./components/Auth/Login";
-
+// import Success from './components/'
 // Pages
 import Buy from "./pages/Buy";
+import Success from "./pages/SuccessPage";
 import Sale from "./pages/Sale";
 import Rent from "./pages/Rent";
 import ContactUs from "./pages/Contact";
@@ -178,7 +180,7 @@ const RoleBasedDashboard = () => {
       return <Navigate to="/builder-dashboard" replace />;
     case "Agent":
       return <Navigate to="/agent-dashboard" replace />;
-    case "Real Estate Company":
+    case "realestate":
       return <Navigate to="/company-dashboard" replace />;
     case "Normal User":
       return <Navigate to="/user-dashboard" replace />;
@@ -248,8 +250,11 @@ const AppInner = () => {
           </ProtectedRoute>
         } />
 
+        <Route path="/company-dashboard/*" element={
+          <CompanyDashboard />
+        } />
         {/* <Route path="/company-dashboard/*" element={
-          <ProtectedRoute allowedRoles={['Real Estate Company']}>
+          <ProtectedRoute allowedRoles={['realestate']}>
             <CompanyDashboard />
           </ProtectedRoute>
         } /> */}
@@ -268,14 +273,18 @@ const AppInner = () => {
         />
 
         {/* Property Posting */}
-        <Route path="/select-purpose" element={
-          <ProtectedRoute allowedRoles={["user", "agent", "builder", "realestate"]}>
+        {/* <Route path="/select-purpose" element={
+          <ProtectedRoute allowedRoles={["User", "Agent", "Builder", "Realestate", ""]}>
             <SelectAdPurpose />
           </ProtectedRoute>
-
+        } /> */}
+        <Route path="/select-purpose" element={
+          <SelectAdPurpose />
         } />
 
+
         <Route path="/post-property/sale" element={<PostPropertyPage />} />
+        <Route path="/success" element={<Success />} />
         <Route path="/post-property/prelaunch" element={<PreLaunchProjectPage />} />
         <Route path="/services/buysale/OffPlanDeals" element={<OffPlanDeals />} />
         <Route path="/services/buysale/OffPlanDeals/:projectId" element={<PrelaunchPropertyDetails />} />

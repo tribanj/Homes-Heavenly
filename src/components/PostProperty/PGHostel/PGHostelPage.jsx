@@ -41,6 +41,7 @@ const initialForm = {
   landmarks: '',
   notes: '',
   termsAccepted: false,
+  status: "pending"
 };
 
 const commonAreasOptions = ['TV Room', 'Dining Hall', 'Kitchen', 'Terrace'];

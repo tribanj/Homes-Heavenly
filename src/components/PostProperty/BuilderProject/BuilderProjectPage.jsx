@@ -47,6 +47,9 @@ const BuilderProjectsForm = () => {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [selectedProjectImages, setSelectedProjectImages] = useState([]);
+  const [selectedFloorPlans, setSelectedFloorPlans] = useState([]);
+  const [selectedLegalDocs, setSelectedLegalDocs] = useState([]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -63,6 +66,17 @@ const BuilderProjectsForm = () => {
     }
   };
 
+  const handleFileChange = (e, type) => {
+    const files = Array.from(e.target.files);
+    if (type === 'projectImages') {
+      setSelectedProjectImages(files);
+    } else if (type === 'floorPlans') {
+      setSelectedFloorPlans(files);
+    } else if (type === 'legalDocs') {
+      setSelectedLegalDocs(files);
+    }
+  };
+
   const uploadFile = async (file, folder) => {
     const data = new FormData();
     data.append('file', file);
@@ -73,18 +87,14 @@ const BuilderProjectsForm = () => {
   };
 
   const handleUploads = async () => {
-    const imageFiles = document.getElementById('projectImages').files;
-    const floorPlanFiles = document.getElementById('floorPlans').files;
-    const legalDocFiles = document.getElementById('legalDocs').files;
-
-    const projectImages = imageFiles.length
-      ? await Promise.all(Array.from(imageFiles).map((file) => uploadFile(file, 'images')))
+    const projectImages = selectedProjectImages.length
+      ? await Promise.all(selectedProjectImages.map((file) => uploadFile(file, 'images')))
       : [];
-    const floorPlans = floorPlanFiles.length
-      ? await Promise.all(Array.from(floorPlanFiles).map((file) => uploadFile(file, 'floorPlans')))
+    const floorPlans = selectedFloorPlans.length
+      ? await Promise.all(selectedFloorPlans.map((file) => uploadFile(file, 'floorPlans')))
       : [];
-    const legalDocs = legalDocFiles.length
-      ? await Promise.all(Array.from(legalDocFiles).map((file) => uploadFile(file, 'legalDocs')))
+    const legalDocs = selectedLegalDocs.length
+      ? await Promise.all(selectedLegalDocs.map((file) => uploadFile(file, 'legalDocs')))
       : [];
 
     return { projectImages, floorPlans, legalDocs };
@@ -122,7 +132,7 @@ const BuilderProjectsForm = () => {
       }
     });
 
-    if (form.projectImages.length < 3) {
+    if (selectedProjectImages.length < 3) {
       newErrors.projectImages = 'At least 3 images are required';
     }
 
@@ -165,6 +175,7 @@ const BuilderProjectsForm = () => {
     setLoading(true);
     try {
       const { projectImages, floorPlans, legalDocs } = await handleUploads();
+
       const payload = {
         ...form,
         projectImages,
@@ -173,16 +184,19 @@ const BuilderProjectsForm = () => {
         userId: user.uid,
         createdAt: serverTimestamp(),
       };
+
       await addDoc(collection(db, 'BuilderProjectsListing'), payload);
+
       alert('Listing submitted successfully!');
       setForm(initialForm);
-      document.getElementById('projectImages').value = '';
-      document.getElementById('floorPlans').value = '';
-      document.getElementById('legalDocs').value = '';
+      setSelectedProjectImages([]);
+      setSelectedFloorPlans([]);
+      setSelectedLegalDocs([]);
+      setErrors({});
       navigate('/success');
     } catch (err) {
       console.error('Error submitting listing:', err);
-      alert('Error submitting listing');
+      alert('Error submitting listing. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -200,13 +214,13 @@ const BuilderProjectsForm = () => {
             <h2 className="text-2xl font-semibold text-orange-400">Basic Project Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">Project Name</label>
+                <label className="block text-gray-300 mb-2">Project Name*</label>
                 <input
                   type="text"
                   name="projectName"
                   value={form.projectName}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter project name"
                 />
                 {errors.projectName && (
@@ -214,13 +228,13 @@ const BuilderProjectsForm = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Builder/Developer Name</label>
+                <label className="block text-gray-300 mb-2">Builder/Developer Name*</label>
                 <input
                   type="text"
                   name="builderName"
                   value={form.builderName}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter builder name"
                 />
                 {errors.builderName && (
@@ -228,12 +242,13 @@ const BuilderProjectsForm = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Project Type</label>
+                <label className="block text-gray-300 mb-2">Project Type*</label>
                 <select
                   name="projectType"
                   value={form.projectType}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
+                  required
                 >
                   <option value="">Select</option>
                   <option value="Residential">Residential</option>
@@ -245,12 +260,13 @@ const BuilderProjectsForm = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Status</label>
+                <label className="block text-gray-300 mb-2">Status*</label>
                 <select
                   name="status"
                   value={form.status}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
+                  required
                 >
                   <option value="">Select</option>
                   <option value="Pre-launch">Pre-launch</option>
@@ -269,12 +285,13 @@ const BuilderProjectsForm = () => {
             <h2 className="text-2xl font-semibold text-orange-400">Location Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">City</label>
+                <label className="block text-gray-300 mb-2">City*</label>
                 <select
                   name="city"
                   value={form.city}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
+                  required
                 >
                   <option value="">Select</option>
                   {cityOptions.map((city) => (
@@ -286,28 +303,30 @@ const BuilderProjectsForm = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Locality</label>
+                <label className="block text-gray-300 mb-2">Locality*</label>
                 <input
                   type="text"
                   name="locality"
                   value={form.locality}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter locality"
+                  required
                 />
                 {errors.locality && (
                   <p className="text-red-400 text-sm">{errors.locality}</p>
                 )}
               </div>
               <div className="md:col-span-2">
-                <label className="block text-gray-300 mb-2">Complete Address</label>
+                <label className="block text-gray-300 mb-2">Complete Address*</label>
                 <textarea
                   name="address"
                   value={form.address}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   rows="4"
                   placeholder="Enter full address with PIN code"
+                  required
                 />
                 {errors.address && (
                   <p className="text-red-400 text-sm">{errors.address}</p>
@@ -321,35 +340,39 @@ const BuilderProjectsForm = () => {
             <h2 className="text-2xl font-semibold text-orange-400">Project Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">Total Towers</label>
+                <label className="block text-gray-300 mb-2">Total Towers*</label>
                 <input
                   type="number"
                   name="totalTowers"
                   value={form.totalTowers}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter number of towers"
+                  required
+                  min="0"
                 />
                 {errors.totalTowers && (
                   <p className="text-red-400 text-sm">{errors.totalTowers}</p>
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Total Units</label>
+                <label className="block text-gray-300 mb-2">Total Units*</label>
                 <input
                   type="number"
                   name="totalUnits"
                   value={form.totalUnits}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter number of units"
+                  required
+                  min="0"
                 />
                 {errors.totalUnits && (
                   <p className="text-red-400 text-sm">{errors.totalUnits}</p>
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Configuration</label>
+                <label className="block text-gray-300 mb-2">Configuration*</label>
                 <div className="space-y-2">
                   {configurationOptions.map((config) => (
                     <label key={config} className="flex items-center text-gray-300">
@@ -359,7 +382,7 @@ const BuilderProjectsForm = () => {
                         value={config}
                         checked={form.configuration.includes(config)}
                         onChange={handleChange}
-                        className="mr-2 text-indigo-500 focus:ring-indigo-500"
+                        className="mr-2 text-orange-500 focus:ring-orange-500"
                       />
                       {config}
                     </label>
@@ -376,7 +399,7 @@ const BuilderProjectsForm = () => {
                   name="reraRegistrationNumber"
                   value={form.reraRegistrationNumber}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter RERA ID (if applicable)"
                 />
               </div>
@@ -388,21 +411,22 @@ const BuilderProjectsForm = () => {
             <h2 className="text-2xl font-semibold text-orange-400">Pricing & Units</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">Price Range (₹)</label>
+                <label className="block text-gray-300 mb-2">Price Range (₹)*</label>
                 <input
                   type="text"
                   name="priceRange"
                   value={form.priceRange}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="e.g., 5000000-7000000"
+                  required
                 />
                 {errors.priceRange && (
                   <p className="text-red-400 text-sm">{errors.priceRange}</p>
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Available Unit Sizes (sq ft)</label>
+                <label className="block text-gray-300 mb-2">Available Unit Sizes (sq ft)*</label>
                 <div className="space-y-2">
                   {unitSizeOptions.map((size) => (
                     <label key={size} className="flex items-center text-gray-300">
@@ -412,7 +436,7 @@ const BuilderProjectsForm = () => {
                         value={size}
                         checked={form.unitSizes.includes(size)}
                         onChange={handleChange}
-                        className="mr-2 text-indigo-500 focus:ring-indigo-500"
+                        className="mr-2 text-orange-500 focus:ring-orange-500"
                       />
                       {size}
                     </label>
@@ -423,13 +447,14 @@ const BuilderProjectsForm = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Launch/Completion Date</label>
+                <label className="block text-gray-300 mb-2">Launch/Completion Date*</label>
                 <input
                   type="date"
                   name="completionDate"
                   value={form.completionDate}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
+                  required
                 />
                 {errors.completionDate && (
                   <p className="text-red-400 text-sm">{errors.completionDate}</p>
@@ -443,12 +468,13 @@ const BuilderProjectsForm = () => {
             <h2 className="text-2xl font-semibold text-orange-400">Legal & Approvals</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">RERA Approved?</label>
+                <label className="block text-gray-300 mb-2">RERA Approved?*</label>
                 <select
                   name="reraApproved"
                   value={form.reraApproved}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
+                  required
                 >
                   <option value="">Select</option>
                   <option value="Yes">Yes</option>
@@ -459,14 +485,15 @@ const BuilderProjectsForm = () => {
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Land Title</label>
+                <label className="block text-gray-300 mb-2">Land Title*</label>
                 <input
                   type="text"
                   name="landTitle"
                   value={form.landTitle}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter land title details"
+                  required
                 />
                 {errors.landTitle && (
                   <p className="text-red-400 text-sm">{errors.landTitle}</p>
@@ -483,7 +510,7 @@ const BuilderProjectsForm = () => {
                         value={approval}
                         checked={form.approvals.includes(approval)}
                         onChange={handleChange}
-                        className="mr-2 text-indigo-500 focus:ring-indigo-500"
+                        className="mr-2 text-orange-500 focus:ring-orange-500"
                       />
                       {approval}
                     </label>
@@ -503,7 +530,7 @@ const BuilderProjectsForm = () => {
                   name="clubhouse"
                   value={form.clubhouse}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                 >
                   <option value="">Select</option>
                   <option value="Yes">Yes</option>
@@ -516,7 +543,7 @@ const BuilderProjectsForm = () => {
                   name="swimmingPool"
                   value={form.swimmingPool}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                 >
                   <option value="">Select</option>
                   <option value="Yes">Yes</option>
@@ -529,7 +556,7 @@ const BuilderProjectsForm = () => {
                   name="gymnasium"
                   value={form.gymnasium}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                 >
                   <option value="">Select</option>
                   <option value="Yes">Yes</option>
@@ -544,27 +571,20 @@ const BuilderProjectsForm = () => {
             <h2 className="text-2xl font-semibold text-orange-400">Media Uploads</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">Upload Project Images (Min 3)</label>
+                <label className="block text-gray-300 mb-2">Upload Project Images (Min 3)*</label>
                 <input
                   type="file"
-                  id="projectImages"
                   multiple
                   accept="image/*"
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  onChange={(e) => handleFileChange(e, 'projectImages')}
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                 />
                 {errors.projectImages && (
                   <p className="text-red-400 text-sm">{errors.projectImages}</p>
                 )}
-                {form.projectImages.length > 0 && (
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    {form.projectImages.map((url, index) => (
-                      <img
-                        key={index}
-                        src={url}
-                        alt={`Project Image ${index}`}
-                        className="w-full h-24 object-cover rounded-lg"
-                      />
-                    ))}
+                {selectedProjectImages.length > 0 && (
+                  <div className="mt-2 text-sm text-gray-400">
+                    {selectedProjectImages.length} image(s) selected
                   </div>
                 )}
               </div>
@@ -572,21 +592,14 @@ const BuilderProjectsForm = () => {
                 <label className="block text-gray-300 mb-2">Upload Floor Plans</label>
                 <input
                   type="file"
-                  id="floorPlans"
                   multiple
                   accept="image/*,application/pdf"
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  onChange={(e) => handleFileChange(e, 'floorPlans')}
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                 />
-                {form.floorPlans.length > 0 && (
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    {form.floorPlans.map((url, index) => (
-                      <img
-                        key={index}
-                        src={url}
-                        alt={`Floor Plan ${index}`}
-                        className="w-full h-24 object-cover rounded-lg"
-                      />
-                    ))}
+                {selectedFloorPlans.length > 0 && (
+                  <div className="mt-2 text-sm text-gray-400">
+                    {selectedFloorPlans.length} file(s) selected
                   </div>
                 )}
               </div>
@@ -594,24 +607,14 @@ const BuilderProjectsForm = () => {
                 <label className="block text-gray-300 mb-2">Upload Legal Docs (PDFs)</label>
                 <input
                   type="file"
-                  id="legalDocs"
                   multiple
                   accept="application/pdf"
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  onChange={(e) => handleFileChange(e, 'legalDocs')}
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                 />
-                {form.legalDocs.length > 0 && (
-                  <div className="mt-4 space-y-2">
-                    {form.legalDocs.map((url, index) => (
-                      <a
-                        key={index}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-orange-400 hover:underline"
-                      >
-                        Legal Document {index + 1}
-                      </a>
-                    ))}
+                {selectedLegalDocs.length > 0 && (
+                  <div className="mt-2 text-sm text-gray-400">
+                    {selectedLegalDocs.length} document(s) selected
                   </div>
                 )}
               </div>
@@ -623,42 +626,45 @@ const BuilderProjectsForm = () => {
             <h2 className="text-2xl font-semibold text-orange-400">Contact Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">Contact Person</label>
+                <label className="block text-gray-300 mb-2">Contact Person*</label>
                 <input
                   type="text"
                   name="contactPerson"
                   value={form.contactPerson}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter contact person name"
+                  required
                 />
                 {errors.contactPerson && (
                   <p className="text-red-400 text-sm">{errors.contactPerson}</p>
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Phone Number</label>
+                <label className="block text-gray-300 mb-2">Phone Number*</label>
                 <input
                   type="tel"
                   name="phoneNumber"
                   value={form.phoneNumber}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="e.g., +919876543210"
+                  required
                 />
                 {errors.phoneNumber && (
                   <p className="text-red-400 text-sm">{errors.phoneNumber}</p>
                 )}
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Email Address</label>
+                <label className="block text-gray-300 mb-2">Email Address*</label>
                 <input
                   type="email"
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter email"
+                  required
                 />
                 {errors.email && (
                   <p className="text-red-400 text-sm">{errors.email}</p>
@@ -671,7 +677,7 @@ const BuilderProjectsForm = () => {
                   name="website"
                   value={form.website}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter website URL"
                 />
               </div>
@@ -685,10 +691,11 @@ const BuilderProjectsForm = () => {
               name="termsAccepted"
               checked={form.termsAccepted}
               onChange={handleChange}
-              className="mr-2 text-indigo-500 focus:ring-indigo-500"
+              className="mr-2 text-orange-500 focus:ring-orange-500"
+              required
             />
             <label className="text-gray-300">
-              I agree to the <a href="/terms" className="text-orange-400 hover:underline">terms and conditions</a>
+              I agree to the <a href="/terms" className="text-orange-400 hover:underline">terms and conditions</a>*
             </label>
             {errors.termsAccepted && (
               <p className="text-red-400 text-sm ml-4">{errors.termsAccepted}</p>
@@ -696,13 +703,24 @@ const BuilderProjectsForm = () => {
           </div>
 
           {/* Submit Button */}
-          <div className="text-center">
+          <div className="text-center pt-6">
             <button
               type="submit"
               disabled={loading || !user}
-              className={`bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 px-10 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg ${loading || !user ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`bg-gradient-to-r from-orange-600 to-orange-500 text-white font-bold py-4 px-10 rounded-xl hover:from-orange-700 hover:to-orange-600 transition-all duration-300 shadow-lg ${loading || !user ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
             >
-              {loading ? 'Submitting...' : 'Submit Listing'}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Submitting...
+                </span>
+              ) : (
+                'Submit Listing'
+              )}
             </button>
           </div>
         </form>

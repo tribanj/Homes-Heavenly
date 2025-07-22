@@ -9,16 +9,21 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <div className="text-center mt-5">Loading...</div>;
   }
 
+  // 👇 Check: User is NOT logged in → redirect to /login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  const normalizedRole = userRole?.toLowerCase();
-
-  if (allowedRoles && !allowedRoles.map(r => r.toLowerCase()).includes(normalizedRole)) {
-    return <Navigate to="/unauthorized" replace />;
+  // 👇 Optional: Check role if allowedRoles is passed
+  if (allowedRoles?.length > 0) {
+    const normalizedRole = userRole?.toLowerCase();
+    const allowed = allowedRoles.map(role => role.toLowerCase());
+    if (!allowed.includes(normalizedRole)) {
+      return <Navigate to="/unauthorized" replace />;
+    }
   }
 
+  // ✅ Access granted
   return children;
 };
 
