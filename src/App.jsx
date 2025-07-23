@@ -99,6 +99,8 @@ import TwoDDesign from "./pages/portfolio/2DDesign";
 import ThreeDVisualization from "./pages/portfolio/ThreeDDesign";
 import PgHostel from "./pages/PgHostel";
 import PgHostelDetails from "./pages/PgHostelDetails";
+import CoworkingSpaceDetails from "./components/Services/rentlease/CoworkingSpaceDetails";
+import UserDetailsPage from "./pages/UserDetailsPage";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -273,6 +275,15 @@ const AppInner = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/users/:userId"
+
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <UserDetailsPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Property Posting */}
         {/* <Route path="/select-purpose" element={
@@ -313,6 +324,7 @@ const AppInner = () => {
         <Route path="/services/rentlease/tenantscreening" element={<TenantScreening />} />
         <Route path="/services/rentlease/leaseagreement" element={<LeaseAgreement />} />
         <Route path="/services/rentlease/colivingsolutions" element={<CoLivingSolutions />} />
+        <Route path="/coworking-space/:id" element={<CoworkingSpaceDetails />} />
         <Route path="/services/rentlease/shorttermrentals" element={<ShortTermRentals />} />
         <Route path="/services/rentlease/studenthousing" element={<StudentHousing />} />
         <Route path="/services/propertymanagement/RentCollection" element={<RentCollection />} />
