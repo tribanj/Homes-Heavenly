@@ -1,31 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 import logoHome from '../assets/logo 2.jpg';
 import services from "./constants/Services";
+import { FaAd, FaHome, FaNewspaper, FaHeart, FaTools, FaCalendarAlt, FaHistory, FaBell, FaCog, FaSignInAlt, FaUser } from "react-icons/fa";
+import { Tooltip } from "@mui/material";
 
 function Navbar() {
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState("login");
   const [showServices, setShowServices] = useState(false);
   const [activeService, setActiveService] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("");
+  const [adLimit, setAdLimit] = useState(2);
+  const [adsUsed, setAdsUsed] = useState(0);
+  const [loadingAdData, setLoadingAdData] = useState(false);
   const location = useLocation();
 
   const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
 
+  // Set active tab based on route
   useEffect(() => {
-    // Set active tab based on current route
-    const path = location.pathname;
-    setActiveTab(path);
-
-    // Close mobile menu when route changes
+    setActiveTab(location.pathname);
     setMobileMenuOpen(false);
   }, [location]);
 
-  if (loading) return null;
+  // Fetch user's ad limit data from Firestore
+  useEffect(() => {
+    const fetchAdLimitData = async () => {
+      if (user) {
+        setLoadingAdData(true);
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setAdLimit(userData.adLimit || 2);
+            setAdsUsed(userData.adsUsed || 0);
+          }
+        } catch (error) {
+          console.error("Error fetching ad limit data:", error);
+        } finally {
+          setLoadingAdData(false);
+        }
+      } else {
+        // Reset to defaults when logged out
+        setAdLimit(2);
+        setAdsUsed(0);
+      }
+    };
+
+    fetchAdLimitData();
+  }, [user]);
 
   const handleLogout = async () => {
     try {
@@ -47,182 +74,237 @@ function Navbar() {
   };
 
   const handleProfileClick = () => {
-    if (user) {
-      navigate("/user-dashboard");
-    } else {
-      navigate("/login");
-    }
+    navigate(user ? "/user-dashboard" : "/login");
   };
 
   const navLinks = [
-    { label: "Home", path: "/" },
-    { label: "Buy&Sale", path: "/buy&sale" },
-    { label: "Rent", path: "/rent-page" },
-    { label: "PG/Hostels", path: "/pgHostel" },
-    { label: "Post Ad", path: "/select-purpose" },
-    { label: "Contact Us", path: "/contactus-page" },
+    { label: "Home", path: "/", icon: <FaHome /> },
+    { label: "Buy&Sale", path: "/buy&sale", icon: <FaNewspaper /> },
+    { label: "Rent", path: "/rent-page", icon: <FaHome /> },
+    { label: "PG/Hostels", path: "/pgHostel", icon: <FaUser /> },
+    { label: "Post Ad", path: "/select-purpose", icon: <FaAd /> },
+    { label: "Contact Us", path: "/contactus-page", icon: <FaBell /> },
   ];
 
   const isActive = (path) => {
-    return activeTab === path ? "bg-orange-500 text-white" : "hover:bg-blue-800";
+    return activeTab === path ? "bg-orange-600 text-white" : "hover:bg-gray-700";
   };
 
+  // Calculate ad limit metrics
+  const adLimitPercentage = Math.min(Math.round((adsUsed / adLimit) * 100), 100);
+  const adsRemaining = adLimit - adsUsed;
+  const isLimitCritical = adsRemaining <= 0;
+  const isLimitWarning = adsRemaining <= 2 && !isLimitCritical;
+
+  if (loading) return null;
+
   return (
-    <>
-      <nav className="bg-gray-900 text-white shadow z-50 relative">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-between h-16 items-center">
-            {/* Logo + All Links */}
-            <div className="flex items-center space-x-2">
-              <Link to="/" className="flex items-center space-x-2">
-                <img src={logoHome} alt="Home Logo" className="h-15 w-auto object-contain" />
-              </Link>
+    <nav className="bg-gray-900 text-white shadow-lg z-50 sticky top-0">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between h-16 items-center">
+          {/* Logo and Desktop Navigation */}
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="flex items-center space-x-2">
+              <img src={logoHome} alt="Logo" className="h-15 w-auto" />
+            </Link>
 
-              <div className="hidden md:flex items-center text-white no-underline">
-                {navLinks.map(({ label, path }) => (
-                  <Link
-                    key={label}
-                    to={path}
-                    className={`block m-2 p-1 text-sm no-underline rounded text-white ${isActive(path)}`}
-                  >
-                    {label}
-                  </Link>
-                ))}
-
-                {/* Services Dropdown */}
-                {/* Services Dropdown */}
-                <div
-                  className="relative"
-                  onMouseEnter={() => setShowServices(true)}
-                  onMouseLeave={() => {
-                    setShowServices(false);
-                    setActiveService(null);
-                  }}
+            <div className="hidden md:flex items-center space-x-1">
+              {navLinks.map(({ label, path, icon }) => (
+                <Link
+                  key={label}
+                  to={path}
+                  className={`flex items-center px-2 py-2 no-underline text-white rounded-md text-sm font-medium ${isActive(path)}`}
                 >
-                  <button
-                    className={`text-sm px-3 py-2 rounded ${activeTab.startsWith('/services') ? 'bg-blue-800 text-white' : 'hover:bg-gray-700'
-                      }`}
-                  >
-                    Services
-                  </button>
+                  <span className="mr-2">{icon}</span>
+                  {label}
+                </Link>
+              ))}
 
-                  {showServices && (
-                    <div className="absolute top-full left-0 mt-0 w-60 bg-white text-black shadow-lg rounded-md z-50">
-                      {services.map((service, svcIndex) => (
-                        <div
-                          key={svcIndex}
-                          className="group relative px-4 py-2 hover:bg-gray-100"
-                          onMouseEnter={() => setActiveService(svcIndex)}
-                        >
-                          <div className="flex justify-between items-center cursor-default">
-                            {service.title}
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 5l7 7-7 7"
-                              />
-                            </svg>
-                          </div>
+              {/* Services Dropdown */}
+              <div
+                className="relative"
+                onMouseEnter={() => setShowServices(true)}
+                onMouseLeave={() => {
+                  setShowServices(false);
+                  setActiveService(null);
+                }}
+              >
+                <button
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${activeTab.startsWith('/services') ? 'bg-orange-600 text-white' : 'hover:bg-gray-700'}`}
+                >
+                  <FaTools className="mr-2" />
+                  Services
+                </button>
 
-                          {activeService === svcIndex && (
-                            <div className="absolute left-full top-0 w-64 bg-white border border-gray-200 rounded shadow-lg z-50">
-                              {service.options.map((opt, optIndex) => (
-                                <Link
-                                  key={optIndex}
-                                  to={opt.path}
-                                  className="block px-4 py-2 text-sm hover:bg-gray-100"
-                                  onClick={() => setShowServices(false)}
-                                >
-                                  {opt.label}
-                                </Link>
-                              ))}
-                            </div>
-                          )}
+                {showServices && (
+                  <div className="absolute left-0 mt-2 w-56 bg-white text-gray-900 shadow-xl rounded-md z-50">
+                    {services.map((service, svcIndex) => (
+                      <div
+                        key={svcIndex}
+                        className="group relative px-4 py-2 hover:bg-gray-100"
+                        onMouseEnter={() => setActiveService(svcIndex)}
+                      >
+                        <div className="flex justify-between items-center cursor-pointer">
+                          <span>{service.title}</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
 
-
+                        {activeService === svcIndex && (
+                          <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded shadow-lg z-50">
+                            {service.options.map((opt, optIndex) => (
+                              <Link
+                                key={optIndex}
+                                to={opt.path}
+                                className="block px-4 py-2 text-sm hover:bg-gray-100"
+                                onClick={() => setShowServices(false)}
+                              >
+                                {opt.label}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
+          </div>
 
-            {/* Right side: Account/Login */}
-            <div className="hidden md:flex items-center">
-              <button
-                onClick={handleProfileClick}
-                className="flex items-center space-x-2 my-25 hover:bg-gray-700 px-3 py-2 rounded"
-              >
-                {user ? (
-                  <>
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                      {getInitials(user.displayName)}
+          {/* User Controls */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user && !loadingAdData && (
+              <Tooltip
+                title={
+                  <div className="p-3">
+                    <div className="font-bold text-sm mb-2">Ad Posting Status</div>
+                    <div className="text-xs mb-1">
+                      Used {adsUsed} of {adLimit} ads ({adLimitPercentage}%)
                     </div>
-                    <span className="text-sm">My Profile</span>
-                  </>
-                ) : (
-                  <span className="text-sm">Login / Signup</span>
-                )}
-              </button>
-            </div>
-
-            {/* Mobile menu toggle */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-md hover:bg-gray-700 focus:outline-none"
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className={`h-2 rounded-full ${isLimitCritical ? 'bg-red-500' :
+                            isLimitWarning ? 'bg-yellow-500' : 'bg-green-500'
+                          }`}
+                        style={{ width: `${adLimitPercentage}%` }}
+                      ></div>
+                    </div>
+                    {isLimitCritical ? (
+                      <div className="text-xs mt-2 text-red-400">
+                        You've reached your ad limit
+                      </div>
+                    ) : isLimitWarning ? (
+                      <div className="text-xs mt-2 text-yellow-400">
+                        Only {adsRemaining} ad{adsRemaining === 1 ? '' : 's'} remaining
+                      </div>
+                    ) : (
+                      <div className="text-xs mt-2 text-green-400">
+                        {adsRemaining} ads available
+                      </div>
+                    )}
+                    {user.role === 'user' && (
+                      <div className="text-xs mt-2 text-blue-400">
+                        Upgrade for higher limits
+                      </div>
+                    )}
+                  </div>
+                }
+                arrow
+                placement="bottom"
               >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d={
-                      mobileMenuOpen
-                        ? "M6 18L18 6M6 6l12 12"
-                        : "M4 6h16M4 12h16M4 18h16"
-                    }
-                  />
-                </svg>
-              </button>
-            </div>
+                <div className="relative cursor-pointer">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${isLimitCritical ? 'bg-red-900/30 border-red-500' :
+                      isLimitWarning ? 'bg-amber-900/30 border-amber-500' :
+                        'bg-gray-800 border-amber-500'
+                    }`}>
+                    <FaAd className={
+                      isLimitCritical ? 'text-red-400' :
+                        isLimitWarning ? 'text-amber-400' :
+                          'text-amber-400'
+                    } />
+                  </div>
+                  <div className={`absolute -top-2 -right-2 rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold ${isLimitCritical ? 'bg-red-600' :
+                      isLimitWarning ? 'bg-amber-600' :
+                        'bg-amber-600'
+                    }`}>
+                    {adsRemaining}
+                  </div>
+                </div>
+              </Tooltip>
+            )}
+
+            <button
+              onClick={handleProfileClick}
+              className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-gray-700 transition-colors"
+            >
+              {user ? (
+                <>
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {getInitials(user.displayName)}
+                  </div>
+                  <span className="text-sm hidden lg:inline">My Profile</span>
+                </>
+              ) : (
+                <>
+                  <FaSignInAlt />
+                  <span className="text-sm hidden lg:inline">Login</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-md hover:bg-gray-700 focus:outline-none"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                />
+              </svg>
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden px-4 pt-2 pb-4 space-y-1 bg-gray-800 text-white">
-            {navLinks.map(({ label, path }) => (
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-gray-800 border-t border-gray-700">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {navLinks.map(({ label, path, icon }) => (
               <Link
                 key={label}
                 to={path}
-                className={`block px-3 py-2 rounded text-sm ${isActive(path)}`}
+                className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${isActive(path)}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
+                <span className="mr-3">{icon}</span>
                 {label}
               </Link>
             ))}
 
-            <div className="border-t border-gray-700 pt-2">
+            {/* Services Dropdown in Mobile */}
+            <div className="px-3 py-2">
               <button
                 onClick={() => setShowServices(!showServices)}
-                className={`w-full text-left px-3 py-2 rounded text-sm flex justify-between items-center ${activeTab.startsWith('/services') ? 'bg-blue-800 text-white' : 'hover:bg-gray-700'}`}
+                className={`w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium ${activeTab.startsWith('/services') ? 'bg-orange-600 text-white' : 'hover:bg-gray-700'}`}
               >
-                Services
+                <div className="flex items-center">
+                  <FaTools className="mr-3" />
+                  Services
+                </div>
                 <svg
                   className={`w-4 h-4 transform transition-transform ${showServices ? 'rotate-90' : ''}`}
                   fill="none"
@@ -234,12 +316,12 @@ function Navbar() {
               </button>
 
               {showServices && (
-                <div className="pl-4 mt-1 space-y-1">
+                <div className="pl-6 mt-1 space-y-1">
                   {services.map((service, index) => (
                     <div key={index}>
                       <button
                         onClick={() => setActiveService(activeService === index ? null : index)}
-                        className="w-full text-left px-3 py-2 text-sm hover:bg-gray-700 flex justify-between items-center"
+                        className="w-full flex justify-between items-center px-3 py-2 text-sm hover:bg-gray-700 rounded-md"
                       >
                         {service.title}
                         <svg
@@ -258,7 +340,7 @@ function Navbar() {
                             <Link
                               key={idx}
                               to={opt.path}
-                              className="block px-3 py-2 text-sm hover:bg-gray-700 rounded"
+                              className="block px-3 py-2 text-sm hover:bg-gray-700 rounded-md"
                               onClick={() => setMobileMenuOpen(false)}
                             >
                               {opt.label}
@@ -272,21 +354,70 @@ function Navbar() {
               )}
             </div>
 
+            {/* Ad Limit in Mobile */}
+            {user && !loadingAdData && (
+              <div className="px-3 py-2 border-t border-gray-700">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center text-sm font-medium">
+                    <FaAd className="mr-2 text-amber-400" />
+                    Ad Limit
+                  </div>
+                  <span className="text-xs font-semibold">
+                    {adsUsed}/{adLimit} ({adLimitPercentage}%)
+                  </span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2 mb-1">
+                  <div
+                    className={`h-2 rounded-full ${isLimitCritical ? 'bg-red-500' :
+                        isLimitWarning ? 'bg-yellow-500' : 'bg-green-500'
+                      }`}
+                    style={{ width: `${adLimitPercentage}%` }}
+                  ></div>
+                </div>
+                {isLimitCritical ? (
+                  <div className="text-xs text-red-400">
+                    Limit reached - upgrade to post more
+                  </div>
+                ) : isLimitWarning ? (
+                  <div className="text-xs text-yellow-400">
+                    Only {adsRemaining} remaining
+                  </div>
+                ) : (
+                  <div className="text-xs text-green-400">
+                    {adsRemaining} ads available
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Profile/Login in Mobile */}
             <div className="border-t border-gray-700 pt-2">
               <button
                 onClick={() => {
                   handleProfileClick();
                   setMobileMenuOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded text-sm hover:bg-gray-700"
+                className="flex items-center w-full px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700"
               >
-                {user ? "My Profile" : "Login / Signup"}
+                {user ? (
+                  <>
+                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3">
+                      {getInitials(user.displayName)}
+                    </div>
+                    My Profile
+                  </>
+                ) : (
+                  <>
+                    <FaSignInAlt className="mr-3" />
+                    Login / Signup
+                  </>
+                )}
               </button>
             </div>
           </div>
-        )}
-      </nav>
-    </>
+        </div>
+      )}
+    </nav>
   );
 }
 

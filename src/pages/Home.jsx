@@ -449,12 +449,12 @@ const Home = () => {
             </button>
           </div>
 
-          <div className="text-gray-400">
+          {/* <div className="text-gray-400">
             {activeTab === "all" && `${filteredProperties.length} Properties`}
             {activeTab === "rent" && `${rentProperties.length} Rental Properties`}
             {activeTab === "sale" && `${saleProperties.length} Properties for Sale`}
             {activeTab === "auction" && `${filteredAuctionProperties.length} Auction Properties`}
-          </div>
+          </div> */}
         </div>
 
         {loading ? (
