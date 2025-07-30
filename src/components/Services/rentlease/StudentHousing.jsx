@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { FaHome, FaUniversity, FaMapMarkerAlt, FaCalendarAlt, FaBed, FaInfoCircle, FaSearch, FaArrowRight } from 'react-icons/fa';
+import {
+  FaHome, FaUniversity, FaMapMarkerAlt, FaCalendarAlt,
+  FaBed, FaInfoCircle, FaSearch, FaArrowRight
+} from 'react-icons/fa';
+import { motion } from "framer-motion";
 
 const StudentHousing = () => {
   const [formData, setFormData] = useState({
@@ -42,26 +46,44 @@ const StudentHousing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-orange-400 mb-4">
-            🎓 Premium Student Housing Solutions
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Discover safe, affordable, and student-friendly PGs and hostels near top educational institutions.
-          </p>
-          <button
-            onClick={handleBrowseListings}
-            className="mt-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 flex items-center mx-auto"
-          >
-            Browse PG & Hostel Listings <FaArrowRight className="ml-2" />
-          </button>
-        </div>
+    <div className="min-h-screen bg-gray-900 text-gray-100">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900 py-3.5 px-4 h-40 text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-2xl md:text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-500"
+        >
+          🎓 Premium Student Housing Solutions
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-xl text-gray-300 mb-3 max-w-3xl mx-auto"
+        >
+          Discover safe, affordable, and student-friendly PGs and hostels near top educational institutions.
+        </motion.p>
+      </div>
 
-        {/* Features Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      {/* Browse Listings Button */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-center mt-8"
+      >
+        <button
+          onClick={handleBrowseListings}
+          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 flex items-center mx-auto"
+        >
+          Browse PG & Hostel Listings <FaArrowRight className="ml-2" />
+        </button>
+      </motion.div>
+
+      {/* Features Section */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mb-10 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="bg-gray-800 p-6 rounded-xl border border-orange-500/20 hover:border-orange-500/40 transition-all">
             <div className="text-orange-400 text-3xl mb-4">
               <FaHome />
@@ -92,9 +114,11 @@ const StudentHousing = () => {
             </p>
           </div>
         </div>
+      </div>
 
-        {/* Inquiry Form */}
-        <div className="bg-gray-800 rounded-xl shadow-xl p-8 border border-orange-500/20 mb-12">
+      {/* Inquiry Form */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mb-10">
+        <div className="bg-gray-800 rounded-xl shadow-xl p-8 border border-orange-500/20">
           <h2 className="text-2xl font-bold text-orange-400 mb-6">Personalized Housing Assistance</h2>
           <p className="text-gray-300 mb-8">
             Complete this form and our housing specialists will match you with properties that meet your requirements.
@@ -217,8 +241,10 @@ const StudentHousing = () => {
             </div>
           </form>
         </div>
+      </div>
 
-        {/* Tips Section */}
+      {/* Student Housing Tips Section */}
+      <div className="md:px-35 pb-16">
         <div className="bg-gray-800 rounded-xl shadow-xl p-8 border border-orange-500/20">
           <h2 className="text-2xl font-bold text-orange-400 mb-6">Student Housing Tips</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -272,12 +298,14 @@ const StudentHousing = () => {
           </div>
 
           <div className="mt-8 text-center">
-            <button
-              onClick={handleBrowseListings}
-              className="bg-transparent border-2 border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 flex items-center mx-auto"
-            >
-              Explore Available Listings <FaArrowRight className="ml-2" />
-            </button>
+           <button
+  onClick={handleBrowseListings}
+  className="bg-orange-500 text-white hover:bg-orange-600 font-bold py-3 px-8 rounded-lg transition-all duration-300 flex items-center mx-auto outline-none border-none focus:outline-none focus:ring-0"
+>
+  Explore Available Listings <FaArrowRight className="ml-2" />
+</button>
+
+
           </div>
         </div>
       </div>
