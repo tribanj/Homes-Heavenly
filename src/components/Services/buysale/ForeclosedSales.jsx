@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { FiUser, FiMail, FiPhone, FiDollarSign, FiMapPin, FiCheckCircle, FiChevronDown, FiArrowRight, FiHome } from 'react-icons/fi';
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiDollarSign,
+  FiMapPin,
+  FiCheckCircle,
+  FiChevronDown,
+  FiArrowRight,
+  FiHome,
+  FiTrendingUp,
+  FiShield,
+  FiShieldOff,
+  FiList,
+} from "react-icons/fi";
+import { FaLandmark, FaHardHat } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const DistressedSales = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    investmentBudget: '',
-    preferredLocation: '',
+    name: "",
+    email: "",
+    phone: "",
+    investmentBudget: "",
+    preferredLocation: "",
   });
-  const [activeAccordion, setActiveAccordion] = useState('collapse1');
+  const [activeAccordion, setActiveAccordion] = useState("collapse1");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,21 +36,24 @@ const DistressedSales = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("📥 Distressed Sales Inquiry:", formData);
-    toast.success('Your inquiry has been submitted!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnjonClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "dark",
-    });
+    toast.success(
+      "Your inquiry has been submitted! Our team will contact you shortly.",
+      {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      }
+    );
     setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      investmentBudget: '',
-      preferredLocation: '',
+      name: "",
+      email: "",
+      phone: "",
+      investmentBudget: "",
+      preferredLocation: "",
     });
   };
 
@@ -43,135 +62,248 @@ const DistressedSales = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-orange-500 flex items-center justify-center">
-            <FiHome className="mr-2" /> Foreclosed & Distressed Sales
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-orange-900 py-6 px-4 text-center h-48 flex flex-col justify-center">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-amber-500 flex items-center justify-center">
+            <FiHome className="mr-3" /> Foreclosed & Distressed Properties
           </h1>
-          <p className="mt-4 text-lg text-gray-300 max-w-2xl mx-auto">
-            Unlock incredible investment opportunities with verified foreclosed and distressed properties. Purchase below market value and maximize your ROI.
+          <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto">
+            Unlock incredible investment opportunities with verified properties
+            below market value.
           </p>
         </div>
+      </motion.div>
 
+      {/* Centered Content Wrapper */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Why Choose Distressed Properties Section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
-            <FiCheckCircle className="mr-2" /> Why Choose Distressed Properties?
+        <section className="my-16">
+          <h2 className="text-3xl font-semibold text-orange-400 flex items-center mb-8">
+            <FiCheckCircle className="mr-3" /> The Investor's Advantage
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
-              <h3 className="text-lg font-medium text-orange-300">Below Market Value</h3>
-              <p className="text-gray-300 text-sm mt-2">
-                Purchase properties at 10–40% below market rates for exceptional value.
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-gray-800 p-8 rounded-xl shadow-lg hover:bg-gray-700 hover:scale-105 transition-all">
+              <h3 className="text-xl font-medium text-orange-300">
+                Below Market Value
+              </h3>
+              <p className="text-base text-gray-400 mt-3">
+                Purchase properties at 10% to 40% below current market rates for
+                instant equity.
               </p>
             </div>
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
-              <h3 className="text-lg font-medium text-orange-300">High ROI Potential</h3>
-              <p className="text-gray-300 text-sm mt-2">
-                Renovate or resell for significant returns on your investment.
+            <div className="bg-gray-800 p-8 rounded-xl shadow-lg hover:bg-gray-700 hover:scale-105 transition-all">
+              <h3 className="text-xl font-medium text-orange-300">
+                High ROI Potential
+              </h3>
+              <p className="text-base text-gray-400 mt-3">
+                Capitalize on value-add opportunities through renovation, rental
+                income, or quick resale.
               </p>
             </div>
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
-              <h3 className="text-lg font-medium text-orange-300">Quick Closing</h3>
-              <p className="text-gray-300 text-sm mt-2">
-                Fast transactions with motivated sellers or bank auctions.
+            <div className="bg-gray-800 p-8 rounded-xl shadow-lg hover:bg-gray-700 hover:scale-105 transition-all">
+              <h3 className="text-xl font-medium text-orange-300">
+                Exclusive Access
+              </h3>
+              <p className="text-base text-gray-400 mt-3">
+                Gain access to off-market deals and bank auction properties not
+                available to the general public.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Value-Add Services Section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
-            <FiCheckCircle className="mr-2" /> Our Value-Add Services
+        {/* --- NEW SECTION: Types of Distressed Properties --- */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-semibold text-orange-400 flex items-center mb-8">
+            <FiList className="mr-3" /> Types of Properties We Handle
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
-              <h3 className="text-lg font-medium text-orange-300">Verified Listings</h3>
-              <p className="text-gray-300 text-sm mt-2">
-                Thoroughly vetted distressed properties for reliable investments.
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-gray-800 p-8 rounded-xl shadow-lg">
+              <FaLandmark className="text-orange-400 mb-4" size={40} />
+              <h3 className="text-xl font-medium text-orange-300">
+                Bank Auction Properties
+              </h3>
+              <p className="text-base text-gray-400 mt-3">
+                Properties auctioned by banks under the SARFAESI Act, offering
+                clear titles and significant discounts.
               </p>
             </div>
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
-              <h3 className="text-lg font-medium text-orange-300">Risk Analysis</h3>
-              <p className="text-gray-300 text-sm mt-2">
-                Detailed ROI forecasts and risk assessments for informed decisions.
+            <div className="bg-gray-800 p-8 rounded-xl shadow-lg">
+              <FaHardHat className="text-orange-400 mb-4" size={40} />
+              <h3 className="text-xl font-medium text-orange-300">
+                Developer Distress Sales
+              </h3>
+              <p className="text-base text-gray-400 mt-3">
+                New or under-construction units sold by developers needing to
+                liquidate inventory quickly.
               </p>
             </div>
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg hover:bg-gray-700 transition-colors">
-              <h3 className="text-lg font-medium text-orange-300">Due Diligence</h3>
-              <p className="text-gray-300 text-sm mt-2">
-                Comprehensive legal and financial checks for peace of mind.
+            <div className="bg-gray-800 p-8 rounded-xl shadow-lg">
+              <FiUser className="text-orange-400 mb-4" size={40} />
+              <h3 className="text-xl font-medium text-orange-300">
+                Individual Distress Sales
+              </h3>
+              <p className="text-base text-gray-400 mt-3">
+                Properties from individual owners facing financial hardship who
+                need to sell urgently, often below market rate.
               </p>
             </div>
           </div>
         </section>
 
         {/* Featured Listings Preview Section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
-            <FiHome className="mr-2" /> Featured Listings Preview
+        <section className="mb-16">
+          <h2 className="text-3xl font-semibold text-orange-400 flex items-center mb-8">
+            <FiHome className="mr-3" /> Featured Listings Preview
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: '2BHK, Bangalore', price: '₹45L', market: '₹62L', image: 'https://via.placeholder.com/300x180?text=Property+1' },
-              { title: 'Plot, Pune', price: '₹22L', market: '₹30L', image: 'https://via.placeholder.com/300x180?text=Property+2' },
-              { title: '3BHK Duplex, Hyderabad', price: '₹65L', market: '₹85L', image: 'https://via.placeholder.com/300x180?text=Property+3' },
+              {
+                title: "2BHK Apartment, Bangalore",
+                price: "₹45 Lakh",
+                market: "₹62 Lakh",
+                image:
+                  "https://via.placeholder.com/400x240/111827/FF9800?text=Apartment+in+Koramangala",
+              },
+              {
+                title: "Residential Plot, Pune",
+                price: "₹22 Lakh",
+                market: "₹30 Lakh",
+                image:
+                  "https://via.placeholder.com/400x240/111827/FF9800?text=Plot+in+Hinjewadi",
+              },
+              {
+                title: "3BHK Duplex, Hyderabad",
+                price: "₹65 Lakh",
+                market: "₹85 Lakh",
+                image:
+                  "https://via.placeholder.com/400x240/111827/FF9800?text=Duplex+in+Jubilee+Hills",
+              },
             ].map((property, index) => (
-              <div key={index} className="relative group overflow-hidden rounded-xl shadow-lg">
+              <div
+                key={index}
+                className="relative group overflow-hidden rounded-xl shadow-lg bg-gray-800"
+              >
                 <img
                   src={property.image}
                   alt={property.title}
-                  className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent flex items-end p-4">
-                  <div>
-                    <h3 className="text-orange-300 font-medium">{property.title}</h3>
-                    <p className="text-gray-300 text-sm">Listed at {property.price} (Market: {property.market})</p>
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-transparent flex flex-col justify-end p-4">
+                  <h3 className="text-lg font-semibold text-orange-300">
+                    {property.title}
+                  </h3>
+                  <p className="text-base text-gray-300">
+                    Our Price:{" "}
+                    <span className="font-bold">{property.price}</span>
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    Market Value: ~{property.market}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-center text-gray-400 text-sm">
-            <em>*Full listings available after verification</em>
+          <p className="mt-6 text-center text-gray-400 text-base">
+            <em>
+              *This is a sample. Full, verified listings are shared with
+              registered investors only.
+            </em>
           </p>
         </section>
 
-        {/* Legal & Financial Handling Section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
-            <FiCheckCircle className="mr-2" /> Legal & Financial Handling
+        {/* --- NEW SECTION: Understanding Risk vs. Reward --- */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-semibold text-orange-400 flex items-center mb-8">
+            <FiShield className="mr-3" /> Risk vs. Reward
           </h2>
-          <p className="text-gray-300 text-sm bg-gray-800 p-6 rounded-xl shadow-lg mb-4">
-            We prioritize legal clarity with thorough title verification, encumbrance checks, and due diligence by our expert legal team, ensuring secure investments.
-          </p>
-          <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-300">
-            <li className="flex items-start">
-              <span className="text-orange-500 mr-2">✅</span> Clean title assurance for all properties
-            </li>
-            <li className="flex items-start">
-              <span className="text-orange-500 mr-2">✅</span> Support for bank auction processes
-            </li>
-            <li className="flex items-start">
-              <span className="text-orange-500 mr-2">✅</span> Loan processing assistance for investors
-            </li>
-          </ul>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-gray-800 p-8 rounded-xl">
+              <h3 className="text-2xl font-semibold text-green-400 flex items-center mb-4">
+                <FiTrendingUp className="mr-2" /> The Rewards
+              </h3>
+              <ul className="space-y-3 text-base text-gray-300">
+                <li className="flex items-start">
+                  <FiCheckCircle className="text-green-400 mr-3 mt-1 shrink-0" />
+                  <span>Purchase significantly below market value.</span>
+                </li>
+                <li className="flex items-start">
+                  <FiCheckCircle className="text-green-400 mr-3 mt-1 shrink-0" />
+                  <span>High potential for capital appreciation.</span>
+                </li>
+                <li className="flex items-start">
+                  <FiCheckCircle className="text-green-400 mr-3 mt-1 shrink-0" />
+                  <span>Less competition than the open market.</span>
+                </li>
+                <li className="flex items-start">
+                  <FiCheckCircle className="text-green-400 mr-3 mt-1 shrink-0" />
+                  <span>Opportunity for value-add renovation projects.</span>
+                </li>
+              </ul>
+            </div>
+            <div className="bg-gray-800 p-8 rounded-xl">
+              <h3 className="text-2xl font-semibold text-red-400 flex items-center mb-4">
+                <FiShieldOff className="mr-2" /> The Risks (And How We Help)
+              </h3>
+              <ul className="space-y-3 text-base text-gray-300">
+                <li className="flex items-start">
+                  <FiCheckCircle className="text-green-400 mr-3 mt-1 shrink-0" />
+                  <span>
+                    **Risk:** Hidden legal issues or unclear titles. <br />
+                    <span className="text-gray-400">
+                      **Our Solution:** We conduct rigorous legal due diligence
+                      on every property.
+                    </span>
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <FiCheckCircle className="text-green-400 mr-3 mt-1 shrink-0" />
+                  <span>
+                    **Risk:** Unknown repair costs and property condition.{" "}
+                    <br />
+                    <span className="text-gray-400">
+                      **Our Solution:** We facilitate property inspections and
+                      provide realistic cost estimates.
+                    </span>
+                  </span>
+                </li>
+                <li className="flex items-start">
+                  <FiCheckCircle className="text-green-400 mr-3 mt-1 shrink-0" />
+                  <span>
+                    **Risk:** Complex auction and bidding processes. <br />
+                    <span className="text-gray-400">
+                      **Our Solution:** We guide you through the entire process,
+                      from paperwork to bidding strategy.
+                    </span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </section>
 
-        {/* Submit Interest Form Section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
-            <FiArrowRight className="mr-2" /> Submit Your Interest
+        {/* Submit Interest Form Section (UNCHANGED) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-semibold text-orange-400 flex items-center mb-8">
+            <FiArrowRight className="mr-3" /> Get Exclusive Access
           </h2>
-          <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl p-8 shadow-lg">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-gray-800 rounded-xl p-8 shadow-lg"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Full Name *
+                </label>
                 <div className="relative">
-                  <FiUser className="absolute top-3 left-3 text-orange-500" />
+                  <FiUser className="absolute top-3.5 left-3 text-orange-500" />
                   <input
                     type="text"
                     name="name"
@@ -184,9 +316,11 @@ const DistressedSales = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Email *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Email *
+                </label>
                 <div className="relative">
-                  <FiMail className="absolute top-3 left-3 text-orange-500" />
+                  <FiMail className="absolute top-3.5 left-3 text-orange-500" />
                   <input
                     type="email"
                     name="email"
@@ -199,9 +333,11 @@ const DistressedSales = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Phone *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Phone *
+                </label>
                 <div className="relative">
-                  <FiPhone className="absolute top-3 left-3 text-orange-500" />
+                  <FiPhone className="absolute top-3.5 left-3 text-orange-500" />
                   <input
                     type="tel"
                     name="phone"
@@ -214,9 +350,11 @@ const DistressedSales = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Investment Budget (INR) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Investment Budget (in ₹ Lakhs) *
+                </label>
                 <div className="relative">
-                  <FiDollarSign className="absolute top-3 left-3 text-orange-500" />
+                  <FiDollarSign className="absolute top-3.5 left-3 text-orange-500" />
                   <input
                     type="number"
                     name="investmentBudget"
@@ -224,14 +362,16 @@ const DistressedSales = () => {
                     onChange={handleChange}
                     required
                     className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
-                    placeholder="Enter your budget"
+                    placeholder="e.g., 50 for ₹50 Lakhs"
                   />
                 </div>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-2">Preferred Location(s) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Preferred Location(s) *
+                </label>
                 <div className="relative">
-                  <FiMapPin className="absolute top-3 left-3 text-orange-500" />
+                  <FiMapPin className="absolute top-3.5 left-3 text-orange-500" />
                   <input
                     type="text"
                     name="preferredLocation"
@@ -239,61 +379,85 @@ const DistressedSales = () => {
                     onChange={handleChange}
                     required
                     className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
-                    placeholder="Enter preferred locations"
+                    placeholder="e.g., Hyderabad, Bangalore (North)"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-6 text-right">
+            <div className="mt-8 text-right">
               <button
                 type="submit"
-                className="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors flex items-center"
+                className="w-full md:w-auto px-8 py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors flex items-center justify-center"
               >
-                <FiArrowRight className="mr-2" /> Browse Verified Listings
+                Browse Verified Listings <FiArrowRight className="ml-2" />
               </button>
             </div>
           </form>
         </section>
 
         {/* FAQ Section */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-orange-400 flex items-center mb-6">
-            <FiCheckCircle className="mr-2" /> Frequently Asked Questions
+        <section className="pb-20">
+          <h2 className="text-3xl font-semibold text-orange-400 flex items-center mb-8">
+            <FiCheckCircle className="mr-3" /> Frequently Asked Questions
           </h2>
           <div className="space-y-4">
             {[
               {
-                id: 'collapse1',
-                question: 'Are distressed sales legally safe?',
-                answer: 'Yes, we ensure all documentation and ownership is legally verified before listing.',
+                id: "collapse1",
+                question: "Are distressed properties legally safe to buy?",
+                answer:
+                  "Yes. Our primary service is to ensure all documentation, titles, and ownership records are legally verified and clear of any encumbrances before we even present a property to you.",
               },
               {
-                id: 'collapse2',
-                question: 'Can I get a loan for these properties?',
-                answer: 'Yes, we help you secure financing from banks familiar with auctioned/distressed property protocols.',
+                id: "collapse2",
+                question: "Can I get a home loan for these properties?",
+                answer:
+                  "Yes, financing is available for most distressed properties. We assist you in connecting with banking partners who are experienced in processing loans for auctioned and distressed assets.",
               },
               {
-                id: 'collapse3',
-                question: 'Do you charge brokerage or service fees?',
-                answer: 'Our service fee varies depending on the deal structure and is disclosed transparently.',
+                id: "collapse3",
+                question: "What are your service charges?",
+                answer:
+                  "Our fee structure is transparent and success-based. It depends on the deal size and complexity. We discuss and agree upon all charges upfront before you commit to a property.",
+              },
+              {
+                id: "collapse4",
+                question: "How quickly can a deal be closed?",
+                answer:
+                  "Timelines can be much faster than the traditional market, often ranging from 30 to 60 days, especially for bank auctions with set timelines. We work to ensure the process is as swift as possible.",
               },
             ].map((faq) => (
-              <div key={faq.id} className="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+              <div
+                key={faq.id}
+                className="bg-gray-800 rounded-xl shadow-lg overflow-hidden"
+              >
                 <button
-                  className="w-full px-6 py-4 text-left flex justify-between items-center bg-gray-700 hover:bg-gray-600 transition-colors"
+                  className="w-full px-4 py-3 text-left flex justify-between items-center bg-gray-700 hover:bg-gray-600 transition-colors"
                   onClick={() => toggleAccordion(faq.id)}
                 >
-                  <span className="text-orange-300 font-medium">{faq.question}</span>
+                  <span className="text-lg font-medium text-orange-300">
+                    {faq.question}
+                  </span>
                   <FiChevronDown
-                    className={`text-orange-500 transform transition-transform ${activeAccordion === faq.id ? 'rotate-180' : ''}`}
+                    size={22}
+                    className={`text-orange-500 transform transition-transform ${
+                      activeAccordion === faq.id ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
-                <div
-                  className={`px-6 py-4 text-gray-300 text-sm transition-all duration-300 ${activeAccordion === faq.id ? 'block' : 'hidden'
-                    }`}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: activeAccordion === faq.id ? "auto" : 0,
+                    opacity: activeAccordion === faq.id ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
                 >
-                  {faq.answer}
-                </div>
+                  <div className="px-4 pb-3 pt-2 text-base text-gray-300">
+                    {faq.answer}
+                  </div>
+                </motion.div>
               </div>
             ))}
           </div>
