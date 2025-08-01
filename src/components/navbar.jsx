@@ -3,9 +3,21 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
-import logoHome from '../assets/logo 2.jpg';
+import logoHome from "../assets/logo 2.jpg";
 import services from "./constants/Services";
-import { FaAd, FaHome, FaNewspaper, FaHeart, FaTools, FaCalendarAlt, FaHistory, FaBell, FaCog, FaSignInAlt, FaUser } from "react-icons/fa";
+import {
+  FaAd,
+  FaHome,
+  FaNewspaper,
+  FaHeart,
+  FaTools,
+  FaCalendarAlt,
+  FaHistory,
+  FaBell,
+  FaCog,
+  FaSignInAlt,
+  FaUser,
+} from "react-icons/fa";
 import { Tooltip } from "@mui/material";
 
 function Navbar() {
@@ -87,11 +99,16 @@ function Navbar() {
   ];
 
   const isActive = (path) => {
-    return activeTab === path ? "bg-orange-600 text-white" : "hover:bg-gray-700";
+    return activeTab === path
+      ? "bg-orange-600 text-white"
+      : "hover:bg-gray-700";
   };
 
   // Calculate ad limit metrics
-  const adLimitPercentage = Math.min(Math.round((adsUsed / adLimit) * 100), 100);
+  const adLimitPercentage = Math.min(
+    Math.round((adsUsed / adLimit) * 100),
+    100
+  );
   const adsRemaining = adLimit - adsUsed;
   const isLimitCritical = adsRemaining <= 0;
   const isLimitWarning = adsRemaining <= 2 && !isLimitCritical;
@@ -113,14 +130,16 @@ function Navbar() {
                 <Link
                   key={label}
                   to={path}
-                  className={`flex items-center px-2 py-2 no-underline text-white rounded-md text-sm font-medium ${isActive(path)}`}
+                  className={`flex items-center px-2 py-2 no-underline text-white rounded-md text-sm font-medium ${isActive(
+                    path
+                  )}`}
                 >
                   <span className="mr-2">{icon}</span>
                   {label}
                 </Link>
               ))}
 
-              {/* Services Dropdown */}
+              {/* Services Dropdown - Restored Original Functionality */}
               <div
                 className="relative"
                 onMouseEnter={() => setShowServices(true)}
@@ -130,34 +149,65 @@ function Navbar() {
                 }}
               >
                 <button
-                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium ${activeTab.startsWith('/services') ? 'bg-orange-600 text-white' : 'hover:bg-gray-700'}`}
+                  className={`flex items-center text-sm px-3 py-2 rounded ${
+                    activeTab.startsWith("/services")
+                      ? "bg-orange-600 text-white"
+                      : "hover:bg-gray-700"
+                  }`}
                 >
                   <FaTools className="mr-2" />
                   Services
+                  <svg
+                    className={`ml-1 h-4 w-4 transition-transform duration-200 ${
+                      showServices ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </button>
 
                 {showServices && (
-                  <div className="absolute left-0 mt-2 w-56 bg-white text-gray-900 shadow-xl rounded-md z-50">
+                  <div className="absolute top-full left-0 mt-0 w-64 bg-gray-800 text-white shadow-xl rounded-lg border border-gray-600 z-50">
                     {services.map((service, svcIndex) => (
                       <div
                         key={svcIndex}
-                        className="group relative px-4 py-2 hover:bg-gray-100"
+                        className="group relative px-4 py-3 hover:bg-gray-700 transition-colors duration-200"
                         onMouseEnter={() => setActiveService(svcIndex)}
                       >
-                        <div className="flex justify-between items-center cursor-pointer">
-                          <span>{service.title}</span>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        <div className="flex justify-between items-center cursor-default">
+                          <span className="text-sm font-medium text-white">
+                            {service.title}
+                          </span>
+                          <svg
+                            className="w-4 h-4 text-gray-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
                           </svg>
                         </div>
 
                         {activeService === svcIndex && (
-                          <div className="absolute left-full top-0 ml-1 w-56 bg-white border border-gray-200 rounded shadow-lg z-50">
+                          <div className="absolute left-full top-0 w-64 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50">
                             {service.options.map((opt, optIndex) => (
                               <Link
                                 key={optIndex}
                                 to={opt.path}
-                                className="block px-4 py-2 text-sm hover:bg-gray-100"
+                                className="block px-4 py-3 text-sm text-white hover:bg-blue-600 hover:text-white transition-colors duration-200"
                                 onClick={() => setShowServices(false)}
                               >
                                 {opt.label}
@@ -179,15 +229,21 @@ function Navbar() {
               <Tooltip
                 title={
                   <div className="p-3">
-                    <div className="font-bold text-sm mb-2">Ad Posting Status</div>
+                    <div className="font-bold text-sm mb-2">
+                      Ad Posting Status
+                    </div>
                     <div className="text-xs mb-1">
                       Used {adsUsed} of {adLimit} ads ({adLimitPercentage}%)
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className={`h-2 rounded-full ${isLimitCritical ? 'bg-red-500' :
-                            isLimitWarning ? 'bg-yellow-500' : 'bg-green-500'
-                          }`}
+                        className={`h-2 rounded-full ${
+                          isLimitCritical
+                            ? "bg-red-500"
+                            : isLimitWarning
+                            ? "bg-yellow-500"
+                            : "bg-green-500"
+                        }`}
                         style={{ width: `${adLimitPercentage}%` }}
                       ></div>
                     </div>
@@ -197,14 +253,15 @@ function Navbar() {
                       </div>
                     ) : isLimitWarning ? (
                       <div className="text-xs mt-2 text-yellow-400">
-                        Only {adsRemaining} ad{adsRemaining === 1 ? '' : 's'} remaining
+                        Only {adsRemaining} ad{adsRemaining === 1 ? "" : "s"}{" "}
+                        remaining
                       </div>
                     ) : (
                       <div className="text-xs mt-2 text-green-400">
                         {adsRemaining} ads available
                       </div>
                     )}
-                    {user.role === 'user' && (
+                    {user.role === "user" && (
                       <div className="text-xs mt-2 text-blue-400">
                         Upgrade for higher limits
                       </div>
@@ -215,20 +272,34 @@ function Navbar() {
                 placement="bottom"
               >
                 <div className="relative cursor-pointer">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${isLimitCritical ? 'bg-red-900/30 border-red-500' :
-                      isLimitWarning ? 'bg-amber-900/30 border-amber-500' :
-                        'bg-gray-800 border-amber-500'
-                    }`}>
-                    <FaAd className={
-                      isLimitCritical ? 'text-red-400' :
-                        isLimitWarning ? 'text-amber-400' :
-                          'text-amber-400'
-                    } />
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
+                      isLimitCritical
+                        ? "bg-red-900/30 border-red-500"
+                        : isLimitWarning
+                        ? "bg-amber-900/30 border-amber-500"
+                        : "bg-gray-800 border-amber-500"
+                    }`}
+                  >
+                    <FaAd
+                      className={
+                        isLimitCritical
+                          ? "text-red-400"
+                          : isLimitWarning
+                          ? "text-amber-400"
+                          : "text-amber-400"
+                      }
+                    />
                   </div>
-                  <div className={`absolute -top-2 -right-2 rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold ${isLimitCritical ? 'bg-red-600' :
-                      isLimitWarning ? 'bg-amber-600' :
-                        'bg-amber-600'
-                    }`}>
+                  <div
+                    className={`absolute -top-2 -right-2 rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold ${
+                      isLimitCritical
+                        ? "bg-red-600"
+                        : isLimitWarning
+                        ? "bg-amber-600"
+                        : "bg-amber-600"
+                    }`}
+                  >
                     {adsRemaining}
                   </div>
                 </div>
@@ -271,7 +342,11 @@ function Navbar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                  d={
+                    mobileMenuOpen
+                      ? "M6 18L18 6M6 6l12 12"
+                      : "M4 6h16M4 12h16M4 18h16"
+                  }
                 />
               </svg>
             </button>
@@ -287,7 +362,9 @@ function Navbar() {
               <Link
                 key={label}
                 to={path}
-                className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${isActive(path)}`}
+                className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${isActive(
+                  path
+                )}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <span className="mr-3">{icon}</span>
@@ -295,52 +372,74 @@ function Navbar() {
               </Link>
             ))}
 
-            {/* Services Dropdown in Mobile */}
-            <div className="px-3 py-2">
+            {/* Services Dropdown in Mobile - Restored Original Style */}
+            <div className="border-t border-gray-700 pt-3 mt-3">
               <button
                 onClick={() => setShowServices(!showServices)}
-                className={`w-full flex justify-between items-center px-3 py-2 rounded-md text-base font-medium ${activeTab.startsWith('/services') ? 'bg-orange-600 text-white' : 'hover:bg-gray-700'}`}
+                className={`w-full text-left px-3 py-3 rounded-lg text-sm font-medium flex justify-between items-center transition-colors duration-200 ${
+                  activeTab.startsWith("/services")
+                    ? "bg-orange-600 text-white"
+                    : "hover:bg-gray-700"
+                }`}
               >
                 <div className="flex items-center">
                   <FaTools className="mr-3" />
                   Services
                 </div>
                 <svg
-                  className={`w-4 h-4 transform transition-transform ${showServices ? 'rotate-90' : ''}`}
+                  className={`w-4 h-4 transform transition-transform duration-200 ${
+                    showServices ? "rotate-180" : ""
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
               {showServices && (
-                <div className="pl-6 mt-1 space-y-1">
+                <div className="pl-4 mt-2 space-y-1">
                   {services.map((service, index) => (
                     <div key={index}>
                       <button
-                        onClick={() => setActiveService(activeService === index ? null : index)}
-                        className="w-full flex justify-between items-center px-3 py-2 text-sm hover:bg-gray-700 rounded-md"
+                        onClick={() =>
+                          setActiveService(
+                            activeService === index ? null : index
+                          )
+                        }
+                        className="w-full text-left px-3 py-2 text-sm font-medium hover:bg-gray-700 rounded-lg flex justify-between items-center transition-colors duration-200"
                       >
                         {service.title}
                         <svg
-                          className={`w-4 h-4 transform transition-transform ${activeService === index ? 'rotate-90' : ''}`}
+                          className={`w-4 h-4 transform transition-transform duration-200 ${
+                            activeService === index ? "rotate-180" : ""
+                          }`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
                         </svg>
                       </button>
 
                       {activeService === index && (
-                        <div className="pl-4 space-y-1">
+                        <div className="pl-4 mt-2 space-y-1">
                           {service.options.map((opt, idx) => (
                             <Link
                               key={idx}
                               to={opt.path}
-                              className="block px-3 py-2 text-sm hover:bg-gray-700 rounded-md"
+                              className="block px-3 py-2 text-sm hover:bg-gray-700 rounded-lg transition-colors duration-200"
                               onClick={() => setMobileMenuOpen(false)}
                             >
                               {opt.label}
@@ -368,9 +467,13 @@ function Navbar() {
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2 mb-1">
                   <div
-                    className={`h-2 rounded-full ${isLimitCritical ? 'bg-red-500' :
-                        isLimitWarning ? 'bg-yellow-500' : 'bg-green-500'
-                      }`}
+                    className={`h-2 rounded-full ${
+                      isLimitCritical
+                        ? "bg-red-500"
+                        : isLimitWarning
+                        ? "bg-yellow-500"
+                        : "bg-green-500"
+                    }`}
                     style={{ width: `${adLimitPercentage}%` }}
                   ></div>
                 </div>
