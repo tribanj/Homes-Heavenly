@@ -101,6 +101,7 @@ import PgHostel from "./pages/PgHostel";
 import PgHostelDetails from "./pages/PgHostelDetails";
 import CoworkingSpaceDetails from "./components/Services/rentlease/CoworkingSpaceDetails";
 import UserDetailsPage from "./pages/UserDetailsPage";
+import Dashboard from "./components/RealEstateDashboard/Dashboard";
 
 // Main Landing Section for Home
 const MainContent = () => {
@@ -256,6 +257,9 @@ const AppInner = () => {
 
         <Route path="/company-dashboard/*" element={
           <CompanyDashboard />
+        } />
+        <Route path="/company-dashboard/" element={
+          <Dashboard />
         } />
         {/* <Route path="/company-dashboard/*" element={
           <ProtectedRoute allowedRoles={['realestate']}>
