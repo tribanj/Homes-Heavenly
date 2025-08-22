@@ -88,6 +88,7 @@ import PgHostel from "./pages/PgHostel";
 import PgHostelDetails from "./pages/PgHostelDetails";
 import CoworkingSpaceDetails from "./components/Services/rentlease/CoworkingSpaceDetails";
 import UserDetailsPage from "./pages/UserDetailsPage";
+import Dashboard from "./components/RealEstateDashboard/Dashboard";
 
 const NotFound = () => (
   <div className="text-center p-8">
@@ -138,9 +139,7 @@ const AppInner = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<RoleBasedDashboard />} />
 
-          {/* --- NEW REAL ESTATE DASHBOARD (DEVELOPER MODE) --- */}
-          {/* I have temporarily removed the <ProtectedRoute> so you can access the routes */}
-          {/* To re-enable protection, wrap <DashboardLayout /> in the ProtectedRoute again */}
+          {/* --- NEW REAL ESTATE DASHBOARD --- */}
           <Route path="/company-dashboard" element={<DashboardLayout />}>
             <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<DashboardOverview />} />
@@ -162,9 +161,9 @@ const AppInner = () => {
           <Route
             path="/admin-dashboard"
             element={
-              // <ProtectedRoute allowedRoles={["Admin"]}>
-              <AdminDashboard />
-              // </ProtectedRoute>
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
             }
           />
           <Route
@@ -178,7 +177,6 @@ const AppInner = () => {
 
           {/* --- ALL OTHER EXISTING ROUTES --- */}
           <Route path="/select-purpose" element={<SelectAdPurpose />} />
-          {/* (Keep all your other service and property posting routes here...) */}
           <Route path="/post-property/sale" element={<PostPropertyPage />} />
           <Route path="/success" element={<Success />} />
           <Route

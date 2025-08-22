@@ -91,7 +91,7 @@ function Navbar() {
 
   const navLinks = [
     { label: "Home", path: "/", icon: <FaHome /> },
-    { label: "Buy&Sale", path: "/buy&sale", icon: <FaNewspaper /> },
+    { label: "Buy&Sell", path: "/buy&sale", icon: <FaNewspaper /> },
     { label: "Rent", path: "/rent-page", icon: <FaHome /> },
     { label: "PG/Hostels", path: "/pgHostel", icon: <FaUser /> },
     { label: "Post Ad", path: "/select-purpose", icon: <FaAd /> },
