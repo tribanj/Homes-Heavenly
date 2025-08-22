@@ -11,7 +11,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FirebaseAuthProvider } from "./context/FirebaseAuthContext";
 
 // --- NEW REAL ESTATE DASHBOARD IMPORTS (Using Default Imports) ---
-import DashboardLayout from "./components/RealEstateDashboard/layout/DashboardLayout";
+import DashboardLayout from "./components/RealEstateDashboard/layout/DashboardLayout.jsx";
+
 import DashboardOverview from "./components/RealEstateDashboard/pages/DashboardOverview";
 import UserManagement from "./components/RealEstateDashboard/pages/UserManagement";
 import PropertyManagement from "./components/RealEstateDashboard/pages/PropertyManagement";
