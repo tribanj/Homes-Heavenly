@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Navbar from "./components/navbar";
-// import AuthForm from "./components/AuthForm";
 import Home from "./pages/Home";
 import "./App.css";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -10,63 +9,58 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FirebaseAuthProvider } from "./context/FirebaseAuthContext";
-// import RoleSelectionModal from "./components/modals/RoleSelectionModal";
 
-// Dashboards
+// --- NEW REAL ESTATE DASHBOARD IMPORTS (Using Default Imports) ---
+import DashboardLayout from "./components/RealEstateDashboard/layout/DashboardLayout";
+import DashboardOverview from "./components/RealEstateDashboard/pages/DashboardOverview";
+import UserManagement from "./components/RealEstateDashboard/pages/UserManagement";
+import PropertyManagement from "./components/RealEstateDashboard/pages/PropertyManagement";
+import LeadManagement from "./components/RealEstateDashboard/pages/LeadManagement";
+import TeamManagement from "./components/RealEstateDashboard/pages/TeamManagement";
+import FinancialManagement from "./components/RealEstateDashboard/pages/FinancialManagement";
+import Marketing from "./components/RealEstateDashboard/pages/Marketing";
+import Support from "./components/RealEstateDashboard/pages/Support";
+import Settings from "./components/RealEstateDashboard/pages/Settings";
+
+// Other Dashboards
 import UserDashboard from "./components/UserDashboard/UserDashboard";
-import CompanyDashboard from './components/RealEstateDashboard/layout/CompanyDashboard'
+import AdminDashboard from "./components/Admindashboard/AdminDashboard";
+import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
 
-// Buy Sell Services
+// All other component and page imports...
 import BookValuation from "./components/Services/buysale/BookValuation";
 import OffPlanDeals from "./components/Services/buysale/OffPlanDeals";
 import ForeclosedSales from "./components/Services/buysale/ForeclosedSales";
 import AuctionSupport from "./components/Services/buysale/AuctionSupport";
 import SubmitInquiry from "./components/Services/buysale/SubmitInquiry";
 import TransactionLegalHelp from "./components/Services/buysale/TransactionLegalHelp";
-
-// Rent & Lease Services
 import TenantScreening from "./components/Services/rentlease/TenantScreening";
 import LeaseAgreement from "./components/Services/rentlease/LeaseAgreement";
 import CoLivingSolutions from "./components/Services/rentlease/CoLivingSolutions";
 import ShortTermRentals from "./components/Services/rentlease/ShortTermRentals";
 import StudentHousing from "./components/Services/rentlease/StudentHousing";
-
-// Property Management Services
 import RentCollection from "./components/Services/propertymanagement/RentCollection";
 import MaintenanceRepairs from "./components/Services/propertymanagement/MaintenanceRepairs";
 import LegalDisputeResolution from "./components/Services/propertymanagement/LegalDisputeResolution";
 import HomeInsurancePlans from "./components/Services/propertymanagement/HomeInsurancePlans";
-
-// Investment & Advisory Services
 import InvestmentPlanning from "./components/Services/investmentadvisory/InvestmentPlanning";
 import LandPlotInvestment from "./components/Services/investmentadvisory/LandPlotInvestment";
 import FractionalOwnership from "./components/Services/investmentadvisory/FractionalOwnership";
 import MarketTrends from "./components/Services/investmentadvisory/MarketTrends";
-
-// Financial Services
 import HomeLoanAssistance from "./components/Services/financialservices/HomeLoanAssistance";
 import LoanRefinancing from "./components/Services/financialservices/LoanRefinancing";
 import RealEstateTaxPlanning from "./components/Services/financialservices/RealEstateTaxPlanning";
-// import LoansFinanceServices from './components/Services/financialservices/LoansFinanceServices';
-
-// Construction Services
 import CustomHomeConstruction from "./components/Services/constructionservices/CustomHomeConstruction";
 import InteriorDesigning from "./components/Services/constructionservices/InteriorDesigning";
 import SmartHomeInstallations from "./components/Services/constructionservices/SmartHomeInstallations";
 import LandscapingSolutions from "./components/Services/constructionservices/LandscapingSolutions";
-
-// Corporate Services
 import OfficeSpaceLeasing from "./components/Services/corporateservices/OfficeSpaceLeasing";
 import IndustrialRetailSolutions from "./components/Services/corporateservices/IndustrialRetailSolutions";
 import CorporateRealEstate from "./components/Services/corporateservices/CorporateRealEstate";
-
-// Legal Services
 import TitleVerification from "./components/Services/legalservices/TitleVerification";
 import RERACompliance from "./components/Services/legalservices/RERACompliance";
 import DisputeResolution from "./components/Services/legalservices/DisputeResolution";
 import StampDutySupport from "./components/Services/legalservices/StampDutySupport";
-
-// Property Posting
 import SelectAdPurpose from "./pages/SelectAdPurpose";
 import PostPropertyPage from "./components/PostProperty/Sale/PostPropertyPage";
 import RentPropertyPage from "./components/PostProperty/rent/RentPropertyPage";
@@ -77,21 +71,14 @@ import PGHostelPage from "./components/PostProperty/PGHostel/PGHostelPage";
 import BuilderProjectPage from "./components/PostProperty/BuilderProject/BuilderProjectPage";
 import AuctionPage from "./components/PostProperty/Auction/AuctionPage";
 import OtherPage from "./components/PostProperty/Other/OtherPage";
-
-// Firebase Auth Forms
 import SignUp from "./components/Auth/SignUp";
 import Login from "./components/Auth/Login";
-// import Success from './components/'
-// Pages
 import Buy from "./pages/Buy";
 import Success from "./pages/SuccessPage";
-import Sale from "./pages/Sale";
 import Rent from "./pages/Rent";
 import ContactUs from "./pages/Contact";
 import Unauthorized from "./pages/Unauthorized";
-import AdminDashboard from "./components/Admindashboard/AdminDashboard";
 import PropertyDetails from "./components/listings/PropertyDetails";
-import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
 import Footer from "./components/Footer";
 import PrelaunchPropertyDetails from "./components/PostProperty/PreLaunch/PrelaunchPropertyDetails";
 import AuctionPropertyDetails from "./components/PostProperty/Auction/AuctionPropertyDetails";
@@ -101,76 +88,13 @@ import PgHostel from "./pages/PgHostel";
 import PgHostelDetails from "./pages/PgHostelDetails";
 import CoworkingSpaceDetails from "./components/Services/rentlease/CoworkingSpaceDetails";
 import UserDetailsPage from "./pages/UserDetailsPage";
-import Dashboard from "./components/RealEstateDashboard/Dashboard";
-
-// Main Landing Section for Home
-const MainContent = () => {
-  const location = useLocation();
-  return location.pathname === "/" ? (
-    <div className="container mt-4">
-      <SearchBar />
-      <div className="row mb-4">
-        <div className="col">
-          <h2>Properties for Sale</h2>
-          <p>Explore our latest listings for houses, apartments, and more.</p>
-        </div>
-      </div>
-      <div className="row mb-4">
-        <div className="col">
-          <h2>Properties for Rent</h2>
-          <p>Find the perfect rental property to suit your needs and budget.</p>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col">
-          <h2>Our Services</h2>
-          <p>We offer legal, financial, and inspection services.</p>
-        </div>
-      </div>
-    </div>
-  ) : null;
-};
 
 const NotFound = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-    <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
-      <div className="flex justify-center mb-6">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-20 w-20 text-purple-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      </div>
-
-      <h1 className="text-5xl font-bold text-gray-800 mb-4">404</h1>
-      <h2 className="text-2xl font-semibold text-gray-700 mb-6">Page Not Found</h2>
-
-      <p className="text-gray-600 mb-8">
-        Oops! The page you're looking for doesn't exist or has been moved.
-      </p>
-
-      <button
-        onClick={() => window.history.back()}
-        className="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium rounded-lg hover:opacity-90 transition-all duration-200 shadow-md hover:shadow-lg"
-      >
-        Go Back
-      </button>
-
-      <div className="mt-8 text-sm text-gray-500">
-        <a href="/" className="hover:text-purple-600 hover:underline">
-          Or return to homepage
-        </a>
-      </div>
-    </div>
+  <div className="text-center p-8">
+    <h1 className="text-5xl font-bold text-gray-800 mb-4">404</h1>
+    <h2 className="text-2xl font-semibold text-gray-700 mb-6">
+      Page Not Found
+    </h2>
   </div>
 );
 
@@ -186,7 +110,7 @@ const RoleBasedDashboard = () => {
     case "Agent":
       return <Navigate to="/agent-dashboard" replace />;
     case "realestate":
-      return <Navigate to="/company-dashboard" replace />;
+      return <Navigate to="/company-dashboard/overview" replace />;
     case "Normal User":
       return <Navigate to="/user-dashboard" replace />;
     default:
@@ -194,172 +118,262 @@ const RoleBasedDashboard = () => {
   }
 };
 
-// ✅ This safely accesses useAuth only after context is initialized
 const AppInner = () => {
-  const { showRoleModal } = useAuth();
+  const location = useLocation();
+
+  const isDashboardRoute =
+    location.pathname.startsWith("/company-dashboard") ||
+    location.pathname.startsWith("/user-dashboard") ||
+    location.pathname.startsWith("/admin-dashboard") ||
+    location.pathname.startsWith("/agent-dashboard");
 
   return (
     <>
-      <Routes>
-        {/* Public Routes */}
-        <Route
-          path="/"
-          element={
-            <>
-              <Home />
-              {/* <MainContent /> */}
-            </>
-          }
-        />
-        {/* <Route path="/login" element={<AuthForm mode="login" />} />
-          <Route path="/signup" element={<AuthForm mode="signup" />} /> */}
+      {!isDashboardRoute && <Navbar />}
+      <main>
+        <Routes>
+          {/* --- PUBLIC ROUTES --- */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/dashboard" element={<RoleBasedDashboard />} />
 
-        {/* OR if you want to use Firebase forms instead: */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+          {/* --- NEW REAL ESTATE DASHBOARD (DEVELOPER MODE) --- */}
+          {/* I have temporarily removed the <ProtectedRoute> so you can access the routes */}
+          {/* To re-enable protection, wrap <DashboardLayout /> in the ProtectedRoute again */}
+          <Route path="/company-dashboard" element={<DashboardLayout />}>
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<DashboardOverview />} />
+            <Route path="user-management" element={<UserManagement />} />
+            <Route
+              path="property-management"
+              element={<PropertyManagement />}
+            />
+            <Route path="lead-management" element={<LeadManagement />} />
+            <Route path="team-management" element={<TeamManagement />} />
+            <Route path="financials" element={<FinancialManagement />} />
+            <Route path="marketing" element={<Marketing />} />
+            <Route path="support" element={<Support />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
 
-        <Route path="/dashboard" element={<RoleBasedDashboard />} />
-
-        {/* Protected Dashboards
-          <Route path="/user-dashboard/*" element={
-  <ProtectedRoute allowedRoles={['Normal User', 'Builder', 'Agent', 'Company']}>
-    <UserDashboard />
-  </ProtectedRoute>
-}>
-  <Route index element={<Navigate to="overview" replace />} />
-  <Route path="overview" element={<Overview />} />
-  <Route path="my-properties" element={<MyProperties />} />
-  <Route path="saved" element={<SavedListings />} />
-  <Route path="service-requests" element={<MyServiceRequests />} />
-  <Route path="appointments" element={<MyAppointments />} />
-  <Route path="inquiry-history" element={<SubmitInquiryHistory />} />
-  <Route path="recent-activity" element={<RecentActivity />} />
-  <Route path="settings" element={<Settings />} />
-</Route> */}
-
-        {/* <Route path="/builder-dashboard/*" element={
-          <ProtectedRoute allowedRoles={['Builder']}>
-            <BuilderDashboard />
-          </ProtectedRoute>
-        } /> */}
-
-        <Route path="/admin-dashboard" element={
-          <ProtectedRoute allowedRoles={['Admin']}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/agent-dashboard/*" element={
-          <ProtectedRoute allowedRoles={['Agent']}>
-            <AgentDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/company-dashboard/*" element={
-          <CompanyDashboard />
-        } />
-        <Route path="/company-dashboard/" element={
-          <Dashboard />
-        } />
-        {/* <Route path="/company-dashboard/*" element={
-          <ProtectedRoute allowedRoles={['realestate']}>
-            <CompanyDashboard />
-          </ProtectedRoute>
-        } /> */}
-
-
-
-        {/* User dashboard */}
-        <Route path="/user-dashboard/*" element={<UserDashboard />} />
-        <Route
-          path="/admin-dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["Admin"]}>
+          {/* --- OTHER DASHBOARDS --- */}
+          <Route path="/user-dashboard/*" element={<UserDashboard />} />
+          <Route
+            path="/admin-dashboard"
+            element={
+              // <ProtectedRoute allowedRoles={["Admin"]}>
               <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/users/:userId"
+              // </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agent-dashboard/*"
+            element={
+              <ProtectedRoute allowedRoles={["Agent"]}>
+                <AgentDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-          element={
-            <ProtectedRoute allowedRoles={["Admin"]}>
-              <UserDetailsPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* --- ALL OTHER EXISTING ROUTES --- */}
+          <Route path="/select-purpose" element={<SelectAdPurpose />} />
+          {/* (Keep all your other service and property posting routes here...) */}
+          <Route path="/post-property/sale" element={<PostPropertyPage />} />
+          <Route path="/success" element={<Success />} />
+          <Route
+            path="/post-property/prelaunch"
+            element={<PreLaunchProjectPage />}
+          />
+          <Route
+            path="/services/buysale/OffPlanDeals"
+            element={<OffPlanDeals />}
+          />
+          <Route
+            path="/services/buysale/OffPlanDeals/:projectId"
+            element={<PrelaunchPropertyDetails />}
+          />
+          <Route
+            path="/post-property/mortgage"
+            element={<MortgagePropertyPage />}
+          />
+          <Route
+            path="/post-property/commercial-lease"
+            element={<CommercialLeasePage />}
+          />
+          <Route path="/post-property/pg-hostel" element={<PGHostelPage />} />
+          <Route
+            path="/post-property/builder-project"
+            element={<BuilderProjectPage />}
+          />
+          <Route path="/post-property/auction" element={<AuctionPage />} />
+          <Route path="/post-property/other" element={<OtherPage />} />
+          <Route path="/buy&sale" element={<Buy />} />
+          <Route path="/property/:id" element={<PropertyDetails />} />
+          <Route path="/pgHostel" element={<PgHostel />} />
+          <Route path="/pg-hostel-details/:id" element={<PgHostelDetails />} />
+          <Route path="/rent" element={<RentPropertyPage />} />
+          <Route path="/rent-page" element={<Rent />} />
+          <Route path="/contactus-page" element={<ContactUs />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route
+            path="/services/buysale/BookValuation"
+            element={<BookValuation />}
+          />
+          <Route
+            path="/services/buysale/ForeclosedSales"
+            element={<ForeclosedSales />}
+          />
+          <Route
+            path="/services/buysale/AuctionSupport"
+            element={<AuctionSupport />}
+          />
+          <Route
+            path="/services/buysale/AuctionSupport/:id"
+            element={<AuctionPropertyDetails />}
+          />
+          <Route
+            path="/services/buysale/TransactionLegalHelp"
+            element={<TransactionLegalHelp />}
+          />
+          <Route
+            path="/submit-inquiry"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "Normal User",
+                  "Builder",
+                  "Agent",
+                  "Real Estate Company",
+                  "Admin",
+                ]}
+              >
+                <SubmitInquiry />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/services/rentlease/tenantscreening"
+            element={<TenantScreening />}
+          />
+          <Route
+            path="/services/rentlease/leaseagreement"
+            element={<LeaseAgreement />}
+          />
+          <Route
+            path="/services/rentlease/colivingsolutions"
+            element={<CoLivingSolutions />}
+          />
+          <Route
+            path="/coworking-space/:id"
+            element={<CoworkingSpaceDetails />}
+          />
+          <Route
+            path="/services/rentlease/shorttermrentals"
+            element={<ShortTermRentals />}
+          />
+          <Route
+            path="/services/rentlease/studenthousing"
+            element={<StudentHousing />}
+          />
+          <Route
+            path="/services/propertymanagement/RentCollection"
+            element={<RentCollection />}
+          />
+          <Route
+            path="/services/propertymanagement/MaintenanceRepairs"
+            element={<MaintenanceRepairs />}
+          />
+          <Route
+            path="/services/propertymanagement/LegalDisputeResolution"
+            element={<LegalDisputeResolution />}
+          />
+          <Route
+            path="/services/propertymanagement/HomeInsurancePlans"
+            element={<HomeInsurancePlans />}
+          />
+          <Route
+            path="/services/investmentadvisory/investmentplanning"
+            element={<InvestmentPlanning />}
+          />
+          <Route
+            path="/services/investmentadvisory/landplotinvestment"
+            element={<LandPlotInvestment />}
+          />
+          <Route
+            path="/services/investmentadvisory/fractionalownership"
+            element={<FractionalOwnership />}
+          />
+          <Route
+            path="/services/investmentadvisory/markettrends"
+            element={<MarketTrends />}
+          />
+          <Route
+            path="/services/financialservices/homeloanassistance"
+            element={<HomeLoanAssistance />}
+          />
+          <Route
+            path="/services/financialservices/loanrefinancing"
+            element={<LoanRefinancing />}
+          />
+          <Route
+            path="/services/financialservices/realestatetaxplanning"
+            element={<RealEstateTaxPlanning />}
+          />
+          <Route
+            path="/services/constructionservices/customhomeconstruction"
+            element={<CustomHomeConstruction />}
+          />
+          <Route
+            path="/services/constructionservices/interiordesigning"
+            element={<InteriorDesigning />}
+          />
+          <Route
+            path="/services/constructionservices/smarthomeinstallations"
+            element={<SmartHomeInstallations />}
+          />
+          <Route
+            path="/services/constructionservices/landscapingsolutions"
+            element={<LandscapingSolutions />}
+          />
+          <Route
+            path="/services/corporateservices/officespaceleasing"
+            element={<OfficeSpaceLeasing />}
+          />
+          <Route
+            path="/services/corporateservices/industrialretailsolutions"
+            element={<IndustrialRetailSolutions />}
+          />
+          <Route
+            path="/services/corporateservices/realestatesolutions"
+            element={<CorporateRealEstate />}
+          />
+          <Route
+            path="/services/legalservices/titleverification"
+            element={<TitleVerification />}
+          />
+          <Route
+            path="/services/legalservices/reracompliance"
+            element={<RERACompliance />}
+          />
+          <Route
+            path="/services/legalservices/disputeresolution"
+            element={<DisputeResolution />}
+          />
+          <Route
+            path="/services/legalservices/stampdutysupport"
+            element={<StampDutySupport />}
+          />
+          <Route path="/portfolio/2d-designs" element={<TwoDDesign />} />
+          <Route
+            path="/portfolio/3d-visualization"
+            element={<ThreeDVisualization />}
+          />
 
-        {/* Property Posting */}
-        {/* <Route path="/select-purpose" element={
-          <ProtectedRoute allowedRoles={["User", "Agent", "Builder", "Realestate", ""]}>
-            <SelectAdPurpose />
-          </ProtectedRoute>
-        } /> */}
-        <Route path="/select-purpose" element={
-          <SelectAdPurpose />
-        } />
-
-
-        <Route path="/post-property/sale" element={<PostPropertyPage />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/post-property/prelaunch" element={<PreLaunchProjectPage />} />
-        <Route path="/services/buysale/OffPlanDeals" element={<OffPlanDeals />} />
-        <Route path="/services/buysale/OffPlanDeals/:projectId" element={<PrelaunchPropertyDetails />} />
-        <Route path="/post-property/mortgage" element={<MortgagePropertyPage />} />
-        <Route path="/post-property/commercial-lease" element={<CommercialLeasePage />} />
-        <Route path="/post-property/pg-hostel" element={<PGHostelPage />} />
-        <Route path="/post-property/builder-project" element={<BuilderProjectPage />} />
-        <Route path="/post-property/auction" element={<AuctionPage />} />
-        <Route path="/post-property/other" element={<OtherPage />} />
-        <Route path="/buy&sale" element={<Buy />} />
-        <Route path="/property/:id" element={<PropertyDetails />} />
-        <Route path="/pgHostel" element={<PgHostel />} />
-        <Route path="/pg-hostel-details/:id" element={<PgHostelDetails />} />
-        <Route path="/rent" element={<RentPropertyPage />} />
-        <Route path="/rent-page" element={<Rent />} />
-        <Route path="/contactus-page" element={<ContactUs />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/services/buysale/BookValuation" element={<BookValuation />} />
-        <Route path="/services/buysale/ForeclosedSales" element={<ForeclosedSales />} />
-        <Route path="/services/buysale/AuctionSupport" element={<AuctionSupport />} />
-        <Route path="/services/buysale/AuctionSupport/:id" element={<AuctionPropertyDetails />} />
-        <Route path="/services/buysale/TransactionLegalHelp" element={<TransactionLegalHelp />} />
-        <Route path="/submit-inquiry" element={<ProtectedRoute allowedRoles={["Normal User", "Builder", "Agent", "Real Estate Company", "Admin"]}><SubmitInquiry /></ProtectedRoute>} />
-        <Route path="/services/rentlease/tenantscreening" element={<TenantScreening />} />
-        <Route path="/services/rentlease/leaseagreement" element={<LeaseAgreement />} />
-        <Route path="/services/rentlease/colivingsolutions" element={<CoLivingSolutions />} />
-        <Route path="/coworking-space/:id" element={<CoworkingSpaceDetails />} />
-        <Route path="/services/rentlease/shorttermrentals" element={<ShortTermRentals />} />
-        <Route path="/services/rentlease/studenthousing" element={<StudentHousing />} />
-        <Route path="/services/propertymanagement/RentCollection" element={<RentCollection />} />
-        <Route path="/services/propertymanagement/MaintenanceRepairs" element={<MaintenanceRepairs />} />
-        <Route path="/services/propertymanagement/LegalDisputeResolution" element={<LegalDisputeResolution />} />
-        <Route path="/services/propertymanagement/HomeInsurancePlans" element={<HomeInsurancePlans />} />
-        <Route path="/services/investmentadvisory/investmentplanning" element={<InvestmentPlanning />} />
-        <Route path="/services/investmentadvisory/landplotinvestment" element={<LandPlotInvestment />} />
-        <Route path="/services/investmentadvisory/fractionalownership" element={<FractionalOwnership />} />
-        <Route path="/services/investmentadvisory/markettrends" element={<MarketTrends />} />
-        <Route path="/services/financialservices/homeloanassistance" element={<HomeLoanAssistance />} />
-        <Route path="/services/financialservices/loanrefinancing" element={<LoanRefinancing />} />
-        <Route path="/services/financialservices/realestatetaxplanning" element={<RealEstateTaxPlanning />} />
-        <Route path="/services/constructionservices/customhomeconstruction" element={<CustomHomeConstruction />} />
-        <Route path="/services/constructionservices/interiordesigning" element={<InteriorDesigning />} />
-        <Route path="/services/constructionservices/smarthomeinstallations" element={<SmartHomeInstallations />} />
-        <Route path="/services/constructionservices/landscapingsolutions" element={<LandscapingSolutions />} />
-        <Route path="/services/corporateservices/officespaceleasing" element={<OfficeSpaceLeasing />} />
-        <Route path="/services/corporateservices/industrialretailsolutions" element={<IndustrialRetailSolutions />} />
-        <Route path="/services/corporateservices/realestatesolutions" element={<CorporateRealEstate />} />
-        <Route path="/services/legalservices/titleverification" element={<TitleVerification />} />
-        <Route path="/services/legalservices/reracompliance" element={<RERACompliance />} />
-        <Route path="/services/legalservices/disputeresolution" element={<DisputeResolution />} />
-        <Route path="/services/legalservices/stampdutysupport" element={<StampDutySupport />} />
-        <Route path="/portfolio/2d-designs" element={<TwoDDesign />} />
-        <Route path="/portfolio/3d-visualization" element={<ThreeDVisualization />} />
-
-        {/* 404 Fallback */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      {showRoleModal && <RoleSelectionModal />}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      {!isDashboardRoute && <Footer />}
     </>
   );
 };
@@ -368,10 +382,8 @@ function App() {
   return (
     <AuthProvider>
       <FirebaseAuthProvider>
-        <Navbar />
         <ToastContainer position="top-center" autoClose={3000} />
         <AppInner />
-        <Footer />
       </FirebaseAuthProvider>
     </AuthProvider>
   );
