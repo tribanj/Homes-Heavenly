@@ -10,9 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FirebaseAuthProvider } from "./context/FirebaseAuthContext";
 
-// --- NEW REAL ESTATE DASHBOARD IMPORTS (Using Default Imports) ---
-import DashboardLayout from "./components/RealEstateDashboard/layout/DashboardLayout.jsx";
-
+// --- DASHBOARD IMPORTS ---
+import DashboardLayout from "./components/RealEstateDashboard/layout/DashboardLayout";
 import DashboardOverview from "./components/RealEstateDashboard/pages/DashboardOverview";
 import UserManagement from "./components/RealEstateDashboard/pages/UserManagement";
 import PropertyManagement from "./components/RealEstateDashboard/pages/PropertyManagement";
@@ -22,24 +21,26 @@ import FinancialManagement from "./components/RealEstateDashboard/pages/Financia
 import Marketing from "./components/RealEstateDashboard/pages/Marketing";
 import Support from "./components/RealEstateDashboard/pages/Support";
 import Settings from "./components/RealEstateDashboard/pages/Settings";
+import Dashboard from "./components/RealEstateDashboard/Dashboard";
 
-// Other Dashboards
+// --- OTHER DASHBOARDS ---
 import UserDashboard from "./components/UserDashboard/UserDashboard";
 import AdminDashboard from "./components/Admindashboard/AdminDashboard";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
+import TeamManagerDashboard from "./components/TeamManagerDashboard/layout/TeamManagerDashboard";
 
-// All other component and page imports...
+// --- Services ---
 import BookValuation from "./components/Services/buysale/BookValuation";
 import OffPlanDeals from "./components/Services/buysale/OffPlanDeals";
 import ForeclosedSales from "./components/Services/buysale/ForeclosedSales";
 import AuctionSupport from "./components/Services/buysale/AuctionSupport";
-import SubmitInquiry from "./components/Services/buysale/SubmitInquiry";
 import TransactionLegalHelp from "./components/Services/buysale/TransactionLegalHelp";
 import TenantScreening from "./components/Services/rentlease/TenantScreening";
 import LeaseAgreement from "./components/Services/rentlease/LeaseAgreement";
 import CoLivingSolutions from "./components/Services/rentlease/CoLivingSolutions";
 import ShortTermRentals from "./components/Services/rentlease/ShortTermRentals";
 import StudentHousing from "./components/Services/rentlease/StudentHousing";
+import CoworkingSpaceDetails from "./components/Services/rentlease/CoworkingSpaceDetails";
 import RentCollection from "./components/Services/propertymanagement/RentCollection";
 import MaintenanceRepairs from "./components/Services/propertymanagement/MaintenanceRepairs";
 import LegalDisputeResolution from "./components/Services/propertymanagement/LegalDisputeResolution";
@@ -62,6 +63,8 @@ import TitleVerification from "./components/Services/legalservices/TitleVerifica
 import RERACompliance from "./components/Services/legalservices/RERACompliance";
 import DisputeResolution from "./components/Services/legalservices/DisputeResolution";
 import StampDutySupport from "./components/Services/legalservices/StampDutySupport";
+
+// --- Post Property Pages ---
 import SelectAdPurpose from "./pages/SelectAdPurpose";
 import PostPropertyPage from "./components/PostProperty/Sale/PostPropertyPage";
 import RentPropertyPage from "./components/PostProperty/rent/RentPropertyPage";
@@ -72,8 +75,12 @@ import PGHostelPage from "./components/PostProperty/PGHostel/PGHostelPage";
 import BuilderProjectPage from "./components/PostProperty/BuilderProject/BuilderProjectPage";
 import AuctionPage from "./components/PostProperty/Auction/AuctionPage";
 import OtherPage from "./components/PostProperty/Other/OtherPage";
+
+// --- Auth ---
 import SignUp from "./components/Auth/SignUp";
 import Login from "./components/Auth/Login";
+
+// --- Pages ---
 import Buy from "./pages/Buy";
 import Success from "./pages/SuccessPage";
 import Rent from "./pages/Rent";
@@ -87,9 +94,7 @@ import TwoDDesign from "./pages/portfolio/2DDesign";
 import ThreeDVisualization from "./pages/portfolio/ThreeDDesign";
 import PgHostel from "./pages/PgHostel";
 import PgHostelDetails from "./pages/PgHostelDetails";
-import CoworkingSpaceDetails from "./components/Services/rentlease/CoworkingSpaceDetails";
 import UserDetailsPage from "./pages/UserDetailsPage";
-import Dashboard from "./components/RealEstateDashboard/Dashboard";
 
 const NotFound = () => (
   <div className="text-center p-8">
@@ -107,6 +112,8 @@ const RoleBasedDashboard = () => {
   switch (userRole) {
     case "Admin":
       return <Navigate to="/admin-dashboard" replace />;
+    case "TeamManager":
+      return <Navigate to="/team-manager-dashboard/overview" replace />;
     case "Builder":
       return <Navigate to="/builder-dashboard" replace />;
     case "Agent":
@@ -127,7 +134,8 @@ const AppInner = () => {
     location.pathname.startsWith("/company-dashboard") ||
     location.pathname.startsWith("/user-dashboard") ||
     location.pathname.startsWith("/admin-dashboard") ||
-    location.pathname.startsWith("/agent-dashboard");
+    location.pathname.startsWith("/agent-dashboard") ||
+    location.pathname.startsWith("/team-manager-dashboard");
 
   return (
     <>
@@ -140,15 +148,18 @@ const AppInner = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<RoleBasedDashboard />} />
 
-          {/* --- NEW REAL ESTATE DASHBOARD --- */}
+          {/* --- TEAM MANAGER DASHBOARD --- */}
+          <Route
+            path="/team-manager-dashboard/*"
+            element={<TeamManagerDashboard />}
+          />
+
+          {/* --- REAL ESTATE DASHBOARD --- */}
           <Route path="/company-dashboard" element={<DashboardLayout />}>
             <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<DashboardOverview />} />
             <Route path="user-management" element={<UserManagement />} />
-            <Route
-              path="property-management"
-              element={<PropertyManagement />}
-            />
+            <Route path="property-management" element={<PropertyManagement />} />
             <Route path="lead-management" element={<LeadManagement />} />
             <Route path="team-management" element={<TeamManagement />} />
             <Route path="financials" element={<FinancialManagement />} />
@@ -176,7 +187,7 @@ const AppInner = () => {
             }
           />
 
-          {/* --- ALL OTHER EXISTING ROUTES --- */}
+          {/* --- OTHER ROUTES --- */}
           <Route path="/select-purpose" element={<SelectAdPurpose />} />
           <Route path="/post-property/sale" element={<PostPropertyPage />} />
           <Route path="/success" element={<Success />} />
@@ -234,22 +245,6 @@ const AppInner = () => {
           <Route
             path="/services/buysale/TransactionLegalHelp"
             element={<TransactionLegalHelp />}
-          />
-          <Route
-            path="/submit-inquiry"
-            element={
-              <ProtectedRoute
-                allowedRoles={[
-                  "Normal User",
-                  "Builder",
-                  "Agent",
-                  "Real Estate Company",
-                  "Admin",
-                ]}
-              >
-                <SubmitInquiry />
-              </ProtectedRoute>
-            }
           />
           <Route
             path="/services/rentlease/tenantscreening"
@@ -368,7 +363,9 @@ const AppInner = () => {
             path="/portfolio/3d-visualization"
             element={<ThreeDVisualization />}
           />
+          <Route path="/user-details" element={<UserDetailsPage />} />
 
+          {/* --- CATCH ALL --- */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
