@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FirebaseAuthProvider } from "./context/FirebaseAuthContext";
 
-// --- NEW REAL ESTATE DASHBOARD IMPORTS (Using Default Imports) ---
+// --- DASHBOARD IMPORTS ---
 import DashboardLayout from "./components/RealEstateDashboard/layout/DashboardLayout";
 import DashboardOverview from "./components/RealEstateDashboard/pages/DashboardOverview";
 import UserManagement from "./components/RealEstateDashboard/pages/UserManagement";
@@ -21,18 +21,17 @@ import FinancialManagement from "./components/RealEstateDashboard/pages/Financia
 import Marketing from "./components/RealEstateDashboard/pages/Marketing";
 import Support from "./components/RealEstateDashboard/pages/Support";
 import Settings from "./components/RealEstateDashboard/pages/Settings";
-
-// Other Dashboards
 import UserDashboard from "./components/UserDashboard/UserDashboard";
 import AdminDashboard from "./components/Admindashboard/AdminDashboard";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboardHome";
+// --- NEW: Import for the Team Manager Dashboard ---
+import TeamManagerDashboard from "./components/TeamManagerDashboard/layout/TeamManagerDashboard";
 
-// All other component and page imports...
+// --- All other component and page imports... ---
 import BookValuation from "./components/Services/buysale/BookValuation";
 import OffPlanDeals from "./components/Services/buysale/OffPlanDeals";
 import ForeclosedSales from "./components/Services/buysale/ForeclosedSales";
 import AuctionSupport from "./components/Services/buysale/AuctionSupport";
-import SubmitInquiry from "./components/Services/buysale/SubmitInquiry";
 import TransactionLegalHelp from "./components/Services/buysale/TransactionLegalHelp";
 import TenantScreening from "./components/Services/rentlease/TenantScreening";
 import LeaseAgreement from "./components/Services/rentlease/LeaseAgreement";
@@ -87,7 +86,6 @@ import ThreeDVisualization from "./pages/portfolio/ThreeDDesign";
 import PgHostel from "./pages/PgHostel";
 import PgHostelDetails from "./pages/PgHostelDetails";
 import CoworkingSpaceDetails from "./components/Services/rentlease/CoworkingSpaceDetails";
-import UserDetailsPage from "./pages/UserDetailsPage";
 
 const NotFound = () => (
   <div className="text-center p-8">
@@ -105,6 +103,9 @@ const RoleBasedDashboard = () => {
   switch (userRole) {
     case "Admin":
       return <Navigate to="/admin-dashboard" replace />;
+    // --- NEW: Added TeamManager role redirection ---
+    case "TeamManager":
+      return <Navigate to="/team-manager-dashboard/overview" replace />;
     case "Builder":
       return <Navigate to="/builder-dashboard" replace />;
     case "Agent":
@@ -125,7 +126,9 @@ const AppInner = () => {
     location.pathname.startsWith("/company-dashboard") ||
     location.pathname.startsWith("/user-dashboard") ||
     location.pathname.startsWith("/admin-dashboard") ||
-    location.pathname.startsWith("/agent-dashboard");
+    location.pathname.startsWith("/agent-dashboard") ||
+    // --- NEW: Added Manager route to hide Navbar/Footer ---
+    location.pathname.startsWith("/team-manager-dashboard");
 
   return (
     <>
@@ -138,9 +141,16 @@ const AppInner = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<RoleBasedDashboard />} />
 
-          {/* --- NEW REAL ESTATE DASHBOARD (DEVELOPER MODE) --- */}
-          {/* I have temporarily removed the <ProtectedRoute> so you can access the routes */}
-          {/* To re-enable protection, wrap <DashboardLayout /> in the ProtectedRoute again */}
+          {/* --- NEW: TEAM MANAGER DASHBOARD ROUTE --- */}
+          <Route
+            path="/team-manager-dashboard/*"
+            element={
+              // <ProtectedRoute allowedRoles={["TeamManager", "Admin"]}>
+              <TeamManagerDashboard />
+              // {/* </ProtectedRoute> */}
+            }
+          />
+          {/* --- REAL ESTATE DASHBOARD --- */}
           <Route path="/company-dashboard" element={<DashboardLayout />}>
             <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<DashboardOverview />} />
@@ -159,14 +169,7 @@ const AppInner = () => {
 
           {/* --- OTHER DASHBOARDS --- */}
           <Route path="/user-dashboard/*" element={<UserDashboard />} />
-          <Route
-            path="/admin-dashboard"
-            element={
-              // <ProtectedRoute allowedRoles={["Admin"]}>
-              <AdminDashboard />
-              // </ProtectedRoute>
-            }
-          />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route
             path="/agent-dashboard/*"
             element={
@@ -178,7 +181,6 @@ const AppInner = () => {
 
           {/* --- ALL OTHER EXISTING ROUTES --- */}
           <Route path="/select-purpose" element={<SelectAdPurpose />} />
-          {/* (Keep all your other service and property posting routes here...) */}
           <Route path="/post-property/sale" element={<PostPropertyPage />} />
           <Route path="/success" element={<Success />} />
           <Route
@@ -235,22 +237,6 @@ const AppInner = () => {
           <Route
             path="/services/buysale/TransactionLegalHelp"
             element={<TransactionLegalHelp />}
-          />
-          <Route
-            path="/submit-inquiry"
-            element={
-              <ProtectedRoute
-                allowedRoles={[
-                  "Normal User",
-                  "Builder",
-                  "Agent",
-                  "Real Estate Company",
-                  "Admin",
-                ]}
-              >
-                <SubmitInquiry />
-              </ProtectedRoute>
-            }
           />
           <Route
             path="/services/rentlease/tenantscreening"
