@@ -159,7 +159,10 @@ const AppInner = () => {
             <Route index element={<Navigate to="overview" replace />} />
             <Route path="overview" element={<DashboardOverview />} />
             <Route path="user-management" element={<UserManagement />} />
-            <Route path="property-management" element={<PropertyManagement />} />
+            <Route
+              path="property-management"
+              element={<PropertyManagement />}
+            />
             <Route path="lead-management" element={<LeadManagement />} />
             <Route path="team-management" element={<TeamManagement />} />
             <Route path="financials" element={<FinancialManagement />} />
@@ -173,17 +176,17 @@ const AppInner = () => {
           <Route
             path="/admin-dashboard"
             element={
-              <ProtectedRoute allowedRoles={["Admin"]}>
-                <AdminDashboard />
-              </ProtectedRoute>
+              // <ProtectedRoute allowedRoles={["Admin"]}>
+              <AdminDashboard />
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/agent-dashboard/*"
             element={
-              <ProtectedRoute allowedRoles={["Agent"]}>
-                <AgentDashboard />
-              </ProtectedRoute>
+              // <ProtectedRoute allowedRoles={["Agent"]}>
+              <AgentDashboard />
+              // </ProtectedRoute>
             }
           />
 
