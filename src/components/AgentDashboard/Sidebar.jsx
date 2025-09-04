@@ -1,25 +1,94 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import './AgentDashboard.css'; // We'll use same css for now
+import React from "react";
+import { NavLink } from "react-router-dom";
+import {
+  FiGrid,
+  FiHome,
+  FiTrendingUp,
+  FiCalendar,
+  FiDollarSign,
+  FiAward,
+  FiBookOpen,
+  FiUser,
+  FiHelpCircle,
+  FiMessageSquare,
+} from "react-icons/fi";
 
-function Sidebar() {
+const Sidebar = () => {
+  const navLinkClasses = ({ isActive }) =>
+    `flex items-center p-3 my-1 rounded-lg transition-colors duration-200 group ${
+      isActive
+        ? "bg-orange-600 text-white shadow-lg"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
+
+  const menuItems = [
+    {
+      to: "/agent-dashboard/overview",
+      icon: <FiGrid />,
+      text: "Dashboard Overview",
+    },
+    {
+      to: "/agent-dashboard/manage-properties",
+      icon: <FiHome />,
+      text: "Manage Properties",
+    },
+    {
+      to: "/agent-dashboard/lead-management",
+      icon: <FiTrendingUp />,
+      text: "Lead Management (CRM)",
+    },
+    {
+      to: "/agent-dashboard/appointments",
+      icon: <FiCalendar />,
+      text: "Appointment Manager",
+    },
+    {
+      to: "/agent-dashboard/commission-earnings",
+      icon: <FiDollarSign />,
+      text: "Commission & Earnings",
+    },
+    {
+      to: "/agent-dashboard/marketing",
+      icon: <FiAward />,
+      text: "Marketing & Promotions",
+    },
+    {
+      to: "/agent-dashboard/training",
+      icon: <FiBookOpen />,
+      text: "Training & Certification",
+    },
+    {
+      to: "/agent-dashboard/profile-settings",
+      icon: <FiUser />,
+      text: "Profile & Settings",
+    },
+    {
+      to: "/agent-dashboard/support",
+      icon: <FiHelpCircle />,
+      text: "Support & Helpdesk",
+    },
+    {
+      to: "/agent-dashboard/messages",
+      icon: <FiMessageSquare />,
+      text: "Messages / Inbox",
+    },
+  ];
+
   return (
-    <div className="sidebar">
-      <h2 className="sidebar-title">Agent Dashboard</h2>
-      <nav className="sidebar-nav">
-        <NavLink to="/agent/dashboard" className="nav-link">Dashboard Overview</NavLink>
-        <NavLink to="/agent/manage-properties" className="nav-link">Manage Properties</NavLink>
-        <NavLink to="/agent/lead-management" className="nav-link">Lead Management</NavLink>
-        <NavLink to="/agent/appointments" className="nav-link">Appointment Manager</NavLink>
-        <NavLink to="/agent/commissions" className="nav-link">Commission & Earnings</NavLink>
-        <NavLink to="/agent/marketing" className="nav-link">Marketing & Promotions</NavLink>
-        <NavLink to="/agent/training" className="nav-link">Training & Certification</NavLink>
-        <NavLink to="/agent/profile-settings" className="nav-link">Profile & Settings</NavLink>
-        <NavLink to="/agent/support" className="nav-link">Support & Helpdesk</NavLink>
-        <NavLink to="/agent/messages" className="nav-link">📩 Messages / Inbox</NavLink>
+    <aside className="w-72 bg-gray-900 text-white flex flex-col h-screen sticky top-0 border-r border-gray-700">
+      <div className="p-6 text-center border-b border-gray-700">
+        <h2 className="text-2xl font-bold text-white">Agent Panel</h2>
+      </div>
+      <nav className="flex-grow p-4 space-y-2 overflow-y-auto">
+        {menuItems.map((item) => (
+          <NavLink key={item.to} to={item.to} className={navLinkClasses}>
+            <span className="mr-3 text-lg">{item.icon}</span>
+            <span>{item.text}</span>
+          </NavLink>
+        ))}
       </nav>
-    </div>
+    </aside>
   );
-}
+};
 
 export default Sidebar;
